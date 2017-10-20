@@ -1,0 +1,132 @@
+@charset "iso-8859-1";
+a:link {color: blue;}
+a:visited {color: blue;}
+a:hover {color: red;}
+
+th {
+	background-color: cornsilk;
+	text-align: center;
+	}
+	
+tr {
+	text-align: left;
+	}	
+	
+tr:nth-child(even) {
+    background-color: azure;
+	}
+
+tr:nth-child(odd) {
+    background-color: white;
+	}
+
+BODY {
+	font-family: serif;
+	font-size: 10pt;
+	}
+
+div.base {
+	background: darkolivegreen url("images/shellback.jpg") repeat;
+	top: 0px;
+	margin: 0%;
+	width: 100%;
+	}
+
+div.main {
+	background-image: none;
+	background-color: white;
+	margin: 1%;
+	width: 85%;
+	overflow: hidden;
+	position: relative;
+	padding: 0.1em;
+	text-align: left;
+	}
+
+span.g-recaptcha {
+	width: 100%;
+	}
+
+span.right-box {
+	background: white;
+	margin: 3%;
+	float: right;
+	width: 40%;
+	border-style: none;
+	padding: 0.3em;
+	}
+
+span.left-box {
+	background: white;
+	margin: 3%;
+	float: left;
+	width: 40%;
+	border-style: none;
+	padding: 0.3em;
+	}
+
+span.footer {
+	background: white;
+	clear: both;
+	float: left;
+	margin: 5px;
+	width: 99%;
+	overflow: hidden;
+	position: relative;
+	bottom: 1%;
+	font-size: 6pt;
+	}
+	
+span.alert {
+	background: yellow;
+	color: red;
+	float: left;
+	margin: 5px;
+	width: 90%;
+	border-style: solid double double solid;
+	padding: 0.1em;
+	position: relative;
+	top: 2%;
+}	
+
+span.left-col {
+	margin: .2%;
+	float: left;
+	width: 17%;
+	border-style: none;
+	background-color: white;
+	padding: 0.2em;
+	position: realtive;
+	top: 2%;
+	}
+
+span.right-col {
+	margin: .2%;
+	float: right;
+	width: 77.5%;
+	border-style: none;
+	background-color: white;
+	padding: 0.2em;
+	position: realtive;
+	}
+
+	
+
+	
+span.text {
+	margin: 1%;
+	width: 745px;
+	background-color: white;
+	background: url("images/tile.jpg") repeat;
+	padding: 5%;
+	}
+	
+
+span.centre-box {
+	margin: 3%;
+	float: none;
+	width: 90%;
+	border: none;
+	padding: 0.3em;
+	}
+

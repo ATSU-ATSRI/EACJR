@@ -1,0 +1,101 @@
+<?php
+include("header.php");
+if ($failed == "ALL_IS_PERFECT")
+{
+	include("menu_item.php");
+	include_once("datacon.php");
+
+	if (!($msg_QUERY = $dblink->prepare("SELECT id, subject, text, active FROM jury_room.message;"))) {logger("SQLi Prepare: $msg_QUERY->error");}
+		if (!($msg_QUERY->execute())) { logger("SQLi execute: $msg_QUERY->error"); }
+		if (!($msg_QUERY->bind_result($msg_id, $msg_subject, $msg_text, $msg_active))) {logger("SQLi rBind: $msg_QUERY->error");}
+		$msg_QUERY->store_result();
+		
+	
+	echo "
+		<div class=\"main\">";
+		
+		if (isset($_SESSION['pass_fail']))
+			{
+				echo "<span class=\"alert\">". $_SESSION['pass_fail'] ." </span>";
+				unset($_SESSION['pass_fail']);
+			}
+		
+	echo "
+			<span class=\"left-col\">
+			
+			<a href=\"admin-new.php\"><button type=\"button\">Add new user</button></a><br />
+			<br />
+			<a href=\"admin-history.php\"><button type=\"button\">View user history</button></a><br />		
+			<br />
+			<a href=\"admin.php\"><button type=\"button\">View user list</button></a><br />
+			<br />
+			
+		</span>
+		
+		<span class=\"right-col\">
+		
+		<table border=\"1\" width=\"100%\">
+			<TR>
+				<TH colspan=\"3\"> Message List </TH>
+			</TR>				
+		<form name=\"display_toggle\" method=\"POST\">			
+		";
+		
+		if (($msg_QUERY->num_rows) > 0)	
+			{
+				while($msg_QUERY->fetch())
+					{
+						echo "	<TR><TD colspan=\"2\"> $msg_subject </TD></TR>
+								<TR><TD colspan=\"2\"> $msg_text </TD></TR>
+								<TR>
+									<TD> <a href=\"admin-message-edit.php?tag=$msg_id\"><button type=\"button\"> Edit Message </button></a></TD>
+									<TD>";
+										if ($msg_active == 0) { echo "Show"; } else { echo "Hide"; }
+										echo " Message, <input type=\"radio\" name=\"display\" value=\"$msg_id\"> Yes?
+								</TD>
+								</TR>";
+					}
+			}
+			else
+			{
+				echo "<TR><TD colspan=\"3\"><center> - - - - > No Messages < - - - -</center></TD></TR>";
+			}
+	
+echo "	<TR><TH></TH><TH><input type=\"submit\" name=\"submit\" value=\"Toggle Message Display\"></TH></TR>
+		</form>
+		</table>
+		<br />
+		
+		<a href=\"admin-message-insert.php\"><button type=\"button\"> New Message </button></a><br />
+	</span>";
+	$msg_QUERY->close();
+
+	if (isset($_POST['submit']))
+		{
+			if (isset($_POST['display']))
+				{
+					$toggle_id = $_POST['display'];
+					
+					if ($msg_active == 0)
+						{
+							$msg_toggle = "1";
+						} 
+						else
+						{
+							$msg_toggle = "0";
+						}
+				
+					if (!($update_QUERY = $dblink->prepare("UPDATE jury_room.message SET active=? WHERE id=?"))) {logger("SQLi Prepare: $update_QUERY->error");}
+					if (!($update_QUERY->bind_param('ss', $msg_toggle, $toggle_id))) { logger("SQLi Bind Error: $update_QUERY->error"); }
+					if (!($update_QUERY->execute())) { logger("SQLi execute: $update_QUERY->error"); }
+					$update_QUERY->close();
+					$dblink->close();
+					$_SESSION['pass_fail'] = "Message Updated.";
+					$_SESSION['redirect'] = "admin-message.php";
+					header('Location: pause.php');
+				}
+		}
+	
+	include("footer.php");
+}
+?>
