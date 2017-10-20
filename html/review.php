@@ -79,7 +79,8 @@ if ($failed == "ALL_IS_PERFECT")
 			<form name=\"review_pt\" action=\"\" method=\"POST\">
 				<TABLE>";
 					
-				$pg_len = 0;	
+				$pg_len = 0;
+				$pt_comment_text = "";
 				while ($events_QUERY->fetch())
 				{
 					if (($pg_len > 60) || ($pg_len == 0))
@@ -286,18 +287,21 @@ if ($failed == "ALL_IS_PERFECT")
 										{
 											echo " 	<TD> 24 hr </TD>
 													<TD colspan=\"7\"> $pt_24hr_details </TD>";
+											$pt_comment_text .= "<b> 24 hr:</b> $pt_24hr_details <br /><br />";
 										}
 										
 									if (strlen($pt_72hr_details) > 0)
 										{
 											echo "	<TD> 72 hr </TD>
 													<TD colspan=\"7\"> $pt_72hr_details </TD>";
+											$pt_comment_text .= "<b> 72 hr:</b> $pt_72hr_details <br /><br />";
 										}
 										
 									if (strlen($pt_1wk_details) > 0)
 										{
 											echo "	<TD> 1 wk </TD>
 													<TD colspan=\"7\"> $pt_1wk_details </TD>";
+											$pt_comment_text .= "<b> 1 wk: </b> $pt_1wk_details <br /><br />";
 										}
 								}
 
@@ -369,7 +373,7 @@ if ($failed == "ALL_IS_PERFECT")
 			</form>
 		</span>
 	</center>";
-		
+	
 	if (isset($_POST['submit']))
 		{
 			if (count($event_id_array) > 0)
@@ -439,6 +443,17 @@ if ($failed == "ALL_IS_PERFECT")
 					header('Location: pause.php');
 				}
 		}
+		
+	if (strlen($pt_comment_text) > 0)
+		{
+			echo "	<span id=\"pt-comments\" class=\"comment-text\"><center><b> .: Patient Comments :.</b></center> <br /><br />$pt_comment_text<br /><br /><a href=\"javascript:void(0)\" onclick=\"document.getElementById('pt-comments').style.display='none';document.getElementById('pt-comments-overlay').style.display='none'\">[ close ] </a></span>
+					<span id=\"pt-comments-overlay\" class=\"comment-overlay\"></span>
+				
+					<script type=\"text/javascript\">
+						window.onload=\"document.getElementById('pt-comments').style.display='block';document.getElementById('pt-comments-overlay').style.display='block'\";
+					</script>";
+		}
+		
 	include("footer.php");
 }
 ob_end_flush();
