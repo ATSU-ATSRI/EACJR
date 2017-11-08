@@ -9,15 +9,82 @@ if ($failed == "ALL_IS_PERFECT")
 				patient.patient_id,
 				patient.code,
 				symptom.phase,
-				count(DISTINCT symptom.event_id) AS symptom_count,
+				count(CASE WHEN symptom.symptom IS NOT NULL THEN 1 END) AS symptom_count,
 				count(DISTINCT review.event_id) AS review_count
 			FROM patient 
 				LEFT OUTER JOIN	symptom ON patient.code = symptom.code 
 				LEFT OUTER JOIN review ON symptom.event_id = review.event_id
-			WHERE (symptom.symptom IS NOT NULL) AND 
-				(patient.study_id IN (?)) AND
-				(symptom.phase = '1') AND
-				(symptom.event_id NOT IN (SELECT event_id FROM review WHERE (user_id = ?)))
+			WHERE
+				(
+					(patient.study_id IN (?)) AND
+					(symptom.event_id NOT IN (SELECT event_id FROM review WHERE (user_id = ?))) AND 
+					(
+						(
+							(symptom.followup_clinic = 'Yes') OR
+							(symptom.followup_er = 'Yes') OR 
+							(symptom.followup_hosp = 'Yes') OR 
+							(symptom.followup_uc = 'Yes')
+						)
+						OR 
+						(
+							(symptom.pt_24hr_severity = 'Very Severe') OR 
+							(symptom.pt_72hr_severity = 'Very Severe') OR 
+							(symptom.pt_baseline_severity = 'Very Severe')
+						)
+						OR
+						( 
+							patient.code IN
+								(
+									SELECT patient.code
+									FROM patient 
+										LEFT OUTER JOIN	symptom ON patient.code = symptom.code 
+									WHERE
+										((symptom.pt_baseline_severity = 'Not present') AND 
+											(symptom.pt_24hr_severity = 'Mild') OR 
+											(symptom.pt_24hr_severity = 'Moderate') OR 
+											(symptom.pt_24hr_severity = 'Severe') OR 
+											(symptom.pt_24hr_severity = 'Very Severe')) OR
+										((symptom.pt_baseline_severity = 'Mild') AND 
+											(symptom.pt_24hr_severity = 'Moderate') OR 
+											(symptom.pt_24hr_severity = 'Severe') OR 
+											(symptom.pt_24hr_severity = 'Very Severe')) OR 
+										((symptom.pt_baseline_severity = 'Moderate') AND 
+											(symptom.pt_24hr_severity = 'Severe') OR 
+											(symptom.pt_24hr_severity = 'Very Severe')) OR 
+										((symptom.pt_baseline_severity = 'Severe') AND 
+											(symptom.pt_24hr_severity = 'Very Severe')) OR 
+										((symptom.pt_baseline_severity = 'Not present') AND 
+											(symptom.pt_72hr_severity = 'Mild') OR 
+											(symptom.pt_72hr_severity = 'Moderate') OR 
+											(symptom.pt_72hr_severity = 'Severe') OR 
+											(symptom.pt_72hr_severity = 'Very Severe')) OR
+										((symptom.pt_baseline_severity = 'Mild') AND 
+											(symptom.pt_72hr_severity = 'Moderate') OR 
+											(symptom.pt_72hr_severity = 'Severe') OR 
+											(symptom.pt_72hr_severity = 'Very Severe')) OR 
+										((symptom.pt_baseline_severity = 'Moderate') AND 
+											(symptom.pt_72hr_severity = 'Severe') OR 
+											(symptom.pt_72hr_severity = 'Very Severe')) OR 
+										((symptom.pt_baseline_severity = 'Severe') AND 
+											(symptom.pt_72hr_severity = 'Very Severe')) OR 
+										((symptom.pt_24hr_severity = 'Not present') AND 
+											(symptom.pt_72hr_severity = 'Mild') OR 
+											(symptom.pt_72hr_severity = 'Moderate') OR 
+											(symptom.pt_72hr_severity = 'Severe') OR 
+											(symptom.pt_72hr_severity = 'Very Severe')) OR
+										((symptom.pt_24hr_severity = 'Mild') AND 
+											(symptom.pt_72hr_severity = 'Moderate') OR 
+											(symptom.pt_72hr_severity = 'Severe') OR 
+											(symptom.pt_72hr_severity = 'Very Severe')) OR 
+										((symptom.pt_24hr_severity = 'Moderate') AND 
+											(symptom.pt_72hr_severity = 'Severe') OR 
+											(symptom.pt_72hr_severity = 'Very Severe')) OR 
+										((symptom.pt_24hr_severity = 'Severe') AND 
+											(symptom.pt_72hr_severity = 'Very Severe'))
+								)
+						)
+					)
+				)
 			GROUP BY patient.code
 			ORDER BY symptom.phase, patient.code"))) { logger("SQLi Prepare: $events_QUERY->error"); }
 	if (!($events_QUERY->bind_param('ss', $_SESSION["study"], $_SESSION["id"]))) { logger("SQLi pBind: $events_QUERY->error"); }
