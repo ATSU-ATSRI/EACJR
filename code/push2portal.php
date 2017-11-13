@@ -1040,7 +1040,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 												if (strlen($input_data[array_search("rad_pain_sympt_d1", $header_array, TRUE)]) > 0)
 														{
 															$pt_24hr = "Yes";
-															$symptom .= " $input_data[43]";
+															if (strlen($input_data[array_search("rad_pain_reg_d1", $header_array, TRUE)]) > 0) { $symptom .= " " . $input_data[array_search("rad_pain_reg_d1", $header_array, TRUE)] .""; }
 															
 															if ($input_data[array_search("worst1_rad_pain_d1", $header_array, TRUE)] == "0") { $pt_24hr_severity = "Not present"; }
 															if ($input_data[array_search("worst1_rad_pain_d1", $header_array, TRUE)] == "1") { $pt_24hr_severity = "Mild"; }
@@ -1069,7 +1069,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													if (strlen($input_data[array_search("rad_pain_d3", $header_array, TRUE)]) > 0)
 														{
 															$pt_72hr = "Yes";
-															if (strlen($input_data[array_search("rad_pain_reg_d1", $header_array, TRUE)]) < 1) { $symptom .= " ".$input_data[array_search("rad_pain_reg_d3", $header_array, TRUE)].""; }
+															if (strlen($input_data[array_search("rad_pain_reg_d1", $header_array, TRUE)]) < 1) { $symptom .= " " . $input_data[array_search("rad_pain_reg_d3", $header_array, TRUE)] . ""; }
 															
 															if ($input_data[array_search("day_severity_rad_pain_d3", $header_array, TRUE)] == "0") { $pt_72hr_severity = "Not present"; }
 															if ($input_data[array_search("day_severity_rad_pain_d3", $header_array, TRUE)] == "1") { $pt_72hr_severity = "Mild"; }
@@ -1133,7 +1133,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													if (strlen($input_data[array_search("stiff_sympt_d1", $header_array, TRUE)]) > 0)
 														{
 															$pt_24hr = "Yes";
-															$symptom .= " $input_data[44]";
+															if (strlen($input_data[array_search("stiff_reg_d1", $header_array, TRUE)]) > 0) { $symptom .= " " . $input_data[array_search("stiff_reg_d1", $header_array, TRUE)] . ""; }
 															
 															if ($input_data[array_search("worst1_stiff_d1", $header_array, TRUE)] == "0") { $pt_24hr_severity = "Not present"; }
 															if ($input_data[array_search("worst1_stiff_d1", $header_array, TRUE)] == "1") { $pt_24hr_severity = "Mild"; }
@@ -1226,7 +1226,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													if (strlen($input_data[array_search("swell_sympt_d1", $header_array, TRUE)]) > 0)
 														{
 															$pt_24hr = "Yes";
-															$symptom .= " $input_data[45]";
+															if (strlen($input_data[array_search("swell_reg_d1", $header_array, TRUE)]) > 0) { $symptom .= " " . $input_data[array_search("swell_reg_d1", $header_array, TRUE)] . ""; }
 															
 															if ($input_data[array_search("worst1_swell_d1", $header_array, TRUE)] == "0") { $pt_24hr_severity = "Not present"; }
 															if ($input_data[array_search("worst1_swell_d1", $header_array, TRUE)] == "1") { $pt_24hr_severity = "Mild"; }
@@ -1255,7 +1255,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													if (strlen($input_data[array_search("swell_d3", $header_array, TRUE)]) > 0)
 														{
 															$pt_72hr = "Yes";
-															if (strlen($input_data[array_search("swell_reg_d1", $header_array, TRUE)]) < 1) { $symptom .= " ".$input_data[array_search("swell_reg_d3", $header_array, TRUE)].""; }
+															if (strlen($input_data[array_search("swell_reg_d1", $header_array, TRUE)]) < 1) { $symptom .= " " . $input_data[array_search("swell_reg_d3", $header_array, TRUE)] . ""; }
 															
 															if ($input_data[array_search("day_severity_swell_d3", $header_array, TRUE)] == "0") { $pt_72hr_severity = "Not present"; }
 															if ($input_data[array_search("day_severity_swell_d3", $header_array, TRUE)] == "1") { $pt_72hr_severity = "Mild"; }
@@ -1319,7 +1319,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													if (strlen($input_data[array_search("weak_sympt_d1", $header_array, TRUE)]) > 0)
 														{
 															$pt_24hr = "Yes";
-															$symptom .= " $input_data[46]";
+															if (strlen($input_data[array_search("weak_reg_d1", $header_array, TRUE)]) > 0) { $symptom .= " " . $input_data[array_search("weak_reg_d1", $header_array, TRUE) ] . ""; }
 															
 															if ($input_data[array_search("worst1_weak_d1", $header_array, TRUE)] == "0") { $pt_24hr_severity = "Not present"; }
 															if ($input_data[array_search("worst1_weak_d1", $header_array, TRUE)] == "1") { $pt_24hr_severity = "Mild"; }
@@ -1348,7 +1348,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													if (strlen($input_data[array_search("weak_d3", $header_array, TRUE)]) > 0)
 														{
 															$pt_72hr = "Yes";
-															if (strlen($input_data[array_search("weak_reg_d1", $header_array, TRUE)]) < 1) { $symptom .= " ".$input_data[array_search("weak_reg_d3", $header_array, TRUE)].""; }
+															if (strlen($input_data[array_search("weak_reg_d1", $header_array, TRUE)]) < 1) { $symptom .= " " . $input_data[array_search("weak_reg_d3", $header_array, TRUE)] . ""; }
 															
 															if ($input_data[array_search("day_severity_weak_d3", $header_array, TRUE)] == "0") { $pt_72hr_severity = "Not present"; }
 															if ($input_data[array_search("day_severity_weak_d3", $header_array, TRUE)] == "1") { $pt_72hr_severity = "Mild"; }
@@ -1412,7 +1412,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													if (strlen($input_data[array_search("numb_sympt_d1", $header_array, TRUE)]) > 0)
 														{
 															$pt_24hr = "Yes";
-															$symptom .= " $input_data[47]";
+															if (strlen($input_data[array_search("numb_reg_d1", $header_array, TRUE)]) > 0) { $symptom .= " " . $input_data[array_search("numb_reg_d1", $header_array, TRUE)] . ""; }
 															
 															if ($input_data[array_search("worst1_numb_d1", $header_array, TRUE)] == "0") { $pt_24hr_severity = "Not present"; }
 															if ($input_data[array_search("worst1_numb_d1", $header_array, TRUE)] == "1") { $pt_24hr_severity = "Mild"; }
@@ -1441,7 +1441,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													if (strlen($input_data[array_search("numb_d3", $header_array, TRUE)]) > 0)
 														{
 															$pt_72hr = "Yes";
-															if (strlen($input_data[array_search("numb_reg_d1", $header_array, TRUE)]) < 1) { $symptom .= " ".$input_data[array_search("numb_reg_d3", $header_array, TRUE)].""; }
+															if (strlen($input_data[array_search("numb_reg_d1", $header_array, TRUE)]) < 1) { $symptom .= " " . $input_data[array_search("numb_reg_d3", $header_array, TRUE)] . ""; }
 															
 															if ($input_data[array_search("day_severity_numb_d3", $header_array, TRUE)] == "0") { $pt_72hr_severity = "Not present"; }
 															if ($input_data[array_search("day_severity_numb_d3", $header_array, TRUE)] == "1") { $pt_72hr_severity = "Mild"; }
