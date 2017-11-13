@@ -135,15 +135,13 @@ if ($failed == "ALL_IS_PERFECT")
 											if (strlen($pt_24hr_related) > 0)
 											{echo "
 											<b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; $pt_24hr_related <br /><br />
-											<INPUT type=\"hidden\" name=\"$event_id-pt_24hr_related\" id=\"$event_id-pt_24hr_related\" value=\"$pt_24hr_related\">
-											<INPUT type=\"checkbox\" name=\"$event_id-pt_24hr_change\" id=\"$event_id-pt_24hr_change\" value=\"NOCHANGE\"> Change?";}
+											<INPUT type=\"hidden\" name=\"$event_id-pt_24hr_related\" id=\"$event_id-pt_24hr_related\" value=\"$pt_24hr_related\">";}
 											echo "</TD>
 									<TD> $pt_72hr_severity <br /><br />";
 											if (strlen($pt_72hr_related) > 0)
 											{echo "
 											<b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; $pt_72hr_related <br /><br />
-											<INPUT type=\"hidden\" name=\"$event_id-pt_72hr_related\" id=\"$event_id-pt_72hr_related\" value=\"$pt_72hr_related\">
-											<INPUT type=\"checkbox\" name=\"$event_id-pt_72hr_change\" id=\"$event_id-pt_72hr_change\" value=\"\"> Change?";}
+											<INPUT type=\"hidden\" name=\"$event_id-pt_72hr_related\" id=\"$event_id-pt_72hr_related\" value=\"$pt_72hr_related\">";}
 											echo "
 											</TD>
 									<TD> $pt_1wk </TD>";
