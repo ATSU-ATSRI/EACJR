@@ -131,7 +131,7 @@ if ($failed == "ALL_IS_PERFECT")
 						{
 							echo "
 								<tr>
-									<th colspan=\"4\"><br /> ---> Phase $phase <--- <br /></th>
+									<th colspan=\"4\"><center><br /> ---> Phase $phase <--- <br /></center></th>
 								</tr>";
 							$phase_last = $phase;
 						}
