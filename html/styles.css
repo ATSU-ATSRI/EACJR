@@ -12,6 +12,10 @@ tr {
 	text-align: left;
 	}	
 	
+td {
+	vertical-align: top;
+	}	
+	
 tr:nth-child(even) {
     background-color: azure;
 	}
