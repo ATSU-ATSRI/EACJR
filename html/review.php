@@ -353,15 +353,18 @@ if ($failed == "ALL_IS_PERFECT")
 												<INPUT type=\"checkbox\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"\"> Change?
 												</TD>";
 									
-									echo "<TD></TD>"; // we don't have severity change for followup visits so we don't need this block. If we change our minds, it used to be here.
+										echo "<TD>
+												<INPUT type=\"hidden\" name=\"$event_id-ae_related\" id=\"$event_id-ae_related\" value=\"$ae_related\">
+												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"Mild\"> Mild<br/>
+												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"Moderate\"> Moderate<br/>
+												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"Severe\"> Severe<br/>
+												</TD>";
 										
 										echo "<TD>
 												If Adverse Event: OMT Related?<br />
-												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Definitely\"> Definitely<br />
-												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Probably\"> Probably<br />
-												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Not Sure\"> Not Sure<br />
-												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Unlikely\"> Unlikely<br />
+												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Yes\"> Yes<br />
 												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"No\"> No<br />
+												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Inconclusive\"> Inconclusive<br />
 												</TD>
 											</TR>";
 								}
