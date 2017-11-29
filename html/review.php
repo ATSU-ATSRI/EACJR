@@ -238,7 +238,7 @@ if ($failed == "ALL_IS_PERFECT")
 							if (($followup_clinic == "Yes") || (strlen($followup_clinic_related) > 0) || (strlen($followup_clinic_details) > 0))
 								{
 									echo "<TR>
-											<TD colspan=\"4\"> Contacted Clinician (Office)? <b>$followup_clinic</b><br />";
+											<TD colspan=\"3\"> Contacted Clinician (Office)? <b>$followup_clinic</b><br />";
 											if (strlen($followup_clinic_details) > 1)
 												{
 													echo "$followup_clinic_details";
@@ -248,13 +248,13 @@ if ($failed == "ALL_IS_PERFECT")
 													echo "No Response.";
 												}
 											echo "</TD>
-											<TD> $followup_clinic_related </TD>";
+											<TD><b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; $followup_clinic_related </TD>";
 								}
 							
 							if (($followup_uc == "Yes") || (strlen($followup_uc_related) > 0) || (strlen($followup_uc_details) > 0))
 								{
 									echo "<TR>
-											<TD colspan=\"4\"> Contacted Urgent Care? <b>$followup_uc</b><br />";
+											<TD colspan=\"3\"> Contacted Urgent Care? <b>$followup_uc</b><br />";
 											if (strlen($followup_uc_details) > 1)
 												{
 													echo "$followup_uc_details";
@@ -264,13 +264,13 @@ if ($failed == "ALL_IS_PERFECT")
 													echo "No Response.";
 												}
 											echo "</TD>
-											<TD> $followup_uc_related </TD>";
+											<TD><b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; $followup_uc_related </TD>";
 								}
 							
 							if (($followup_er == "Yes") || (strlen($followup_er_related) > 0) || (strlen($followup_er_details) > 0))
 								{
 									echo "<TR>
-											<TD colspan=\"4\"> Contacted Emergency Room? <b>$followup_er</b><br />";
+											<TD colspan=\"3\"> Contacted Emergency Room? <b>$followup_er</b><br />";
 											if (strlen($followup_er_details) > 1)
 												{
 													echo "$followup_er_details";
@@ -280,12 +280,12 @@ if ($failed == "ALL_IS_PERFECT")
 													echo "No Response.";
 												}
 										echo "</TD>
-											<TD>$followup_er_related</TD>";
+											<TD><b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; $followup_er_related</TD>";
 								}
 							if (($followup_hosp == "Yes") || (strlen($followup_hosp_related) > 0) || (strlen($followup_hosp_details) > 0))
 								{
 									echo "<TR>
-											<TD colspan=\"4\"> Contacted Hospital? <b>$followup_hosp</b><br />";
+											<TD colspan=\"3\"> Contacted Hospital? <b>$followup_hosp</b><br />";
 											if (strlen($followup_hosp_details) > 1)
 												{
 													echo "$followup_hosp_details";
@@ -295,7 +295,7 @@ if ($failed == "ALL_IS_PERFECT")
 													echo "No Response.";
 												}
 											echo "</TD>
-											<TD>$followup_hosp_related</TD>";
+											<TD><b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; $followup_hosp_related</TD>";
 								}
 								
 							if ((strlen($pt_24hr_details) > 0) || (strlen($pt_72hr_details) > 0) || (strlen($pt_1wk_details) > 0))
@@ -327,33 +327,18 @@ if ($failed == "ALL_IS_PERFECT")
 
 							if ((substr($followup_clinic, 0, 3) == "Yes") || (substr($followup_uc, 0, 3) == "Yes") || (substr($followup_er, 0, 3) == "Yes") || (substr($followup_hosp, 0, 3) == "Yes"))	
 								{
-									echo "<TD>";
+									echo "<TD></TD><TD>";	// included a blank
 									
-									$change_array = array(
-													"baseline" => array_search("$pt_baseline_severity", $severity_array, TRUE),
-													"24hr" => array_search("$pt_24hr_severity", $severity_array, TRUE),
-													"72hr" => array_search("$pt_72hr_severity", $severity_array, TRUE),
-													"1_wk" => array_search("$pt_1wk", $severity_array, TRUE));
-									if (isset($ae_related)) { unset($ae_related);}				
-																										
-										if (isset($ae_change)) { unset($ae_change); }
-										if (($change_array['baseline'] < $change_array['24hr']) || ($change_array['baseline'] < $change_array['72hr']) || ($change_array['baseline'] < $change_array['1_wk']) ||
-											($change_array['24hr'] < $change_array['72hr']) || ($change_array['24hr'] < $change_array['1_wk']) ||
-											($change_array['72hr'] < $change_array['1_wk']))
-											{
-												echo "Yes<br />";
-												$ae_related = "Yes";
-											}
-											else
-											{
-												echo "No<br />";
-												$ae_related = "No";
-											}
 										echo "	<INPUT type=\"hidden\" name=\"$event_id-ae_related\" id=\"$event_id-ae_related\" value=\"$ae_related\">
-												<INPUT type=\"checkbox\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"\"> Change?
+												<b>Adverse Event?</b><br />
+												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"Yes\"> Yes<br />
+												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"No\"> No<br />
+												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"Inconclusive\"> Inconclusive<br />
+												
 												</TD>";
 									
 										echo "<TD>
+												<b>If Adverse Event: Severity?</b><br />
 												<INPUT type=\"hidden\" name=\"$event_id-ae_related\" id=\"$event_id-ae_related\" value=\"$ae_related\">
 												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"Mild\"> Mild<br/>
 												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"Moderate\"> Moderate<br/>
@@ -361,10 +346,12 @@ if ($failed == "ALL_IS_PERFECT")
 												</TD>";
 										
 										echo "<TD>
-												If Adverse Event: OMT Related?<br />
-												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Yes\"> Yes<br />
+												<b>If Adverse Event: OMT Related?</b><br />
+												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Definitely\"> Definitely<br />
+												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Probably\"> Probably<br />
+												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Not Sure\"> Not Sure<br />
+												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Unlikely\"> Unlikely<br />
 												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"No\"> No<br />
-												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Inconclusive\"> Inconclusive<br />
 												</TD>
 											</TR>";
 								}
