@@ -93,15 +93,12 @@ if ($failed == "ALL_IS_PERFECT")
 								<TH> Race: <b>";
 								if (strlen($race_other) > 0) {$race_other;} else {$race;}
 								echo " </b></TH>
-							<TR>
-								<TH COLSPAN=\"9\"> &nbsp; </TH>
 							</TR><TR>
-								<TH width=\"17%\"> Symptom </TH>
-								<TH width=\"5%\"> Survey </TH>
-								<TH width=\"12%\"> Baseline Severity </TH>
-								<TH width=\"12%\"> 24 hr Severity </TH>
-								<TH width=\"12%\"> 72 hr Severity </TH>
-								<TH width=\"12%\"> 1 Week Severity </TH>
+								<TH width=\"18%\"> Symptom </TH>
+								<TH width=\"13%\"> Baseline Severity </TH>
+								<TH width=\"13%\"> 24 hr Severity </TH>
+								<TH width=\"13%\"> 72 hr Severity </TH>
+								<TH width=\"13%\"> 1 Week Severity </TH>
 								<TH width=\"10%\"> Adverse Event? </TH>
 								<TH width=\"10%\"> If Adverse Event: Severity? </TH>
 								<TH width=\"10%\"> If Adverse Event: OMT Related? </TH>
@@ -119,17 +116,6 @@ if ($failed == "ALL_IS_PERFECT")
 									<input type=\"hidden\" name=\"$event_id-event_id\" value=\"$event_id\">
 									<input type=\"hidden\" name=\"$event_id-code\" value=\"$code\">";
 
-							if (strlen($pt_24hr) > 0)
-								{
-									echo "<TD> 24 hr </TD>
-									";
-								}
-								elseif (strlen($pt_72hr) > 0)
-								{
-									echo "<TD> 72 hr </TD>
-									";
-								}
-								
 							echo "	<TD> $pt_baseline_severity </TD>
 									<TD> $pt_24hr_severity <br /><br />";
 											if (strlen($pt_24hr_related) > 0)
@@ -252,27 +238,63 @@ if ($failed == "ALL_IS_PERFECT")
 							if (($followup_clinic == "Yes") || (strlen($followup_clinic_related) > 0) || (strlen($followup_clinic_details) > 0))
 								{
 									echo "<TR>
-											<TD colspan=\"5\"> Contacted Clinician (Office)? <b>$followup_clinic</b><br /> $followup_clinic_details </TD>
+											<TD colspan=\"4\"> Contacted Clinician (Office)? <b>$followup_clinic</b><br />";
+											if (strlen($followup_clinic_details) > 1)
+												{
+													echo "$followup_clinic_details";
+												}
+												else
+												{
+													echo "No Response.";
+												}
+											echo "</TD>
 											<TD> $followup_clinic_related </TD>";
 								}
 							
 							if (($followup_uc == "Yes") || (strlen($followup_uc_related) > 0) || (strlen($followup_uc_details) > 0))
 								{
 									echo "<TR>
-											<TD colspan=\"5\"> Contacted Urgent Care? <b>$followup_uc</b><br />$followup_uc_details </TD>
+											<TD colspan=\"4\"> Contacted Urgent Care? <b>$followup_uc</b><br />";
+											if (strlen($followup_uc_details) > 1)
+												{
+													echo "$followup_uc_details";
+												}
+												else
+												{
+													echo "No Response.";
+												}
+											echo "</TD>
 											<TD> $followup_uc_related </TD>";
 								}
 							
 							if (($followup_er == "Yes") || (strlen($followup_er_related) > 0) || (strlen($followup_er_details) > 0))
 								{
 									echo "<TR>
-											<TD colspan=\"5\"> Contacted Emergency Room? <b>$followup_er</b><br />$followup_er_details </TD>
+											<TD colspan=\"4\"> Contacted Emergency Room? <b>$followup_er</b><br />";
+											if (strlen($followup_er_details) > 1)
+												{
+													echo "$followup_er_details";
+												}
+												else
+												{
+													echo "No Response.";
+												}
+										echo "</TD>
 											<TD>$followup_er_related</TD>";
 								}
 							if (($followup_hosp == "Yes") || (strlen($followup_hosp_related) > 0) || (strlen($followup_hosp_details) > 0))
 								{
 									echo "<TR>
-											<TD colspan=\5\"> Contacted Hospital? <b>$followup_hosp</b><br />$followup_hosp_details </TD>
+											<TD colspan=\"4\"> Contacted Hospital? <b>$followup_hosp</b><br />";
+											if (strlen($followup_hosp_details) > 1)
+												{
+													echo "$followup_hosp_details";
+												}
+												else
+												{
+													echo "No Response.";
+												}
+											echo "</TD>
 											<TD>$followup_hosp_related</TD>";
 								}
 								
@@ -284,21 +306,21 @@ if ($failed == "ALL_IS_PERFECT")
 									if (strlen($pt_24hr_details) > 0)
 										{
 											echo " 	<TD> 24 hr </TD>
-													<TD colspan=\"7\"> $pt_24hr_details </TD>";
+													<TD colspan=\"6\"> $pt_24hr_details </TD>";
 											$pt_comment_text .= "<b> 24 hr:</b> $pt_24hr_details <br /><br />";
 										}
 										
 									if (strlen($pt_72hr_details) > 0)
 										{
 											echo "	<TD> 72 hr </TD>
-													<TD colspan=\"7\"> $pt_72hr_details </TD>";
+													<TD colspan=\"6\"> $pt_72hr_details </TD>";
 											$pt_comment_text .= "<b> 72 hr:</b> $pt_72hr_details <br /><br />";
 										}
 										
 									if (strlen($pt_1wk_details) > 0)
 										{
 											echo "	<TD> 1 wk </TD>
-													<TD colspan=\"7\"> $pt_1wk_details </TD>";
+													<TD colspan=\"6\"> $pt_1wk_details </TD>";
 											$pt_comment_text .= "<b> 1 wk: </b> $pt_1wk_details <br /><br />";
 										}
 								}
@@ -351,7 +373,7 @@ if ($failed == "ALL_IS_PERFECT")
 						{
 							echo "<TR>
 									<TD> EAC Comment<br /> $initals</TD>
-									<TD colspan=\"8\"> $comment </TD>
+									<TD colspan=\"7\"> $comment </TD>
 									</TR>";
 						}
 						
@@ -361,9 +383,9 @@ if ($failed == "ALL_IS_PERFECT")
 					echo "
 					<TR>
 						<TD> Your Comments: </TD>
-						<TD colspan=\"8\"> <textarea name=\"comments\" cols=\"70\" rows=\"4\" wrap=\"physical\"></textarea></TD>
+						<TD colspan=\"7\"> <textarea name=\"comments\" cols=\"70\" rows=\"4\" wrap=\"physical\"></textarea></TD>
 					</TR><TR>
-						<TD colspan=\"9\">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <INPUT type=\"reset\" name=\"reset\" value=\"Reset Form\">
+						<TD colspan=\"8\">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <INPUT type=\"reset\" name=\"reset\" value=\"Reset Form\">
 						&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
 						<INPUT type=\"submit\" name=\"submit\" value=\"Submit Vote\"></TD>
 					</TR>
