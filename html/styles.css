@@ -67,7 +67,7 @@ div.main {
 	background-image: none;
 	background-color: white;
 	margin: 1%;
-	width: 85%;
+	width: 95%;
 	overflow: hidden;
 	position: relative;
 	padding: 0.1em;
@@ -154,9 +154,9 @@ span.text {
 	
 
 span.centre-box {
-	margin: 3%;
+	margin: 1%;
 	float: none;
-	width: 90%;
+	width: 99%;
 	border: none;
 	padding: 0.3em;
 	}
