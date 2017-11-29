@@ -224,7 +224,6 @@ if ($failed == "ALL_IS_PERFECT")
 										</TD>";
 								
 								echo "<TD>
-										If Adverse Event: OMT Related?<br />
 										<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Definitely\"> Definitely<br />
 										<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Probably\"> Probably<br />
 										<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Not Sure\"> Not Sure<br />
@@ -330,7 +329,6 @@ if ($failed == "ALL_IS_PERFECT")
 									echo "<TD></TD><TD>";	// included a blank
 									
 										echo "	<INPUT type=\"hidden\" name=\"$event_id-ae_related\" id=\"$event_id-ae_related\" value=\"$ae_related\">
-												<b>Adverse Event?</b><br />
 												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"Yes\"> Yes<br />
 												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"No\"> No<br />
 												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"Inconclusive\"> Inconclusive<br />
@@ -338,7 +336,6 @@ if ($failed == "ALL_IS_PERFECT")
 												</TD>";
 									
 										echo "<TD>
-												<b>If Adverse Event: Severity?</b><br />
 												<INPUT type=\"hidden\" name=\"$event_id-ae_related\" id=\"$event_id-ae_related\" value=\"$ae_related\">
 												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"Mild\"> Mild<br/>
 												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"Moderate\"> Moderate<br/>
@@ -346,7 +343,6 @@ if ($failed == "ALL_IS_PERFECT")
 												</TD>";
 										
 										echo "<TD>
-												<b>If Adverse Event: OMT Related?</b><br />
 												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Definitely\"> Definitely<br />
 												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Probably\"> Probably<br />
 												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Not Sure\"> Not Sure<br />
