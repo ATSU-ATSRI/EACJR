@@ -27,12 +27,15 @@ if ($failed == "ALL_IS_PERFECT")
 		<span class=\"right-col\">
 		<center>
 		<table border=\"1\">
+			<thead>
 			<tr>
-				<th>User name</th>
-				<th>User email</th>
-				<th>Login time</th>
-				<th>Logout time</th>
-			</tr>";
+				<th width=\"25%\">User name</th>
+				<th width=\"25%\">User email</th>
+				<th width=\"25%\">Login time</th>
+				<th width=\"25%\">Logout time</th>
+			</tr>
+			</thead>
+			<tbody>";
 
 	if (($history_QUERY->num_rows) > 0)
 		{
@@ -40,19 +43,20 @@ if ($failed == "ALL_IS_PERFECT")
 				{
 								
 					echo "<tr>
-						<td>$history_name</td> 
-						<td>$history_email</td> 
-						<td>$history_login</td> 
-						<td>$history_logout</td> 
+						<td width=\"25%\">$history_name</td> 
+						<td width=\"25%\">$history_email</td> 
+						<td width=\"25%\">$history_login</td> 
+						<td width=\"25%\">$history_logout</td> 
 					</tr>";
 				}
 		}
 		else
 		{
-			echo "<tr><td colspan=\"4\"><center> --- No history to display --- </center></td></tr>";
+			echo "<tr><td colspan=\"4\" wudth=\"100%\"><center> --- No history to display --- </center></td></tr>";
 		}
 	
 	echo "
+		</tbody>
 		</table>
 		</center>
 		</span>

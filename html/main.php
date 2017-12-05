@@ -103,20 +103,20 @@ if ($failed == "ALL_IS_PERFECT")
 			}
 			
 	echo "
-		<table name=\"events\" width=\"90%\" border=\"1\">
-		<tr>
-			<th colspan=\"4\">Active records</th>
-		</tr>
-		";
+		<table name=\"events\">
+		<thead>";
 	
 	if ($events_QUERY->num_rows > 0)
 		{
 			echo "
 				<tr>
-					<th>Participant</th>
-					<th>Symptom Count</th>
-					<th>Review Count<th>
-				</tr>";
+					<th width=\"25%\">Participant</th>
+					<th width=\"25%\">Symptom Count</th>
+					<th width=\"25%\">Review Count</th>
+					<th width=\"25%\"></th>
+				</tr>
+				</thead>
+				<tbody>";
 				
 			$phase_last = "0";
 			
@@ -131,17 +131,17 @@ if ($failed == "ALL_IS_PERFECT")
 						{
 							echo "
 								<tr>
-									<th colspan=\"4\"><center><br /> ---> Phase $phase <--- <br /></center></th>
+									<td colspan=\"4\" width=\"100%\" style=\"background-color:cornsilk; text-align:center; vertical-align:middle;\"><br /> ---> Phase $phase <--- <br /></td>
 								</tr>";
 							$phase_last = $phase;
 						}
 							
 					echo "
 						<tr>
-							<td>$patient_id</td>
-							<td>$symptom_count</td>
-							<td>$review_count</td>
-							<td><a href=\"review.php?req=$patient_id\"><button type=\"button\">Review</button></a></td>
+							<td width=\"25%\">$patient_id</td>
+							<td width=\"25%\">$symptom_count</td>
+							<td width=\"25%\">$review_count</td>
+							<td width=\"25%\"><a href=\"review.php?req=$patient_id\"><button type=\"button\">Review</button></a></td>
 						</tr>";
 						
 				}
@@ -150,10 +150,11 @@ if ($failed == "ALL_IS_PERFECT")
 		{
 			echo "
 				<tr>
-					<td colspan=\"4\"><center>No records availiable to review.</center></td>
+					<td colspan=\"4\" width=\"100%\"><center>No records availiable to review.</center></td>
 				</tr>";
 		}
-	echo "</table>
+	echo "	</tbody>
+			</table>
 			</div>";
 	$events_QUERY->close();
 	$dblink->close();

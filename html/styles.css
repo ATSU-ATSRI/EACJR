@@ -1,28 +1,52 @@
 @charset "iso-8859-1";
-a:link {color: blue;}
-a:visited {color: blue;}
-a:hover {color: red;}
+a:link {
+	color: blue;
+	}
+	
+a:visited {
+	color: blue;
+	}
+	
+a:hover {
+	color: red;
+	}
+
+table { 
+	display: flex; 
+	flex-direction: column;
+	}
+
+tr { 
+	display: flex; 
+	}
+
+thead {
+	overflow-y: scroll;
+	}
+
+tbody { 
+	overflow-y: scroll;
+	height: 500px;
+	}
 
 th {
 	background-color: cornsilk;
 	text-align: left;
 	}
-	
-tr {
-	text-align: left;
-	}	
-	
-td {
-	vertical-align: top;
-	}	
-	
+		
 tr:nth-child(even) {
     background-color: azure;
+	text-align: left;
 	}
 
 tr:nth-child(odd) {
     background-color: white;
+	text-align: left;
 	}
+	
+td {
+	vertical-align: top;
+	}	
 	
 span.comment-overlay {
 	display: block;
@@ -36,7 +60,7 @@ span.comment-overlay {
 	-moz-opacity: 0.8;
 	opacity:.80;
 	filter: alpha(opacity=80);
-}
+	}
  
 span.comment-text {
 	display: block;
@@ -49,7 +73,7 @@ span.comment-text {
 	background-color: white;
 	z-index:1002;
 	overflow: auto;
-}
+	}
 
 BODY {
 	font-family: serif;
@@ -118,7 +142,7 @@ span.alert {
 	padding: 0.1em;
 	position: relative;
 	top: 2%;
-}	
+	}	
 
 span.left-col {
 	margin: .2%;
@@ -140,9 +164,6 @@ span.right-col {
 	padding: 0.2em;
 	position: realtive;
 	}
-
-	
-
 	
 span.text {
 	margin: 1%;
@@ -160,4 +181,3 @@ span.centre-box {
 	border: none;
 	padding: 0.3em;
 	}
-

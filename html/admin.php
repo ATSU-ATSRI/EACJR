@@ -35,34 +35,39 @@ if ($failed == "ALL_IS_PERFECT")
 		echo "
 		<center>
 		<table border=\"1\" width=\"100%\">
+			<thead>
 			<tr>
-				<th colspan=\"7\">Active members</th>
-			</tr><tr>
-				<th>Name</th>
-				<th>Initials</th>
-				<th>Email</th>
-				<th>Password last set</th>
-				<th>Access Level</th>
-				<th>&nbsp;</th>
-			</tr>";
+				<th width=\"19%\">Name</th>
+				<th width=\"10%\">Initials</th>
+				<th width=\"23%\">Email</th>
+				<th width=\"16%\">Password last set</th>
+				<th width=\"16%\">Access Level</th>
+				<th width=\"16%\">&nbsp;</th>
+			</tr>
+			</thead>
+			<tbody>";
 
 	if (($look_QUERY->num_rows) > 0)
 		{
+			echo "	<tr>
+					<td colspan=\"7\" width=\"100%\" style=\"background-color:cornsilk; text-align:center; vertical-align:middle;\">Active members</td>
+					</tr>";
+				
 			while ($look_QUERY->fetch())
 				{
 					echo "<tr>
-						<td>$look_name</td>
-						<td>$look_initials</td>
-						<td>$look_email</td>
-						<td>$look_pass_date</td>
-						<td>$look_rank</td>
-						<td><a href=\"admin-modify.php?ici=$look_id\"><button type=\"button\">Modify</button></td>
+						<td width=\"19%\">$look_name</td>
+						<td width=\"10%\">$look_initials</td>
+						<td width=\"23%\">$look_email</td>
+						<td width=\"16%\">$look_pass_date</td>
+						<td width=\"16%\">$look_rank</td>
+						<td width=\"16%\"><a href=\"admin-modify.php?ici=$look_id\"><button type=\"button\">Modify</button></td>
 					</tr>";
 				}
 		}
 		else
 		{
-			echo "<tr><td colspan=\"7\"><center> --- No Users to display --- </center></td></tr>";
+			echo "<tr><td colspan=\"7\" width=\"100%\" style=\"background-color:cornsilk; text-align:center; vertical-align:middle;\"><center> --- No Users to display --- </center></td></tr>";
 		}
 		$look_QUERY->close();
 		
@@ -74,24 +79,25 @@ if ($failed == "ALL_IS_PERFECT")
 		{
 			echo "
 				<tr>
-					<th colspan=\"7\">Inactive members</th>
+					<td colspan=\"7\" width=\"100%\" style=\"background-color:cornsilk; text-align:center; vertical-align:middle;\">Inactive members</td>
 				</tr>";
 						
 			while ($nolook_QUERY->fetch())
 				{
 					echo "<tr>
-						<td>$look_name</td>
-						<td>$look_initials</td>
-						<td>$look_email</td>
-						<td>$look_pass_date</td>
-						<td>$look_rank</td>
-						<td><a href=\"admin-modify.php?ici=$look_id\"><button type=\"button\">Modify</button></td>
+						<td width=\"19%\">$look_name</td>
+						<td width=\"10%\">$look_initials</td>
+						<td width=\"23%\">$look_email</td>
+						<td width=\"16%\">$look_pass_date</td>
+						<td width=\"16%\">$look_rank</td>
+						<td width=\"16%\"><a href=\"admin-modify.php?ici=$look_id\"><button type=\"button\">Modify</button></td>
 					</tr>";
 				}
 		}
 		$nolook_QUERY->close();
 		
 	echo "
+		</tbody>
 		</table>
 		</center>
 		</span>

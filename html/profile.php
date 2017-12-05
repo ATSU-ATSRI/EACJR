@@ -27,19 +27,19 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "<form name=\"profile\" action=\"\" method=\"POST\">
 									<span class=\"left-box\">
 										<table border=\"0\">
-											<TR><TD COLSPAN=\"2\">Current Profile Settings</TD></TR>
-											<TR><TD COLSPAN=\"2\"><br /></TD></TR>
+											<TR><TD COLSPAN=\"2\" width=\"100%\">Current Profile Settings</TD></TR>
+											<TR><TD COLSPAN=\"2\" width=\"100%\"><br /></TD></TR>
 											<TR>
-												<TD>Your name:</TD>
-												<TD><INPUT type=\"text\" name=\"name\" value=\"$name\" size=\"30\"></TD>
+												<TD width=\"40%\">Your name:</TD>
+												<TD width=\"60%\"><INPUT type=\"text\" name=\"name\" value=\"$name\" size=\"30\"></TD>
 											</TR><TR>
-												<TD>Your initials:</TD>
-												<TD><INPUT type=\"text\" name=\"initials\" value=\"$initials\" size=\"5\"></TD>
+												<TD width=\"40%\">Your initials:</TD>
+												<TD width=\"60%\"><INPUT type=\"text\" name=\"initials\" value=\"$initials\" size=\"5\"></TD>
 											</TR><TR>
-												<TD>Your email:</TD>
-												<TD><INPUT type=\"text\" name=\"email\" value=\"$email\" size=\"30\"></TD>
+												<TD width=\"40%\">Your email:</TD>
+												<TD width=\"60%\"><INPUT type=\"text\" name=\"email\" value=\"$email\" size=\"30\"></TD>
 											</TR><TR>
-												<TD colspan=\"2\"><INPUT type=\"submit\" name=\"submit\" value=\"Change profile\"></TD>
+												<TD colspan=\"2\" width=\"100%\"><INPUT type=\"submit\" name=\"submit\" value=\"Change profile\"></TD>
 											</TR>
 										</table>
 									</span>
@@ -47,8 +47,8 @@ if ($failed == "ALL_IS_PERFECT")
 									<span class=\"left-box\">";
 									
 									echo "<table border=\"0\">
-											<TR><TD COLSPAN=\"2\">Do you want to change your password?</TD></TR>
-											<TR><TD COLSPAN=\"2\"><br />
+											<TR><TD COLSPAN=\"2\" width=\"100%\">Do you want to change your password?</TD></TR>
+											<TR><TD COLSPAN=\"2\" width=\"100%\"><br />
 															Password length must be greater than six digits.<br />
 															Password must contain at least one capital letter.<br />
 															Password must contain at least one lowercase letter.<br />
@@ -56,16 +56,16 @@ if ($failed == "ALL_IS_PERFECT")
 															Password must contain at least one of the following: !, @, #, $, %, ^, &, *, (, ), +, -, ?, ~, _, =, >, <.<br />
 												</TD></TR>
 											<TR>
-												<TD>Enter current Password</TD>
-												<TD><INPUT type=\"password\" name=\"curr_pass\" size=\"30\"></TD>
+												<TD width=\"40%\">Enter current Password</TD>
+												<TD width=\"60%\"><INPUT type=\"password\" name=\"curr_pass\" size=\"30\"></TD>
 											</TR><TR>
-												<TD>Enter new Password</TD>
-												<TD><INPUT type=\"password\" name=\"new_pass1\" size=\"30\"></TD>
+												<TD width=\"40%\">Enter new Password</TD>
+												<TD width=\"60%\"><INPUT type=\"password\" name=\"new_pass1\" size=\"30\"></TD>
 											</TR><TR>
-												<TD>Enter new Password again</TD>
-												<TD><INPUT type=\"password\" name=\"new_pass2\" size=\"30\"></TD>
+												<TD width=\"40%\">Enter new Password again</TD>
+												<TD width=\"60%\"><INPUT type=\"password\" name=\"new_pass2\" size=\"30\"></TD>
 											</TR><TR>
-												<TD colspan=\"2\"><INPUT type=\"submit\" name=\"submit\" value=\"Change password\"></TD>
+												<TD colspan=\"2\" width=\"100%\"><INPUT type=\"submit\" name=\"submit\" value=\"Change password\"></TD>
 											</TR>
 										</table>
 									</span>

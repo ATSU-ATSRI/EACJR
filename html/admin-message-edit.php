@@ -33,7 +33,7 @@ if ($failed == "ALL_IS_PERFECT")
 		
 		<table border=\"0\" width=\"100%\">
 			<TR>
-				<TH> Message </TH>
+				<TH width=\"100%\"> Message </TH>
 			</TR>		
 			<form name=\"editmsg\" method=\"post\">
 				<input type=\"hidden\" value=\"$msg_id\">
@@ -43,13 +43,13 @@ if ($failed == "ALL_IS_PERFECT")
 			{
 				while($msg_QUERY->fetch())
 					{
-						echo "	<TR><TD> Subject : <input type=\"text\" size=\"60\" name=\"subject\" value=\"$msg_subject\"> </TD></TR>
-								<TR><TD><textarea name=\"msg_text\" cols=\"70\" rows=\"4\" wrap=\"physical\"> $msg_text </textarea></TD></TR>";		
+						echo "	<TR><TD width=\"100%\"> Subject : <input type=\"text\" size=\"60\" name=\"subject\" value=\"$msg_subject\"> </TD></TR>
+								<TR><TD width=\"100%\"><textarea name=\"msg_text\" cols=\"70\" rows=\"4\" wrap=\"physical\"> $msg_text </textarea></TD></TR>";		
 					}
 			}
 			else
 			{
-				echo "<TR><TD colspan=\"3\"><center> - - - - > No Messages? < - - - -</center></TD></TR>";
+				echo "<TR><TD colspan=\"3\" width=\"100%\"><center> - - - - > No Messages? < - - - -</center></TD></TR>";
 			}
 	
 echo "	</table>

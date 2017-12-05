@@ -35,9 +35,12 @@ if ($failed == "ALL_IS_PERFECT")
 		<span class=\"right-col\">
 		
 		<table border=\"1\" width=\"100%\">
+			<thead>
 			<TR>
-				<TH colspan=\"3\"> Message List </TH>
-			</TR>				
+				<TH colspan=\"3\" width=\"100%\"> Message List </TH>
+			</TR>	
+			</thead>
+			<tbody>
 		<form name=\"display_toggle\" method=\"POST\">			
 		";
 		
@@ -45,11 +48,11 @@ if ($failed == "ALL_IS_PERFECT")
 			{
 				while($msg_QUERY->fetch())
 					{
-						echo "	<TR><TD colspan=\"2\"> $msg_subject </TD></TR>
-								<TR><TD colspan=\"2\"> $msg_text </TD></TR>
+						echo "	<TR><TD colspan=\"2\" width=\"100%\"> $msg_subject </TD></TR>
+								<TR><TD colspan=\"2\" width=\"100%\"> $msg_text </TD></TR>
 								<TR>
-									<TD> <a href=\"admin-message-edit.php?tag=$msg_id\"><button type=\"button\"> Edit Message </button></a></TD>
-									<TD>";
+									<TD width=\"50%\"> <a href=\"admin-message-edit.php?tag=$msg_id\"><button type=\"button\"> Edit Message </button></a></TD>
+									<TD width=\"50%\">";
 										if ($msg_active == 0) { echo "Show"; } else { echo "Hide"; }
 										echo " Message, <input type=\"radio\" name=\"display\" value=\"$msg_id\"> Yes?
 								</TD>
@@ -58,11 +61,12 @@ if ($failed == "ALL_IS_PERFECT")
 			}
 			else
 			{
-				echo "<TR><TD colspan=\"3\"><center> - - - - > No Messages < - - - -</center></TD></TR>";
+				echo "<TR><TD colspan=\"3\" width=\100%\"><center> - - - - > No Messages < - - - -</center></TD></TR>";
 			}
 	
-echo "	<TR><TH></TH><TH><input type=\"submit\" name=\"submit\" value=\"Toggle Message Display\"></TH></TR>
+echo "	<TR><TH width=\"50%\"></TH><TH width=\"50%\"><input type=\"submit\" name=\"submit\" value=\"Toggle Message Display\"></TH></TR>
 		</form>
+		</tbody>
 		</table>
 		<br />
 		

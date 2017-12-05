@@ -39,19 +39,19 @@ if ($failed == "ALL_IS_PERFECT")
 		echo "
 		<form name=\"mod\" action=\"\" method=\"POST\">
 			<table border=\"0\">
-			<TR><TD COLSPAN=\"2\">Modify the user's information below.</TD></TR>
+			<TR><TD COLSPAN=\"2\" width=\"100%\">Modify the user's information below.</TD></TR>
 			<TR>
-				<TD>User's name:</TD>
-					<TD><INPUT type=\"text\" name=\"new_name\" value=\"$mod_name\" size=\"30\"></TD>
+				<TD width=\"40%\">User's name:</TD>
+					<TD width=\"60%\"><INPUT type=\"text\" name=\"new_name\" value=\"$mod_name\" size=\"30\"></TD>
 					</TR><TR>
-				<TD>User's initials:</TD>
-					<TD><INPUT type=\"text\" name=\"new_initials\" value=\"$mod_initials\" size=\"5\"></TD>
+				<TD width=\"40%\">User's initials:</TD>
+					<TD width=\"60%\"><INPUT type=\"text\" name=\"new_initials\" value=\"$mod_initials\" size=\"5\"></TD>
 					</TR><TR>
-				<TD>User's email:</TD>
-					<TD><INPUT type=\"text\" name=\"new_email\" value=\"$mod_email\" size=\"30\"></TD>
+				<TD width=\"40%\">User's email:</TD>
+					<TD width=\"60%\"><INPUT type=\"text\" name=\"new_email\" value=\"$mod_email\" size=\"30\"></TD>
 					</TR><TR>
-				<TD>User's access level:</TD>
-					<TD><SELECT name=\"rank\">";
+				<TD width=\"40%\">User's access level:</TD>
+					<TD width=\"60%\"><SELECT name=\"rank\">";
 			
 			if (!($rank_QUERY = $dblink->prepare("SELECT rank.rank_id, rank.`desc` FROM jury_room.rank"))) { logger("SQLi Prepare: $rank_QUERY->error"); }
 			if (!($rank_QUERY->execute())) { logger("SQLi execute: $rank_QUERY->error"); }
@@ -73,13 +73,13 @@ if ($failed == "ALL_IS_PERFECT")
 				
 		echo "		</SELECT>
 					</TD></TR>	
-				<TD>Reset password?</TD>
-					<TD><INPUT type=\"checkbox\" name=\"passreset\" value=\"1\" /></TD>
+				<TD width=\"40%\">Reset password?</TD>
+					<TD width=\"60%\"><INPUT type=\"checkbox\" name=\"passreset\" value=\"1\" /></TD>
 					</TR><TR>
-				<TD>Notify user of changes?</TD>
-					<TD><INPUT type=\"checkbox\" name=\"notifyuser\" value=\"1\" CHECKED /></TD>
+				<TD width=\"40%\">Notify user of changes?</TD>
+					<TD width=\"60%\"><INPUT type=\"checkbox\" name=\"notifyuser\" value=\"1\" CHECKED /></TD>
 					</TR><TR>
-				<TD colspan=\"2\"><INPUT type=\"submit\" name=\"submit\" value=\"Modify user\" /></TD>
+				<TD colspan=\"2\" width=\"100%\"><INPUT type=\"submit\" name=\"submit\" value=\"Modify user\" /></TD>
 					</TR>
 			</table>
 			</form>

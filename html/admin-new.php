@@ -31,18 +31,18 @@ if ($failed == "ALL_IS_PERFECT")
 		echo "
 		<form name=\"new\" action=\"\" method=\"POST\">
 			<table border=\"0\">
-			<TR><TD COLSPAN=\"2\">Enter information for the new user.</TD></TR>
+			<TR><TD COLSPAN=\"2\" width=\"100%\">Enter information for the new user.</TD></TR>
 			<TR>
-				<TD>New user's name:</TD>
-					<TD><INPUT type=\"text\" name=\"new_name\" value=\"\" size=\"30\"></TD>
-					</TR><TR>
-				<TD>New user's initials:</TD>
-					<TD><INPUT type=\"text\" name=\"new_initials\" value=\"\" size=\"5\"></TD>
-					</TR><TR>
-				<TD>New user's email:</TD>
-					<TD><INPUT type=\"text\" name=\"new_email\" value=\"\" size=\"30\"></TD>
-					</TR><TR>
-				<TD colspan=\"2\"><INPUT type=\"submit\" name=\"submit\" value=\"Create user\"></TD>
+				<TD width=\"40%\">New user's name:</TD>
+				<TD width=\"60%\"><INPUT type=\"text\" name=\"new_name\" value=\"\" size=\"30\"></TD>
+			</TR><TR>
+				<TD width=\"40%\">New user's initials:</TD>
+				<TD width=\"60%\"><INPUT type=\"text\" name=\"new_initials\" value=\"\" size=\"5\"></TD>
+			</TR><TR>
+				<TD width=\"40%\">New user's email:</TD>
+				<TD width=\"60%\"><INPUT type=\"text\" name=\"new_email\" value=\"\" size=\"30\"></TD>
+			</TR><TR>
+				<TD colspan=\"2\" width=\"100%\"><INPUT type=\"submit\" name=\"submit\" value=\"Create user\"></TD>
 					</TR>
 			</table>
 			</form>
