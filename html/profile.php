@@ -24,7 +24,7 @@ if ($failed == "ALL_IS_PERFECT")
 									echo "<span class=\"alert\">". $_SESSION['pass_fail'] ." </span>";
 									unset($_SESSION['pass_fail']);
 								}
-							echo "<form name=\"profile\" action=\"\" method=\"POST\">
+							/* echo "<form name=\"profile\" action=\"\" method=\"POST\">
 									<span class=\"left-box\">
 										<table border=\"0\">
 											<TR><TD COLSPAN=\"2\" width=\"100%\">Current Profile Settings</TD></TR>
@@ -44,31 +44,44 @@ if ($failed == "ALL_IS_PERFECT")
 										</table>
 									</span>
 									
+									<span class=\"left-box\">";*/
+									
+								echo "<form name=\"profile\" action=\"\" method=\"POST\">
+									<span class=\"left-box\">
+										
+										<div class=\"ft-head\"><br />Current Profile Settings<br /><br /></div>
+										<div class=\"ft\">
+											<div>Your name:</div>
+											<div><INPUT type=\"text\" name=\"name\" value=\"$name\" size=\"30\"></div>
+											<div>Your initials:</div>
+											<div><INPUT type=\"text\" name=\"initials\" value=\"$initials\" size=\"5\"></div>
+											<div>Your email:</div>
+											<div><INPUT type=\"text\" name=\"email\" value=\"$email\" size=\"30\"></div>
+										</div>
+										<div class=\"ft-head\"><br /><INPUT type=\"submit\" name=\"submit\" value=\"Change profile\"><br /><br /></div>
+										
+									</span>
+									
 									<span class=\"left-box\">";
 									
-									echo "<table border=\"0\">
-											<TR><TD COLSPAN=\"2\" width=\"100%\">Do you want to change your password?</TD></TR>
-											<TR><TD COLSPAN=\"2\" width=\"100%\"><br />
-															Password length must be greater than six digits.<br />
-															Password must contain at least one capital letter.<br />
-															Password must contain at least one lowercase letter.<br />
-															Password must contain at least one number.<br />
-															Password must contain at least one of the following: !, @, #, $, %, ^, &, *, (, ), +, -, ?, ~, _, =, >, <.<br />
-												</TD></TR>
-											<TR>
-												<TD width=\"40%\">Enter current Password</TD>
-												<TD width=\"60%\"><INPUT type=\"password\" name=\"curr_pass\" size=\"30\"></TD>
-											</TR><TR>
-												<TD width=\"40%\">Enter new Password</TD>
-												<TD width=\"60%\"><INPUT type=\"password\" name=\"new_pass1\" size=\"30\"></TD>
-											</TR><TR>
-												<TD width=\"40%\">Enter new Password again</TD>
-												<TD width=\"60%\"><INPUT type=\"password\" name=\"new_pass2\" size=\"30\"></TD>
-											</TR><TR>
-												<TD colspan=\"2\" width=\"100%\"><INPUT type=\"submit\" name=\"submit\" value=\"Change password\"></TD>
-											</TR>
-										</table>
-									</span>
+									echo "<div class=\"ft-head\"><br />Do you want to change your password?<br /><br /></div>
+											<div class=\"ft\">
+												<div> Pasword rules: </div>
+												<div>	Password length must be greater than six digits.<br />
+														Password must contain at least one capital letter.<br />
+														Password must contain at least one lowercase letter.<br />
+														Password must contain at least one number.<br />
+														Password must contain at least one of the following: !, @, #, $, %, ^, &, *, (, ), +, -, ?, ~, _, =, >, <.<br />
+												</div>
+												<div>Enter current Password</div>
+												<div><INPUT type=\"password\" name=\"curr_pass\" size=\"30\"></div>
+												<div>Enter new Password</div>
+												<div><INPUT type=\"password\" name=\"new_pass1\" size=\"30\"></div>
+												<div>Enter new Password again</div>
+												<div><INPUT type=\"password\" name=\"new_pass2\" size=\"30\"></div>
+											</div>
+											<div class=\"ft-head\"><br /><INPUT type=\"submit\" name=\"submit\" value=\"Change password\"><br /><br /></div>
+										</span>
 								</form>";
 						}
 					mysqli_stmt_close($user_QUERY);

@@ -1,4 +1,5 @@
 @charset "iso-8859-1";
+
 a:link {
 	color: blue;
 	}
@@ -47,6 +48,33 @@ tr:nth-child(odd) {
 td {
 	vertical-align: top;
 	}	
+
+div.ft {
+    width: 100%;
+	}
+
+/* div.ft>div:first-of-type,div.ft>div:last-of-type { */
+div.ft-head {
+	width: 100%;
+	padding: 0.5em;
+	background-color: cornsilk;
+	text-align: center;
+	font-weight: bold;
+	float: left;
+	clear: both;
+	}
+
+div.ft>div:nth-child(2n-1) {
+    width: 40%;
+    float: left;
+    background: azure;
+	}
+
+div.ft>div:nth-child(2n) {
+    width: 60%;
+    float: left;
+    background: white;
+	}
 	
 span.comment-overlay {
 	display: block;
