@@ -10,7 +10,14 @@ if ($failed == "ALL_IS_PERFECT")
 				patient.code,
 				symptom.phase,
 				count(CASE WHEN symptom.symptom IS NOT NULL THEN 1 END) AS symptom_count,
-				count(DISTINCT review.event_id) AS review_count
+				(SELECT 
+						count(*)
+					FROM
+						review
+							INNER JOIN
+						symptom ON review.event_id = symptom.event_id
+					WHERE
+						symptom.phase = patient.phase) AS review_count
 			FROM patient 
 				LEFT OUTER JOIN	symptom ON patient.code = symptom.code 
 				LEFT OUTER JOIN review ON symptom.event_id = review.event_id
@@ -86,7 +93,7 @@ if ($failed == "ALL_IS_PERFECT")
 					)
 				)
 			GROUP BY patient.code
-			ORDER BY symptom.phase, patient.code"))) { logger("SQLi Prepare: $events_QUERY->error"); }
+			ORDER BY symptom.phase DESC, patient.code ASC"))) { logger("SQLi Prepare: $events_QUERY->error"); }
 	if (!($events_QUERY->bind_param('ss', $_SESSION["study"], $_SESSION["id"]))) { logger("SQLi pBind: $events_QUERY->error"); }
 	if (!($events_QUERY->execute())) { logger("SQLi execute: $events_QUERY->error"); }
 	if (!($events_QUERY->bind_result($patient_id, $code, $phase, $symptom_count, $review_count))) { logger("SQLi rBind: $events_QUERY->error"); }
@@ -141,9 +148,12 @@ if ($failed == "ALL_IS_PERFECT")
 							<td width=\"25%\">$patient_id</td>
 							<td width=\"25%\">$symptom_count</td>
 							<td width=\"25%\">$review_count</td>
-							<td width=\"25%\"><a href=\"review.php?req=$patient_id\"><button type=\"button\">Review</button></a></td>
-						</tr>";
-						
+							<td width=\"25%\">";
+					if ($phase > 0)
+						{
+							echo "<a href=\"review.php?req=$patient_id\"><button type=\"button\">Review</button></a>";
+						}
+					echo "</tr>";
 				}
 		}
 		else

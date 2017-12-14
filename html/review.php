@@ -46,24 +46,15 @@ if ($failed == "ALL_IS_PERFECT")
 				symptom.further,
 				symptom.further_why,
 				symptom.future,
-				symptom.future_why,
-				review.review_id,
-				review.user_id,
-				review.pt_24hr_change,
-				review.pt_72hr_change,
-				review.adverse_event_change,
-				review.ae_change,
-				review.omt_related,
-				review.`comment`
+				symptom.future_why
 			FROM jury_room.symptom LEFT OUTER JOIN
-				patient ON symptom.code = patient.code LEFT OUTER JOIN
-				review ON symptom.event_id = review.event_id
+				patient ON symptom.code = patient.code
 			WHERE (patient_id = ?)
 			ORDER BY phase, symptom.event_id
 			"))) { logger("SQLi Prepare: $events_QUERY->error"); }
 	if (!($events_QUERY->bind_param('s', $patient_id)))  { logger("SQLi Prepare: $events_QUERY->error"); }
 	if (!($events_QUERY->execute())) { logger("SQLi execute: $events_QUERY->error"); }
-	if (!($events_QUERY->bind_result($phase, $code, $age, $sex, $ethnicity, $race, $race_other, $event_id, $symptom, $pt_baseline, $pt_baseline_severity, $pt_24hr, $pt_24hr_severity, $pt_24hr_related, $pt_24hr_details, $pt_72hr, $pt_72hr_severity, $pt_72hr_related, $pt_72hr_details, $pt_1wk, $pt_1wk_details, $followup_clinic, $followup_clinic_related, $followup_clinic_details, $followup_uc, $followup_uc_related, $followup_uc_details, $followup_er, $followup_er_related, $followup_er_details, $followup_hosp, $followup_hosp_related, $followup_hosp_details, $further, $further_why, $future, $future_why, $review_id, $user_id, $pt_24hr_change, $pt_72_hr_change, $adverse_event_change, $severity_change, $omt_related, $comment))) { logger("SQLi rBind: $events_QUERY->error"); }
+	if (!($events_QUERY->bind_result($phase, $code, $age, $sex, $ethnicity, $race, $race_other, $event_id, $symptom, $pt_baseline, $pt_baseline_severity, $pt_24hr, $pt_24hr_severity, $pt_24hr_related, $pt_24hr_details, $pt_72hr, $pt_72hr_severity, $pt_72hr_related, $pt_72hr_details, $pt_1wk, $pt_1wk_details, $followup_clinic, $followup_clinic_related, $followup_clinic_details, $followup_uc, $followup_uc_related, $followup_uc_details, $followup_er, $followup_er_related, $followup_er_details, $followup_hosp, $followup_hosp_related, $followup_hosp_details, $further, $further_why, $future, $future_why))) { logger("SQLi rBind: $events_QUERY->error"); }
 	$events_QUERY->store_result();
 	
 	$followup_vote = 0;
@@ -84,7 +75,8 @@ if ($failed == "ALL_IS_PERFECT")
 				$pt_comment_text = "";
 				while ($events_QUERY->fetch())
 				{
-					if (($pg_len > 60) || ($pg_len == 0))
+					//if (($pg_len > 60) || ($pg_len == 0)) // Replace with head float
+					if ($pg_len == 0)
 						{
 							echo "<thead>";
 							echo "	<TR>
@@ -217,74 +209,88 @@ if ($failed == "ALL_IS_PERFECT")
 
 							if ($isae == 1)
 								{
+									if (array_search("$pt_baseline_severity", $severity_array, TRUE)) { $ca_base = array_search("$pt_baseline_severity", $severity_array, TRUE); } else { $ca_base = 0; }
+									if (array_search("$pt_24hr_severity", $severity_array, TRUE)) { $ca_24hr = array_search("$pt_24hr_severity", $severity_array, TRUE); } else { $ca_24hr = 0; }
+									if (array_search("$pt_72hr_severity", $severity_array, TRUE)) { $ca_72hr = array_search("$pt_72hr_severity", $severity_array, TRUE); } else { $ca_72hr = 0; }
+									if (array_search("$pt_1wk", $severity_array, TRUE)) { $ca_1wk = array_search("$pt_1wk", $severity_array, TRUE); } else { $ca_1wk = 0; }
+									
 									$change_array = array(
-											"baseline" => array_search("$pt_baseline_severity", $severity_array, TRUE),
-											"24hr" => array_search("$pt_24hr_severity", $severity_array, TRUE),
-											"72hr" => array_search("$pt_72hr_severity", $severity_array, TRUE),
-											"1_wk" => array_search("$pt_1wk", $severity_array, TRUE));
+											"baseline" => $ca_base,
+											"24hr" => $ca_24hr,
+											"72hr" => $ca_72hr,
+											"1_wk" => $ca_1wk);
 										
-										arsort($change_array);
-										$lowest = end($change_array);
-										$lowest_time = array_search(key($change_array), $severity_time_array, TRUE);
+										// here lowest is the lowest value.
+										//arsort($change_array);
+										//$lowest = end($change_array);
+										//$lowest_time = array_search(key($change_array), $severity_time_array, TRUE);
+										
+										// here, lowest is baseline value.
+										$lowest = $change_array["baseline"];
+										$lowest_time = 1;
+										
 										asort($change_array);
 										$highest = end($change_array);
 										$highest_time = array_search(key($change_array), $severity_time_array, TRUE);
-										if (isset($ae_related)) {unset($ae_related);}
+										if (isset($ae_severity)) {unset($ae_severity);}
 										
-										echo "$lowest - $lowest_time <br /> $highest - $highest_time<br />";
+										
+										
+										//echo "$lowest - $lowest_time <br /> $highest - $highest_time<br />";
 										//NOTE: I don't like how this tracks. We need a better method.
-											
-											if ($highest - $lowest > 3)
+											// added an abs() to these because of using the baseline value as lowest (when it might not be actually LESS).
+											if (abs($highest - $lowest > 2))
 												{
 													echo "Large";
-													$ae_related = "Large";
+													$ae_severity = "Large";
 												} 
-												elseif ($highest - $lowest > 1)
+												elseif (abs($highest - $lowest > 1))
 												{
 													echo "Moderate";
-													$ae_related = "Moderate";
+													$ae_severity = "Moderate";
 												}
-												elseif ($highest - $lowest > 0)
+												elseif (abs($highest - $lowest > 0))
 												{
 													echo "Mild";
-													$ae_related = "Mild";
+													$ae_severity = "Mild";
 												}
 												else
 												{
 													echo "No";
-													$ae_related = "No";
+													$ae_severity = "No";
 												}
 											
 										if ($highest_time > $lowest_time)
 											{
 												echo " Increase<br />";
-												$ae_related .= " Increase";
+												$ae_severity .= " Increase";
 											}
 											elseif ($highest_time < $lowest_time)
 											{
 												echo " Decrease<br />";
-												$ae_related .= " Decrease";
+												$ae_severity .= " Decrease";
 											}
 											else
 											{
 												echo " Change<br />";
-												$ae_related .= " Change";
+												$ae_severity .= " Change";
 											}
 											
 								
-										echo "	<INPUT type=\"hidden\" name=\"$event_id-ae_related\" id=\"$event_id-ae_related\" value=\"$ae_related\">
+										echo "	<INPUT type=\"hidden\" name=\"$event_id-ae_severity\" id=\"$event_id-ae_severity\" value=\"$ae_severity\">
 												<b>Disagree?</b> <br />
-												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"Minor\"> Minor<br />
-												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"Medium\"> Medium<br />
-												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"Major\"> Major<br />
+												<INPUT type=\"radio\" name=\"$event_id-ae_severity\" id=\"$event_id-ae_severity\" value=\"Minor\"> Minor<br />
+												<INPUT type=\"radio\" name=\"$event_id-ae_severity\" id=\"$event_id-ae_severity\" value=\"Medium\"> Medium<br />
+												<INPUT type=\"radio\" name=\"$event_id-ae_severity\" id=\"$event_id-ae_severity\" value=\"Major\"> Major<br />
 												</TD>";
 										
 										echo "<TD width=\"12%\">
-												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Definitely\"> Definitely<br />
-												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Probably\"> Probably<br />
-												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Not Sure\"> Not Sure<br />
-												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Unlikely\"> Unlikely<br />
-												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"No\"> No<br />
+												<INPUT type=\"hidden\" name=\"$event_id-omt_related\" id=\"$event_id-omt_related\" value=\"NA\">
+												<INPUT type=\"radio\" name=\"$event_id-omt_related\" id=\"$event_id-omt_related\" value=\"Definitely\"> Definitely<br />
+												<INPUT type=\"radio\" name=\"$event_id-omt_related\" id=\"$event_id-omt_related\" value=\"Probably\"> Probably<br />
+												<INPUT type=\"radio\" name=\"$event_id-omt_related\" id=\"$event_id-omt_related\" value=\"Not Sure\"> Not Sure<br />
+												<INPUT type=\"radio\" name=\"$event_id-omt_related\" id=\"$event_id-omt_related\" value=\"Unlikely\"> Unlikely<br />
+												<INPUT type=\"radio\" name=\"$event_id-omt_related\" id=\"$event_id-omt_related\" value=\"No\"> No<br />
 												</TD>
 											</TR>";
 								}
@@ -367,26 +373,27 @@ if ($failed == "ALL_IS_PERFECT")
 								{
 									echo "<TD width=\"12%\"></TD><TD>";	// included a blank
 									
-										echo "	<INPUT type=\"hidden\" name=\"$event_id-ae_related\" id=\"$event_id-ae_related\" value=\"$ae_related\">
-												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"Yes\"> Yes<br />
-												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"No\"> No<br />
-												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"Inconclusive\"> Inconclusive<br />
+										echo "	<INPUT type=\"hidden\" name=\"$event_id-followup_isae\" id=\"$event_id-followup_isae\" value=\"Yes\">
+												<INPUT type=\"radio\" name=\"$event_id-followup_isae\" id=\"$event_id-followup_isae\" value=\"Yes\"> Yes<br />
+												<INPUT type=\"radio\" name=\"$event_id-followup_isae\" id=\"$event_id-followup_isae\" value=\"No\"> No<br />
+												<INPUT type=\"radio\" name=\"$event_id-followup_isae\" id=\"$event_id-followup_isae\" value=\"Inconclusive\"> Inconclusive<br />
 												
 												</TD>";
 									
 										echo "<TD width=\"12%\">
-												<INPUT type=\"hidden\" name=\"$event_id-ae_related\" id=\"$event_id-ae_related\" value=\"$ae_related\">
-												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"Mild\"> Mild<br/>
-												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"Moderate\"> Moderate<br/>
-												<INPUT type=\"radio\" name=\"$event_id-ae_change\" id=\"$event_id-ae_change\" value=\"Severe\"> Severe<br/>
+												<INPUT type=\"hidden\" name=\"$event_id-ae_severity\" id=\"$event_id-ae_severity\" value=\"NA\">
+												<INPUT type=\"radio\" name=\"$event_id-ae_severity\" id=\"$event_id-ae_severity\" value=\"Mild\"> Mild<br/>
+												<INPUT type=\"radio\" name=\"$event_id-ae_severity\" id=\"$event_id-ae_severity\" value=\"Moderate\"> Moderate<br/>
+												<INPUT type=\"radio\" name=\"$event_id-ae_severity\" id=\"$event_id-ae_severity\" value=\"Severe\"> Severe<br/>
 												</TD>";
 										
 										echo "<TD width=\"12%\">
-												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Definitely\"> Definitely<br />
-												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Probably\"> Probably<br />
-												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Not Sure\"> Not Sure<br />
-												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"Unlikely\"> Unlikely<br />
-												<INPUT type=\"radio\" name=\"$event_id-omt_change\" id=\"$event_id-omt_change\" value=\"No\"> No<br />
+												<INPUT type=\"hidden\" name=\"$event_id-omt_related\" id=\"$event_id-omt_related\" value=\"NA\">
+												<INPUT type=\"radio\" name=\"$event_id-omt_related\" id=\"$event_id-omt_related\" value=\"Definitely\"> Definitely<br />
+												<INPUT type=\"radio\" name=\"$event_id-omt_related\" id=\"$event_id-omt_related\" value=\"Probably\"> Probably<br />
+												<INPUT type=\"radio\" name=\"$event_id-omt_related\" id=\"$event_id-omt_related\" value=\"Not Sure\"> Not Sure<br />
+												<INPUT type=\"radio\" name=\"$event_id-omt_related\" id=\"$event_id-omt_related\" value=\"Unlikely\"> Unlikely<br />
+												<INPUT type=\"radio\" name=\"$event_id-omt_related\" id=\"$event_id-omt_related\" value=\"No\"> No<br />
 												</TD>
 											</TR>";
 											
@@ -423,14 +430,50 @@ if ($failed == "ALL_IS_PERFECT")
 
 						}
 						
-						
-						
 					if ($phase > "1")
 						{
+							if (!($cmt_QUERY = $dblink->prepare("SELECT 
+																	user_id,
+																	action_date,
+																	comment
+																FROM
+																	review
+																WHERE
+																	(comment IS NOT NULL) AND
+																	(event_id = ?)
+																ORDER BY
+																	action_date DESC;"))) { logger("SQLi Prepare: $cmt_QUERY->error"); }
+							if (!($cmt_QUERY->bind_param('s', $event_id)))  { logger("SQLi Prepare: $cmt_QUERY->error"); }
+							if (!($cmt_QUERY->execute())) { logger("SQLi execute: $cmt_QUERY->error"); }
+							if (!($cmt_QUERY->bind_result($cmt_user_id, $cmt_date, $cmt_comment))) { logger("SQLi rBind: $cmt_QUERY->error"); }
+							$cmt_QUERY->store_result();
+							if ($cmt_QUERY->num_rows > 0)
+								$eac_comments = "";
+								{
+									// build list of comments
+									while ($cmt_QUERY->fetch())
+										{
+											if (strlen($eac_comments > 1))
+												{
+													$eac_comments .= "<br />----<br />";
+												}
+											$eac_comments .= "<b>$cmt_user_id ($cmt_date):</b> $cmt_comment";
+										}
+								
+									// display list of comments
+									echo "<TR>
+											<TD width=\"20%\"> EAC Comment(s)</TD>
+											<TD colspan=\"7\"> $eac_comments </TD>
+										</TR>";
+								}
+						}
+					
+					if (($followup_vote == 1) || ($isae == 1))
+						{
 							echo "<TR>
-									<TD width=\"20%\"> EAC Comment<br /> $initals</TD>
-									<TD colspan=\"7\"> $comment </TD>
-									</TR>";
+								<TD width=\"20%\"> Your Comments: </TD>
+								<TD colspan=\"7\"> <textarea name=\"comments\" cols=\"70\" rows=\"4\" wrap=\"physical\"></textarea></TD>
+							</TR>";
 						}
 						
 					$pg_len++;
@@ -438,9 +481,6 @@ if ($failed == "ALL_IS_PERFECT")
 				
 					echo "
 					<TR>
-						<TD width=\"20%\"> Your Comments: </TD>
-						<TD colspan=\"7\"> <textarea name=\"comments\" cols=\"70\" rows=\"4\" wrap=\"physical\"></textarea></TD>
-					</TR><TR>
 						<TD colspan=\"8\">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <INPUT type=\"reset\" name=\"reset\" value=\"Reset Form\">
 						&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
 						<INPUT type=\"submit\" name=\"submit\" value=\"Submit Vote\"></TD>
@@ -456,61 +496,48 @@ if ($failed == "ALL_IS_PERFECT")
 				{
 					foreach($event_id_array as $e_id)
 						{	
-							if (isset($pt_24hr_change)) { unset($pt_24hr_change); }
-							if (isset($pt_72hr_change)) { unset($pt_72hr_change); }
-							if (isset($adverse_event)) { unset($adverse_event); }
-							if (isset($ae_change)) { unset($ae_change); }
+							// clean up any old data.
+							if (isset($comment)) { unset($comment); }
+							if (isset($p24hr_adverse_event)) { unset($p24hr_adverse_event); }
+							if (isset($p72hr_adverse_event)) { unset($p72hr_adverse_event); }
+							if (isset($p1wk_adverse_event)) { unset($p1wk_adverse_event); }
+							if (isset($followup_adverse_event)) { unset($followup_adverse_event); }
+							if (isset($ae_severity)) { unset($ae_severity); }
 							if (isset($omt_related)) { unset($omt_related); }
-						
-							if (isset($_POST["$e_id-pt_24hr_change"]))
-								{
-									$pt_24hr_change = "Change";
-								}
-								else
-								{
-									if (isset($_POST["$e_id-pt_24hr_related"])) { $pt_24hr_change = $_POST["$e_id-pt_24hr_related"]; }
-								}
-							 
-							if (isset($_POST["$e_id-pt_72hr_change"]))
-								{
-									$pt_72hr_change = "Change";
-								}
-								else
-								{
-									if (isset($_POST["$e_id-pt_72hr_related"])) { $pt_72hr_change = $_POST["$e_id-pt_72hr_related"]; }
-								}
 							
-							if (isset($_POST["$e_id-adverse_event_change"]))
-								{
-									$adverse_event = "Change";
-								}
-								else
-								{
-									if (isset($_POST["$e_id-adverse_event"])) { $adverse_event = $_POST["$e_id-adverse_event"]; }
-								}
-
-							if (isset($_POST["$e_id-ae_change"]))
-								{
-									$ae_change = "Change";
-								}
-								else
-								{
-									if (isset($_POST["$e_id-ae_related"])) { $ae_change = $_POST["$e_id-ae_related"]; }
-								}
-								
-							if (isset($_POST["$e_id-omt_change"]))
-								{
-									if (isset($_POST["$e_id-omt_change"])) { $omt_change = $_POST["$e_id-omt_change"]; }
-								}
-													
-							if (!($vote_QUERY = $dblink->prepare("INSERT INTO jury_room.review (user_id, event_id, pt_24hr_change, pt_72hr_change, adverse_event_change, ae_change, omt_related) VALUES(?, ?, ?, ?, ?, ?, ?);"))) {logger("SQLi Prepare: $vote_QUERY->error");}
-							if (!($vote_QUERY->bind_param('sssssss', $_SESSION['id'], $e_id, $pt_24hr_change, $pt_72hr_change, $adverse_event, $ae_change, $omt_chamge))) { logger("SQLi Bind Error: $vote_QUERY->error"); }
+							// mock in current event_id values from POST
+							if (isset($_POST["$e_id-comment"])) { $comment = $_POST["$e_id-comment"]; } else { $comment = NULL; }
+							if (isset($_POST["$e_id-pt_24hr_isae"])) { $p24hr_adverse_event = $_POST["$e_id-pt_24hr_isae"]; } else { $p24hr_adverse_event = NULL; }
+							if (isset($_POST["$e_id-pt_72hr_isae"])) { $p72hr_adverse_event = $_POST["$e_id-pt_72hr_isae"]; } else { $p72hr_adverse_event = NULL; }
+							if (isset($_POST["$e_id-pt_1_wk_isae"])) { $p1wk_adverse_event = $_POST["$e_id-pt_1_wk_isae"]; } else { $p1wk_adverse_event = NULL; }
+							if (isset($_POST["$e_id-pt_1_wk_isae"])) { $followup_adverse_event = $_POST["$e_id-followup_isae"]; } else { $followup_adverse_event = NULL; }
+							if (isset($_POST["$e_id-ae_severity"])) { $ae_severity = $_POST["$e_id-ae_severity"]; } else { $ae_severity = NULL; }
+							if (isset($_POST["$e_id-omt_related"])) { $omt_related = $_POST["$e_id-omt_related"]; } else { $omt_related = NULL; }
+						
+							if (!($vote_QUERY = $dblink->prepare("
+								INSERT INTO 
+									jury_room.review 
+										(	user_id, 
+											event_id, 
+											comment,
+											24hr_adverse_event,
+											72hr_adverse_event,
+											1wk_adverse_event,
+											followup_adverse_event,
+											ae_severity,
+											omt_related) 
+										VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);"))) {logger("SQLi Prepare: $vote_QUERY->error");}
+							if (!($vote_QUERY->bind_param('sssssssss', $_SESSION['id'], $e_id, $comment, $p24hr_adverse_event, $p72hr_adverse_event, $p1wk_adverse_event, $followup_adverse_event, $ae_severity, $omt_related))) { logger("SQLi Bind Error: $vote_QUERY->error"); }
 							if (!($vote_QUERY->execute())) { logger("SQLi execute: $vote_QUERY->error"); }
 							$vote_QUERY->close();
-							if (isset($pt_24hr_change)) { unset($pt_24hr_change); }
-							if (isset($pt_72hr_change)) { unset($pt_72hr_change); }
-							if (isset($adverse_event_change)) { unset($adverse_event_change); }
-							if (isset($ae_change)) { unset($ae_change); }
+							
+							// clean up any old data.
+							if (isset($comment)) { unset($comment); }
+							if (isset($p24hr_adverse_event)) { unset($p24hr_adverse_event); }
+							if (isset($p72hr_adverse_event)) { unset($p72hr_adverse_event); }
+							if (isset($p1wk_adverse_event)) { unset($p1wk_adverse_event); }
+							if (isset($followup_adverse_event)) { unset($followup_adverse_event); }
+							if (isset($ae_severity)) { unset($ae_severity); }
 							if (isset($omt_related)) { unset($omt_related); }
 						}
 					$_SESSION['pass_fail'] = "Vote Recorded.";
