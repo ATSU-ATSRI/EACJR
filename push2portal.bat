@@ -19,7 +19,7 @@ del /F /Q "%curr_dir%\code\logfile.txt"
 
 ECHO Gathering input files.
 del /F /Q "%curr_dir%\input_data\filelist.txt"
-dir /A-D /B /OD /S "..\input_data\OMTAdverseEvent*.csv" >> "%curr_dir%\input_data\filelist.txt
+dir /A-D /B /OD /S "..\input_data\*.csv" >> "%curr_dir%\input_data\filelist.txt
 
 ECHO Processing Data: !time!.
 @REM server config issue
