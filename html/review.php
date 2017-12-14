@@ -73,6 +73,7 @@ if ($failed == "ALL_IS_PERFECT")
 					
 				$pg_len = 0;
 				$pt_comment_text = "";
+				$allow_comment = 0;
 				while ($events_QUERY->fetch())
 				{
 					//if (($pg_len > 60) || ($pg_len == 0)) // Replace with head float
@@ -293,6 +294,7 @@ if ($failed == "ALL_IS_PERFECT")
 												<INPUT type=\"radio\" name=\"$event_id-omt_related\" id=\"$event_id-omt_related\" value=\"No\"> No<br />
 												</TD>
 											</TR>";
+										$allow_comment = 1;
 								}
 								else
 								{
@@ -408,24 +410,25 @@ if ($failed == "ALL_IS_PERFECT")
 									if (strlen($pt_24hr_details) > 0)
 										{
 											echo " 	<TD width=\"11%\"> 24 hr </TD>
-													<TD colspan=\"6\"> $pt_24hr_details </TD>";
+													<TD colspan=\"6\" width=\"69%\"> $pt_24hr_details </TD>";
 											$pt_comment_text .= "<b> 24 hr:</b> $pt_24hr_details <br /><br />";
 										}
 										
 									if (strlen($pt_72hr_details) > 0)
 										{
 											echo "	<TD width=\"11%\"> 72 hr </TD>
-													<TD colspan=\"6\"> $pt_72hr_details </TD>";
+													<TD colspan=\"6\" width=\"69%\"> $pt_72hr_details </TD>";
 											$pt_comment_text .= "<b> 72 hr:</b> $pt_72hr_details <br /><br />";
 										}
 										
 									if (strlen($pt_1wk_details) > 0)
 										{
 											echo "	<TD width=\"11%\"> 1 wk </TD>
-													<TD colspan=\"6\"> $pt_1wk_details </TD>";
+													<TD colspan=\"6\" width=\"69%\"> $pt_1wk_details </TD>";
 											$pt_comment_text .= "<b> 1 wk: </b> $pt_1wk_details <br /><br />";
 										}
 									echo "</TR>";
+									$allow_comment = 0;
 								}
 
 						}
@@ -468,12 +471,14 @@ if ($failed == "ALL_IS_PERFECT")
 								}
 						}
 					
-					if (($followup_vote == 1) || ($isae == 1))
+					if ($allow_comment == 1)
 						{
 							echo "<TR>
 								<TD width=\"20%\"> Your Comments: </TD>
-								<TD colspan=\"7\"> <textarea name=\"comments\" cols=\"70\" rows=\"4\" wrap=\"physical\"></textarea></TD>
+								<TD colspan=\"7\"> <textarea name=\"$event_id-comment\" id=\"$event_id-comment\" cols=\"80\" rows=\"2\" maxlength=\"159\" wrap=\"physical\"></textarea></TD>
 							</TR>";
+							
+							$allow_comment = 0;
 						}
 						
 					$pg_len++;
@@ -510,7 +515,7 @@ if ($failed == "ALL_IS_PERFECT")
 							if (isset($_POST["$e_id-pt_24hr_isae"])) { $p24hr_adverse_event = $_POST["$e_id-pt_24hr_isae"]; } else { $p24hr_adverse_event = NULL; }
 							if (isset($_POST["$e_id-pt_72hr_isae"])) { $p72hr_adverse_event = $_POST["$e_id-pt_72hr_isae"]; } else { $p72hr_adverse_event = NULL; }
 							if (isset($_POST["$e_id-pt_1_wk_isae"])) { $p1wk_adverse_event = $_POST["$e_id-pt_1_wk_isae"]; } else { $p1wk_adverse_event = NULL; }
-							if (isset($_POST["$e_id-pt_1_wk_isae"])) { $followup_adverse_event = $_POST["$e_id-followup_isae"]; } else { $followup_adverse_event = NULL; }
+							if (isset($_POST["$e_id-pt_followup_isae"])) { $followup_adverse_event = $_POST["$e_id-followup_isae"]; } else { $followup_adverse_event = NULL; }
 							if (isset($_POST["$e_id-ae_severity"])) { $ae_severity = $_POST["$e_id-ae_severity"]; } else { $ae_severity = NULL; }
 							if (isset($_POST["$e_id-omt_related"])) { $omt_related = $_POST["$e_id-omt_related"]; } else { $omt_related = NULL; }
 						

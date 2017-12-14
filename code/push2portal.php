@@ -196,7 +196,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 														}
 														
 													if (!($insert_SQL = $dblink->prepare("INSERT INTO jury_room.symptom (`study_id`, `code`, `symptom`, `pt_baseline`, `pt_baseline_severity`, `pt_24hr`, `pt_24hr_severity`, `pt_24hr_related`, `pt_24hr_details`, `pt_72hr`, `pt_72hr_severity`, `pt_72hr_related`, `pt_72hr_details`, `pt_1wk`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"))) { logger(__LINE__, "MySQLi Prepare: $insert_SQL->error"); }
-													if (!($insert_SQL->bind_param('ssssss', $study_id, $code, $symptom, $pt_baseline, $pt_baseline_severity, $pt_24hr, $pt_24hr_severity, $pt_24hr_related, $pt_24hr_details, $pt_72hr, $pt_72hr_severity, $pt_72hr_related, $pt_72hr_details, $pt_1wk))) { logger(__LINE__, "MySQLi bindp: $insert_SQL->error"); }
+													if (!($insert_SQL->bind_param('ssssssssssssss', $study_id, $code, $symptom, $pt_baseline, $pt_baseline_severity, $pt_24hr, $pt_24hr_severity, $pt_24hr_related, $pt_24hr_details, $pt_72hr, $pt_72hr_severity, $pt_72hr_related, $pt_72hr_details, $pt_1wk))) { logger(__LINE__, "MySQLi bindp: $insert_SQL->error"); }
 													logger(__LINE__, "Inserting symptom: $symptom.");
 													logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
 													if (!($insert_SQL->execute())) { logger(__LINE__, "MySQLi execute: $insert_SQL->error"); }

@@ -95,8 +95,8 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 								
 							if (!(isset($followup_clinic))) { $followup_clinic = "No"; }
 							if (!(isset($followup_uc))) { $followup_uc = "No"; }
-							if (!((isset($followup_er)))) { $followup_er = "No"; }
-							if (!((isset($followup_hosp)))) { $followup_hosp = "No"; }
+							if (!(isset($followup_er))) { $followup_er = "No"; }
+							if (!(isset($followup_hosp))) { $followup_hosp = "No"; }
 							
 							if (($change_array['baseline'] < $change_array['24hr']) || 
 								($change_array['baseline'] < $change_array['72hr']) || 

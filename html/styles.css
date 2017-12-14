@@ -159,12 +159,11 @@ span.footer {
 	font-size: 6pt;
 	}
 	
-span.alert {
+div.alert {
 	background: yellow;
 	color: red;
-	float: left;
-	margin: 5px;
-	width: 90%;
+	clear: both;
+	width: 99%;
 	border-style: solid double double solid;
 	padding: 0.1em;
 	position: relative;

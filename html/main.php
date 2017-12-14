@@ -8,7 +8,7 @@ if ($failed == "ALL_IS_PERFECT")
 			SELECT
 				patient.patient_id,
 				patient.code,
-				symptom.phase,
+				patient.phase,
 				count(CASE WHEN symptom.symptom IS NOT NULL THEN 1 END) AS symptom_count,
 				(SELECT 
 						count(*)
@@ -88,12 +88,15 @@ if ($failed == "ALL_IS_PERFECT")
 											(symptom.pt_72hr_severity = 'Very Severe')) OR 
 										((symptom.pt_24hr_severity = 'Severe') AND 
 											(symptom.pt_72hr_severity = 'Very Severe'))
-								)
+								) OR
+							(
+								patient.phase > '-1'
+							)
 						)
 					)
 				)
 			GROUP BY patient.code
-			ORDER BY symptom.phase DESC, patient.code ASC"))) { logger("SQLi Prepare: $events_QUERY->error"); }
+			ORDER BY patient.phase DESC, patient.patient_id ASC"))) { logger("SQLi Prepare: $events_QUERY->error"); }
 	if (!($events_QUERY->bind_param('ss', $_SESSION["study"], $_SESSION["id"]))) { logger("SQLi pBind: $events_QUERY->error"); }
 	if (!($events_QUERY->execute())) { logger("SQLi execute: $events_QUERY->error"); }
 	if (!($events_QUERY->bind_result($patient_id, $code, $phase, $symptom_count, $review_count))) { logger("SQLi rBind: $events_QUERY->error"); }
@@ -105,7 +108,7 @@ if ($failed == "ALL_IS_PERFECT")
 		
 		if (isset($_SESSION['pass_fail']))
 			{
-				echo "<span class=\"alert\">". $_SESSION['pass_fail'] ." </span>";
+				echo "<div class=\"alert\">". $_SESSION['pass_fail'] ." </div>";
 				unset($_SESSION['pass_fail']);
 			}
 			
