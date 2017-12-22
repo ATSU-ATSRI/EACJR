@@ -1,6 +1,6 @@
 @charset "iso-8859-1";
 
-a:link {
+/* a:link {
 	color: blue;
 	}
 	
@@ -10,7 +10,7 @@ a:visited {
 	
 a:hover {
 	color: red;
-	}
+	} */
 
 table { 
 	display: flex; 
@@ -22,7 +22,7 @@ tr {
 	}
 
 thead {
-	overflow-y: scroll;
+	overflow-y: visible;
 	}
 
 tbody { 
@@ -199,11 +199,75 @@ span.text {
 	padding: 5%;
 	}
 	
-
 span.centre-box {
 	margin: 1%;
 	float: none;
 	width: 99%;
 	border: none;
 	padding: 0.3em;
+	}
+	
+.tooltip {
+	border-bottom: 1px dotted Lime;
+	color: LimeGreen;
+	outline: none;
+	position: relative;
+	}
+	
+.tooltip span {
+	margin-left: -999em;
+	position: absolute;
+	}
+	
+.tooltip:hover span {
+	display: block;
+	position: absolute;
+	left: 1em;
+	top: 2em;
+	z-index: 1005;
+	margin-left: 0;
+	width: 260px;
+	background-color: White;
+	border-radius: 5px 5px;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+		-webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+		-moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+	}
+
+.tooltip-left {
+	border-bottom: 1px dotted Lime;
+	color: LimeGreen;
+	outline: none;
+	position: relative;
+	}
+	
+.tooltip-left span {
+	margin-left: -999em;
+	position: absolute;
+	}
+	
+.tooltip-left:hover span {
+	display: block;
+	position: absolute;
+	right: 1em;
+	top: 2em;
+	z-index: 1005;
+	margin-left: 0;
+	width: 260px;
+	background-color: White;
+	border-radius: 5px 5px;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+		-webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+		-moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+	}
+	
+.tooltip-data {
+	background-color: White;
+	color: Black;
+	border: 1px solid LimeGreen;
+	padding: 0.8em 1em;
 	}

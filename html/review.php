@@ -76,7 +76,6 @@ if ($failed == "ALL_IS_PERFECT")
 				$allow_comment = 0;
 				while ($events_QUERY->fetch())
 				{
-					//if (($pg_len > 60) || ($pg_len == 0)) // Replace with head float
 					if ($pg_len == 0)
 						{
 							echo "<thead>";
@@ -94,36 +93,63 @@ if ($failed == "ALL_IS_PERFECT")
 							</TR>";
 							echo "<TR>
 								<TH width=\"20%\"> Symptom </TH>
-								<TH width=\"11%\"> Baseline Severity </TH>
-								<TH width=\"11%\"> 24 hr Severity </TH>
-								<TH width=\"11%\"> 72 hr Severity </TH>
-								<TH width=\"11%\"> 1 Week Severity </TH>
-								<TH width=\"12%\"> Adverse Event? </TH>
+								<TH width=\"11%\"> <a class=\"tooltip\" href=\"#\">Baseline Severity <span class=\"tooltip-data\">Worst severity in week prior to OMT from 24-hour or Mid-week survey </span></a> </TH>
+								<TH width=\"11%\"> <a class=\"tooltip\" href=\"#\">24 hr Severity <span class=\"tooltip-data\">Worst severity since OMT</span></a></TH>
+								<TH width=\"11%\"> <a class=\"tooltip\" href=\"#\">72 hr Severity <span class=\"tooltip-data\">Worst severity in past 2 days</span></a></TH>
+								<TH width=\"11%\"> <a class=\"tooltip\" href=\"#\">1 Week Severity <span class=\"tooltip-data\">Worst severity on day 7</span></a></TH>
+								<TH width=\"12%\"> <a class=\"tooltip\" href=\"#\">Adverse Event? <span class=\"tooltip-data\">Only symptoms with an increase in severity from baseline or no change from Very Severe baseline severity are included in report.<br />
+									<ul>
+										<li>No = Symptom was not an adverse event (i.e., symptom was not \"unfavorable and unintended\" or was not \"temporally associated with the use of a medical treatment or procedure that may or may not be considered related to the medical treatment or procedure.\" (NCI, 2006))</li>
+										<li>Inconclusive = Could not determine whether symptom was an adverse event.</li>
+									</ul>
+									</span></a></TH>
 								<TH width=\"12%\"> If Adverse Event: Severity? </TH>
-								<TH width=\"12%\"> If Adverse Event: OMT Related? </TH>
+								<TH width=\"12%\"> <a class=\"tooltip-left\" href=\"#\">If Adverse Event: OMT Related? <span class=\"tooltip-data\">
+									<ul>
+										<li>Definitely = Patient comments indicate that the adverse event almost certainly resulted from OMT</li>
+										<li>Probably = Adverse event is more likely than not to have resulted from OMT</li>
+										<li>Not Sure = Adverse event is equally likely and unlikely to have resulted from OMT</li>
+										<li>Unlikely = Adverse event is less likely than not to have resulted from OMT</li>
+										<li>No = Patient comments indicate that the adverse event almost certainly did not result from OMT</li>
+									</ul>
+									</span></a> </TH>
 							</TR>
 							</thead>
-							<tbody>
-							<TR>";
+							<tbody>";
 							$pg_len = 1;
 						}
-					
+										
 					if (strlen($symptom) > 0)
 						{
-							$event_id_array[] = $event_id;
-							
 							echo "
-									<!--- NEW SYMPTOM STARTS HERE --->
-									<TD width=\"20%\"> $symptom </TD>
-									<input type=\"hidden\" name=\"$event_id-event_id\" value=\"$event_id\">
-									<input type=\"hidden\" name=\"$event_id-code\" value=\"$code\">";
-							
+									<!--- NEW SYMPTOM STARTS HERE --->";
+									
+							$event_id_array[] = $event_id;
+													
 							// assign key value to severity
 							$change_array = array(
 								"baseline" => array_search("$pt_baseline_severity", $severity_array, TRUE),
 								"24hr" => array_search("$pt_24hr_severity", $severity_array, TRUE),
 								"72hr" => array_search("$pt_72hr_severity", $severity_array, TRUE),
 								"1_wk" => array_search("$pt_1wk", $severity_array, TRUE));	
+								
+							// Set a background colour if NOT an AE
+							if (($change_array['baseline'] < $change_array['24hr']) || ($change_array['24hr'] == 4) ||
+								($change_array['baseline'] < $change_array['72hr']) || ($change_array['72hr'] == 4))
+									{
+										echo "
+										<TR>";
+									}
+									else
+									{
+										echo "
+										<TR style=\"background-color: WhiteSmoke\">";
+									}
+							
+							echo "
+									<TD width=\"20%\"> $symptom </TD>
+									<input type=\"hidden\" name=\"$event_id-event_id\" value=\"$event_id\">
+									<input type=\"hidden\" name=\"$event_id-code\" value=\"$code\">";
 
 							echo "	<TD width=\"11%\"> $pt_baseline_severity </TD>
 									<TD width=\"11%\"> $pt_24hr_severity <br /><br />";
@@ -153,7 +179,7 @@ if ($failed == "ALL_IS_PERFECT")
 										{
 											echo "Yes.<br /> 
 													<INPUT type=\"hidden\" name=\"$event_id-pt_24hr_isae\" id=\"$event_id-pt_24hr_isae\" value=\"Yes\" />
-													<b>Disagree?</b><br />
+													<b>Change to:</b><br />
 													<INPUT type=\"radio\" name=\"$event_id-pt_24hr_isae\" id=\"$event_id-pt_24hr_isae\" value=\"No\">No</INPUT><br />
 													<INPUT type=\"radio\" name=\"$event_id-pt_24hr_isae\" id=\"$event_id-pt_24hr_isae\" value=\"Inconclusive\">Inconclusive</INPUT><br />";
 											$isae = 1;
@@ -161,8 +187,7 @@ if ($failed == "ALL_IS_PERFECT")
 										else
 										{
 											echo "No.<br />
-													<INPUT type=\"hidden\" name=\"$event_id-pt_24hr_isae\" id=\"$event_id-pt_24hr_isae\" value=\"No\" />
-													<!-- <INPUT type=\"checkbox\" name=\"$event_id-pt_24hr_isae\" id=\"$event_id-pt_24hr_isae\" value=\"Yes\">Disagree?</INPUT> --> <br />";
+													<INPUT type=\"hidden\" name=\"$event_id-pt_24hr_isae\" id=\"$event_id-pt_24hr_isae\" value=\"No\" />";
 										}
 										
 									echo "<b>72 hr?</b> ";
@@ -170,7 +195,7 @@ if ($failed == "ALL_IS_PERFECT")
 										{
 											echo "Yes.<br /> 
 													<INPUT type=\"hidden\" name=\"$event_id-pt_72hr_isae\" id=\"$event_id-pt_72hr_isae\" value=\"Yes\" />
-													<b>Disagree?</b><br />
+													<b>Change to:</b><br />
 													<INPUT type=\"radio\" name=\"$event_id-pt_72hr_isae\" id=\"$event_id-pt_72hr_isae\" value=\"No\">No</INPUT><br />
 													<INPUT type=\"radio\" name=\"$event_id-pt_72hr_isae\" id=\"$event_id-pt_72hr_isae\" value=\"Inconclusive\">Inconclusive</INPUT><br />";
 											$isae = 1;
@@ -179,16 +204,16 @@ if ($failed == "ALL_IS_PERFECT")
 										else
 										{
 											echo "No.<br /> 
-													<INPUT type=\"hidden\" name=\"$event_id-pt_72hr_isae\" id=\"$event_id-pt_72hr_isae\" value=\"No\" />
-													<!-- <INPUT type=\"checkbox\" name=\"$event_id-pt_72hr_isae\" id=\"$event_id-pt_72hr_isae\" value=\"Yes\">Disagree?</INPUT >--> <br />";
+													<INPUT type=\"hidden\" name=\"$event_id-pt_72hr_isae\" id=\"$event_id-pt_72hr_isae\" value=\"No\" />";
 										}
 
 									echo "<b>1 week?</b> ";
-									if (($change_array['baseline'] < $change_array['1_wk']) || ($change_array['1_wk'] == 4))
+									/* if (($change_array['baseline'] < $change_array['1_wk']) || ($change_array['1_wk'] == 4)) */
+									if ((($change_array['baseline'] < $change_array['1_wk']) || ($change_array['1_wk'] == 4)) && ( $isae == 1 ))
 										{
 											echo "Yes.<br /> 
 													<INPUT type=\"hidden\" name=\"$event_id-pt_1_wk_isae\" id=\"$event_id-pt_1_wk_isae\" value=\"Yes\">
-													<b>Disagree?</b><br />
+													<b>Change to:</b><br />
 													<INPUT type=\"radio\" name=\"$event_id-pt_1_wk_isae\" id=\"$event_id-pt_1_wk_isae\" value=\"No\">No</INPUT><br />
 													<INPUT type=\"radio\" name=\"$event_id-pt_1_wk_isae\" id=\"$event_id-pt_1_wk_isae\" value=\"Inconclusive\">Inconclusive</INPUT><br />";
 											$isae = 1;
@@ -196,9 +221,8 @@ if ($failed == "ALL_IS_PERFECT")
 										else
 										{
 											echo "No.<br /> 
-													<INPUT type=\"hidden\" name=\"$event_id-pt_1_wk_isae\" id=\"$event_id-pt_1_wk_isae\" value=\"No\">
-													<!-- <INPUT type=\"checkbox\" name=\"$event_id-pt_1_wk_isae\" id=\"$event_id-pt_1_wk_isae\" value=\"Yes\">Disagree?</INPUT> --> <br />";
-										}
+													<INPUT type=\"hidden\" name=\"$event_id-pt_1_wk_isae\" id=\"$event_id-pt_1_wk_isae\" value=\"No\">";
+										} 
 
 										echo "</TD>";
 
@@ -221,12 +245,7 @@ if ($failed == "ALL_IS_PERFECT")
 											"72hr" => $ca_72hr,
 											"1_wk" => $ca_1wk);
 										
-										// here lowest is the lowest value.
-										//arsort($change_array);
-										//$lowest = end($change_array);
-										//$lowest_time = array_search(key($change_array), $severity_time_array, TRUE);
-										
-										// here, lowest is baseline value.
+										// lowest is -always- the baseline value.
 										$lowest = $change_array["baseline"];
 										$lowest_time = 1;
 										
@@ -234,12 +253,8 @@ if ($failed == "ALL_IS_PERFECT")
 										$highest = end($change_array);
 										$highest_time = array_search(key($change_array), $severity_time_array, TRUE);
 										if (isset($ae_severity)) {unset($ae_severity);}
-										
-										
-										
-										//echo "$lowest - $lowest_time <br /> $highest - $highest_time<br />";
-										//NOTE: I don't like how this tracks. We need a better method.
-											// added an abs() to these because of using the baseline value as lowest (when it might not be actually LESS).
+
+										// added an abs() to these because of using the baseline value as lowest (when it might not be actually LESS).
 											if (abs($highest - $lowest > 2))
 												{
 													echo "Large";
@@ -279,7 +294,7 @@ if ($failed == "ALL_IS_PERFECT")
 											
 								
 										echo "	<INPUT type=\"hidden\" name=\"$event_id-ae_severity\" id=\"$event_id-ae_severity\" value=\"$ae_severity\">
-												<b>Disagree?</b> <br />
+												<b>Change to:</b> <br />
 												<INPUT type=\"radio\" name=\"$event_id-ae_severity\" id=\"$event_id-ae_severity\" value=\"Minor\"> Minor<br />
 												<INPUT type=\"radio\" name=\"$event_id-ae_severity\" id=\"$event_id-ae_severity\" value=\"Medium\"> Medium<br />
 												<INPUT type=\"radio\" name=\"$event_id-ae_severity\" id=\"$event_id-ae_severity\" value=\"Major\"> Major<br />
@@ -306,7 +321,7 @@ if ($failed == "ALL_IS_PERFECT")
 							if (($followup_clinic == "Yes") || (strlen($followup_clinic_related) > 0) || (strlen($followup_clinic_details) > 0))
 								{
 									echo "<TR>
-											<TD colspan=\"3\"> Contacted Clinician (Office)? <b>$followup_clinic</b><br />";
+											<TD colspan=\"3\" width=\"40%\"> Contacted Clinician (Office)? <b>$followup_clinic</b><br />";
 											if (strlen($followup_clinic_details) > 1)
 												{
 													echo "$followup_clinic_details";
@@ -316,14 +331,14 @@ if ($failed == "ALL_IS_PERFECT")
 													echo "No Response.";
 												}
 										echo "</TD>
-											<TD width=\"11%\"><b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; $followup_clinic_related </TD>";
+											<TD width=\"12%\"><b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; $followup_clinic_related </TD>";
 									$followup_vote = 1;
 								}
 							
 							if (($followup_uc == "Yes") || (strlen($followup_uc_related) > 0) || (strlen($followup_uc_details) > 0))
 								{
 									echo "<TR>
-											<TD colspan=\"3\"> Contacted Urgent Care? <b>$followup_uc</b><br />";
+											<TD colspan=\"3\" width=\"40%\"> Contacted Urgent Care? <b>$followup_uc</b><br />";
 											if (strlen($followup_uc_details) > 1)
 												{
 													echo "$followup_uc_details";
@@ -333,14 +348,14 @@ if ($failed == "ALL_IS_PERFECT")
 													echo "No Response.";
 												}
 										echo "</TD>
-											<TD width=\"11%\"><b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; $followup_uc_related </TD>";
+											<TD width=\"12%\"><b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; $followup_uc_related </TD>";
 									$followup_vote = 1;
 								}
 							
 							if (($followup_er == "Yes") || (strlen($followup_er_related) > 0) || (strlen($followup_er_details) > 0))
 								{
 									echo "<TR>
-											<TD colspan=\"3\"> Contacted Emergency Room? <b>$followup_er</b><br />";
+											<TD colspan=\"3\" width=\"40%\"> Contacted Emergency Room? <b>$followup_er</b><br />";
 											if (strlen($followup_er_details) > 1)
 												{
 													echo "$followup_er_details";
@@ -350,14 +365,14 @@ if ($failed == "ALL_IS_PERFECT")
 													echo "No Response.";
 												}
 										echo "</TD>
-											<TD width=\"11%\"><b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; $followup_er_related</TD>";
+											<TD width=\"12%\"><b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; $followup_er_related</TD>";
 									$followup_vote = 1;
 								}
 								
 							if (($followup_hosp == "Yes") || (strlen($followup_hosp_related) > 0) || (strlen($followup_hosp_details) > 0))
 								{
 									echo "<TR>
-											<TD colspan=\"3\"> Contacted Hospital? <b>$followup_hosp</b><br />";
+											<TD colspan=\"3\" width=\"40%\"> Contacted Hospital? <b>$followup_hosp</b><br />";
 											if (strlen($followup_hosp_details) > 1)
 												{
 													echo "$followup_hosp_details";
@@ -367,15 +382,17 @@ if ($failed == "ALL_IS_PERFECT")
 													echo "No Response.";
 												}
 										echo "</TD>
-											<TD width=\"11%\"><b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; $followup_hosp_related</TD>";
+											<TD width=\"12%\"><b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; $followup_hosp_related</TD>";
 									$followup_vote = 1;
 								}
 								
 							if (((substr($followup_clinic, 0, 3) == "Yes") || (substr($followup_uc, 0, 3) == "Yes") || (substr($followup_er, 0, 3) == "Yes") || (substr($followup_hosp, 0, 3) == "Yes")) && ($followup_vote == 1))
 								{
-									echo "<TD width=\"12%\"></TD><TD>";	// included a blank
+									echo "
+									<TD width=\"12%\"></TD>";	// included a blank
 									
-										echo "	<INPUT type=\"hidden\" name=\"$event_id-followup_isae\" id=\"$event_id-followup_isae\" value=\"Yes\">
+										echo "<TD width=\"12%\">
+												<INPUT type=\"hidden\" name=\"$event_id-followup_isae\" id=\"$event_id-followup_isae\" value=\"Yes\">
 												<INPUT type=\"radio\" name=\"$event_id-followup_isae\" id=\"$event_id-followup_isae\" value=\"Yes\"> Yes<br />
 												<INPUT type=\"radio\" name=\"$event_id-followup_isae\" id=\"$event_id-followup_isae\" value=\"No\"> No<br />
 												<INPUT type=\"radio\" name=\"$event_id-followup_isae\" id=\"$event_id-followup_isae\" value=\"Inconclusive\"> Inconclusive<br />
@@ -404,7 +421,7 @@ if ($failed == "ALL_IS_PERFECT")
 								
 							if ((strlen($pt_24hr_details) > 0) || (strlen($pt_72hr_details) > 0) || (strlen($pt_1wk_details) > 0))
 								{
-									echo "<TR>
+									echo "<TR style=\"background-color: orange\">
 											<TD width=\"20%\"> <b> Pt. Comments </b> </TD>";
 										
 									if (strlen($pt_24hr_details) > 0)

@@ -101,7 +101,9 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 							if (($change_array['baseline'] < $change_array['24hr']) || 
 								($change_array['baseline'] < $change_array['72hr']) || 
 								($change_array['baseline'] < $change_array['1_wk']) || 
-								($change_array['1_wk'] == 4) ||
+								($change_array['baseline'] == 4) ||
+								($change_array['24hr'] == 4) ||
+								($change_array['72hr'] == 4) ||
 								($followup_clinic == 'Yes') ||
 								($followup_uc == 'Yes') ||
 								($followup_er == 'Yes') ||
@@ -292,7 +294,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 			$completed_QUERY->free_result();
 			
 			
-		// Update and lost patients match to max(symptom.phase)
+		// Update and find lost patients match to max(symptom.phase)
 			logger(__LINE__, "Phase lost patient scan started.");
 			logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
 			
