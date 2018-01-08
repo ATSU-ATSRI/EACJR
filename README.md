@@ -47,3 +47,7 @@ Directory | Purpose
   ../input_data/ | directory where files to be analysed are located.
   ../sql/ | directory where the MySql reverse engineer scripts are stored. 
 
+# Dependencies / Built-upon / Testing Environment
+- MySQL version: Community Server (SPL) 5.7.15-log
+- PHP 5.6.2nts
+- [PHPMailer](https://github.com/PHPMailer) tested with 5.2.16 & 6.0.3
