@@ -49,7 +49,11 @@ if ($failed == "ALL_IS_PERFECT")
 				symptom.future_why
 			FROM jury_room.symptom LEFT OUTER JOIN
 				patient ON symptom.code = patient.code
-			WHERE (patient_id = ?)
+			WHERE (patient_id = ?) AND
+            (
+				(symptom NOT LIKE 'I have not had any%') OR
+                (symptom IS NULL)
+			)
 			ORDER BY phase, symptom.event_id
 			"))) { logger("SQLi Prepare: $events_QUERY->error"); }
 	if (!($events_QUERY->bind_param('s', $patient_id)))  { logger("SQLi Prepare: $events_QUERY->error"); }
