@@ -12,14 +12,10 @@ if ($failed == "ALL_IS_PERFECT")
 											COUNT(CASE
 												WHEN symptom.symptom IS NOT NULL THEN 1
 											END) AS symptom_count,
-											(SELECT 
-													COUNT(*)
-												FROM
-													review
-														INNER JOIN
-													symptom ON review.event_id = symptom.event_id
-												WHERE
-													symptom.phase = patient.phase) AS review_count
+											COUNT(CASE
+												WHEN ((symptom.phase = patient.phase) AND
+													  (review.event_id = symptom.event_id)) THEN 1
+											END) AS review_count
 										FROM
 											patient
 												LEFT OUTER JOIN
@@ -120,9 +116,9 @@ if ($failed == "ALL_IS_PERFECT")
 		{
 			echo "
 				<tr>
-					<th width=\"25%\">Participant</th>
-					<th width=\"25%\">Symptom Count</th>
-					<th width=\"25%\">Review Count</th>
+					<th width=\"25%\">Participant record ID</th>
+					<th width=\"25%\">Number of symptoms on record</th>
+					<th width=\"25%\">Number of symptoms reviewed</th>
 					<th width=\"25%\"></th>
 				</tr>
 				</thead>

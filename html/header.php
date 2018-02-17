@@ -1,5 +1,5 @@
 <?php
-include("commonfunctions.php");
+require("commonfunctions.php");
 session_start();
 
 $failed = isset($_SESSION['failed']) ? $_SESSION['failed'] : '';
@@ -53,7 +53,9 @@ if ($failed == "ALL_IS_PERFECT")
 				<font size=\"+2\">Processing Request, please wait.</font>
 			</span>
 		";
-		logger("ALERT: Crawler alert");
+		$script = $_SERVER['SCRIPT_FILENAME'];
+		$user_ip = getUserIP();
+		logger("ALERT: Crawler alert on $script === from IP: $user_ip.");
 		include("footer.php"); 
 	}
 

@@ -21,31 +21,10 @@ if ($failed == "ALL_IS_PERFECT")
 							
 							if (isset($_SESSION['pass_fail']))
 								{
-									echo "<span class=\"alert\">". $_SESSION['pass_fail'] ." </span>";
+									echo "<div class=\"alert\">". $_SESSION['pass_fail'] ." </div>";
 									unset($_SESSION['pass_fail']);
 								}
-							/* echo "<form name=\"profile\" action=\"\" method=\"POST\">
-									<span class=\"left-box\">
-										<table border=\"0\">
-											<TR><TD COLSPAN=\"2\" width=\"100%\">Current Profile Settings</TD></TR>
-											<TR><TD COLSPAN=\"2\" width=\"100%\"><br /></TD></TR>
-											<TR>
-												<TD width=\"40%\">Your name:</TD>
-												<TD width=\"60%\"><INPUT type=\"text\" name=\"name\" value=\"$name\" size=\"30\"></TD>
-											</TR><TR>
-												<TD width=\"40%\">Your initials:</TD>
-												<TD width=\"60%\"><INPUT type=\"text\" name=\"initials\" value=\"$initials\" size=\"5\"></TD>
-											</TR><TR>
-												<TD width=\"40%\">Your email:</TD>
-												<TD width=\"60%\"><INPUT type=\"text\" name=\"email\" value=\"$email\" size=\"30\"></TD>
-											</TR><TR>
-												<TD colspan=\"2\" width=\"100%\"><INPUT type=\"submit\" name=\"submit\" value=\"Change profile\"></TD>
-											</TR>
-										</table>
-									</span>
-									
-									<span class=\"left-box\">";*/
-									
+																
 								echo "<form name=\"profile\" action=\"\" method=\"POST\">
 									<span class=\"left-box\">
 										
@@ -71,7 +50,7 @@ if ($failed == "ALL_IS_PERFECT")
 														Password must contain at least one capital letter.<br />
 														Password must contain at least one lowercase letter.<br />
 														Password must contain at least one number.<br />
-														Password must contain at least one of the following: !, @, #, $, %, ^, &, *, (, ), +, -, ?, ~, _, =, >, <.<br />
+														Password must contain at least one of the following: !, @, #, $, %, ^, &, *, (, ), +, -, ?, ~, _, =.<br />
 												</div>
 												<div>Enter current Password</div>
 												<div><INPUT type=\"password\" name=\"curr_pass\" size=\"30\"></div>
@@ -122,7 +101,7 @@ if ($failed == "ALL_IS_PERFECT")
 													if (strpbrk($_POST['new_pass1'], 'abcdefghijklmnopqrstuvwxyz') == FALSE) {$pass_fail .= "Password must contain at least one lowercase letter.<br />";}
 													if (strpbrk($_POST['new_pass1'], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') == FALSE) {$pass_fail .= "Password must contain at least one capital letter.<br />";}
 													if (strpbrk($_POST['new_pass1'], '1234567890') == FALSE) {$pass_fail .= "Password must contain at least one number.<br />";}
-													if (strpbrk($_POST['new_pass1'], '!@#$%^&*()+-?~_=><') == FALSE) {$pass_fail .= "Password must contain at least one of the following: !, @, #, $, %, ^, &, *, (, ), +, -, ?, ~, _, =, >, <.<br />";}
+													if (strpbrk($_POST['new_pass1'], '!@#$%^&*()+-?~_=') == FALSE) {$pass_fail .= "Password must contain at least one of the following: !, @, #, $, %, ^, &, *, (, ), +, -, ?, ~, _, =.<br />";}
 											
 													if (strlen($pass_fail) < 2)
 														{
