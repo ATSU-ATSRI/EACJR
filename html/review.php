@@ -55,10 +55,10 @@ if ($failed == "ALL_IS_PERFECT")
                 (symptom IS NULL)
 			)
 			ORDER BY phase, symptom.event_id
-			"))) { logger("SQLi Prepare: $events_QUERY->error"); }
-	if (!($events_QUERY->bind_param('s', $patient_id)))  { logger("SQLi Prepare: $events_QUERY->error"); }
-	if (!($events_QUERY->execute())) { logger("SQLi execute: $events_QUERY->error"); }
-	if (!($events_QUERY->bind_result($phase, $code, $age, $sex, $ethnicity, $race, $race_other, $event_id, $symptom, $pt_baseline, $pt_baseline_severity, $pt_24hr, $pt_24hr_severity, $pt_24hr_related, $pt_24hr_details, $pt_72hr, $pt_72hr_severity, $pt_72hr_related, $pt_72hr_details, $pt_1wk, $pt_1wk_details, $followup_clinic, $followup_clinic_related, $followup_clinic_details, $followup_uc, $followup_uc_related, $followup_uc_details, $followup_er, $followup_er_related, $followup_er_details, $followup_hosp, $followup_hosp_related, $followup_hosp_details, $further, $further_why, $future, $future_why))) { logger("SQLi rBind: $events_QUERY->error"); }
+			"))) { logger(__LINE__, "SQLi Prepare: $events_QUERY->error"); }
+	if (!($events_QUERY->bind_param('s', $patient_id)))  { logger(__LINE__, "SQLi Prepare: $events_QUERY->error"); }
+	if (!($events_QUERY->execute())) { logger(__LINE__, "SQLi execute: $events_QUERY->error"); }
+	if (!($events_QUERY->bind_result($phase, $code, $age, $sex, $ethnicity, $race, $race_other, $event_id, $symptom, $pt_baseline, $pt_baseline_severity, $pt_24hr, $pt_24hr_severity, $pt_24hr_related, $pt_24hr_details, $pt_72hr, $pt_72hr_severity, $pt_72hr_related, $pt_72hr_details, $pt_1wk, $pt_1wk_details, $followup_clinic, $followup_clinic_related, $followup_clinic_details, $followup_uc, $followup_uc_related, $followup_uc_details, $followup_er, $followup_er_related, $followup_er_details, $followup_hosp, $followup_hosp_related, $followup_hosp_details, $further, $further_why, $future, $future_why))) { logger(__LINE__, "SQLi rBind: $events_QUERY->error"); }
 	$events_QUERY->store_result();
 	
 	$followup_vote = 0;
@@ -392,6 +392,7 @@ if ($failed == "ALL_IS_PERFECT")
 										echo "</TD>
 											<TD width=\"12%\"><b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; $followup_clinic_related </TD>";
 									$followup_vote = 1;
+									$allow_comment = 1;
 								}
 							
 							if (($followup_uc == "Yes") || (strlen($followup_uc_related) > 0) || (strlen($followup_uc_details) > 0))
@@ -409,6 +410,7 @@ if ($failed == "ALL_IS_PERFECT")
 										echo "</TD>
 											<TD width=\"12%\"><b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; $followup_uc_related </TD>";
 									$followup_vote = 1;
+									$allow_comment = 1;
 								}
 							
 							if (($followup_er == "Yes") || (strlen($followup_er_related) > 0) || (strlen($followup_er_details) > 0))
@@ -426,6 +428,7 @@ if ($failed == "ALL_IS_PERFECT")
 										echo "</TD>
 											<TD width=\"12%\"><b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; $followup_er_related</TD>";
 									$followup_vote = 1;
+									$allow_comment = 1;
 								}
 								
 							if (($followup_hosp == "Yes") || (strlen($followup_hosp_related) > 0) || (strlen($followup_hosp_details) > 0))
@@ -443,13 +446,11 @@ if ($failed == "ALL_IS_PERFECT")
 										echo "</TD>
 											<TD width=\"12%\"><b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; $followup_hosp_related</TD>";
 									$followup_vote = 1;
+									$allow_comment = 1;
 								}
 								
 							if (((substr($followup_clinic, 0, 3) == "Yes") || (substr($followup_uc, 0, 3) == "Yes") || (substr($followup_er, 0, 3) == "Yes") || (substr($followup_hosp, 0, 3) == "Yes")) && ($followup_vote == 1))
 								{
-									//echo "
-									//<TD width=\"12%\"></TD>";	// included a blank
-									
 										echo "<TD width=\"12%\">
 												<INPUT type=\"hidden\" name=\"$event_id-followup_isae\" id=\"$event_id-followup_isae\" value=\"Yes\">
 												<INPUT type=\"radio\" name=\"$event_id-followup_isae\" id=\"$event_id-followup_isae\" value=\"Yes\"> Yes<br />
@@ -521,10 +522,10 @@ if ($failed == "ALL_IS_PERFECT")
 																	(comment IS NOT NULL) AND
 																	(event_id = ?)
 																ORDER BY
-																	action_date DESC;"))) { logger("SQLi Prepare: $cmt_QUERY->error"); }
-							if (!($cmt_QUERY->bind_param('s', $event_id)))  { logger("SQLi Prepare: $cmt_QUERY->error"); }
-							if (!($cmt_QUERY->execute())) { logger("SQLi execute: $cmt_QUERY->error"); }
-							if (!($cmt_QUERY->bind_result($cmt_user_id, $cmt_date, $cmt_comment))) { logger("SQLi rBind: $cmt_QUERY->error"); }
+																	action_date DESC;"))) { logger(__LINE__, "SQLi Prepare: $cmt_QUERY->error"); }
+							if (!($cmt_QUERY->bind_param('s', $event_id)))  { logger(__LINE__, "SQLi Prepare: $cmt_QUERY->error"); }
+							if (!($cmt_QUERY->execute())) { logger(__LINE__, "SQLi execute: $cmt_QUERY->error"); }
+							if (!($cmt_QUERY->bind_result($cmt_user_id, $cmt_date, $cmt_comment))) { logger(__LINE__, "SQLi rBind: $cmt_QUERY->error"); }
 							$cmt_QUERY->store_result();
 							if ($cmt_QUERY->num_rows > 0)
 								$eac_comments = "";
@@ -607,9 +608,9 @@ if ($failed == "ALL_IS_PERFECT")
 											followup_adverse_event,
 											ae_severity,
 											omt_related) 
-										VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);"))) {logger("SQLi Prepare: $vote_QUERY->error");}
-							if (!($vote_QUERY->bind_param('sssssssss', $_SESSION['id'], $e_id, $comment, $p24hr_adverse_event, $p72hr_adverse_event, $p1wk_adverse_event, $followup_adverse_event, $ae_severity, $omt_related))) { logger("SQLi Bind Error: $vote_QUERY->error"); }
-							if (!($vote_QUERY->execute())) { logger("SQLi execute: $vote_QUERY->error"); }
+										VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);"))) {logger(__LINE__, "SQLi Prepare: $vote_QUERY->error");}
+							if (!($vote_QUERY->bind_param('sssssssss', $_SESSION['id'], $e_id, $comment, $p24hr_adverse_event, $p72hr_adverse_event, $p1wk_adverse_event, $followup_adverse_event, $ae_severity, $omt_related))) { logger(__LINE__, "SQLi Bind Error: $vote_QUERY->error"); }
+							if (!($vote_QUERY->execute())) { logger(__LINE__, "SQLi execute: $vote_QUERY->error"); }
 							$vote_QUERY->close();
 							
 							// clean up any old data.

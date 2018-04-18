@@ -92,10 +92,10 @@ if ($failed == "ALL_IS_PERFECT")
 														AND (symptom.pt_72hr_severity = 'Very Severe')))
 												OR (patient.phase > '-1'))))
 										GROUP BY patient.code
-										ORDER BY patient.phase DESC, patient.patient_id ASC;"))) { logger("SQLi Prepare: $events_QUERY->error"); }
-	if (!($events_QUERY->bind_param('ss', $_SESSION["study"], $_SESSION["id"]))) { logger("SQLi pBind: $events_QUERY->error"); }
-	if (!($events_QUERY->execute())) { logger("SQLi execute: $events_QUERY->error"); }
-	if (!($events_QUERY->bind_result($patient_id, $code, $phase, $symptom_count, $review_count))) { logger("SQLi rBind: $events_QUERY->error"); }
+										ORDER BY patient.phase DESC, patient.patient_id ASC;"))) { logger(__LINE__, "SQLi Prepare: $events_QUERY->error"); }
+	if (!($events_QUERY->bind_param('ss', $_SESSION["study"], $_SESSION["id"]))) { logger(__LINE__, "SQLi pBind: $events_QUERY->error"); }
+	if (!($events_QUERY->execute())) { logger(__LINE__, "SQLi execute: $events_QUERY->error"); }
+	if (!($events_QUERY->bind_result($patient_id, $code, $phase, $symptom_count, $review_count))) { logger(__LINE__, "SQLi rBind: $events_QUERY->error"); }
 	$events_QUERY->store_result();
 	
 	
@@ -117,14 +117,16 @@ if ($failed == "ALL_IS_PERFECT")
 			echo "
 				<tr>
 					<th width=\"25%\">Participant record ID</th>
-					<th width=\"25%\">Number of symptoms on record</th>
-					<th width=\"25%\">Number of symptoms reviewed</th>
-					<th width=\"25%\"></th>
+					<th width=\"25%\">Participant record ID</th>
+					<th width=\"25%\">Participant record ID</th>
+					<th width=\"25%\">Participant record ID</th>					
 				</tr>
 				</thead>
 				<tbody>";
 				
 			$phase_last = "0";
+			$colcount = "0";
+			$pad_string = "0";
 			
 			while ($events_QUERY->fetch())
 				{
@@ -141,18 +143,38 @@ if ($failed == "ALL_IS_PERFECT")
 								</tr>";
 							$phase_last = $phase;
 						}
-							
-					echo "
-						<tr>
-							<td width=\"25%\">$patient_id</td>
-							<td width=\"25%\">$symptom_count</td>
-							<td width=\"25%\">$review_count</td>
-							<td width=\"25%\">";
-					if ($phase > 0)
+					
+					if ($colcount > 4)
 						{
-							echo "<a href=\"review.php?req=$patient_id\"><button type=\"button\">Review</button></a>";
+							echo "</tr>
+							";
+							$colcount = 0;
 						}
-					echo "</tr>";
+					
+					if ($colcount < 1)
+						{
+							echo "<tr>";
+							$colcount = 1;
+						}
+						
+					if (($colcount > 0) && ($colcount < 5))
+						{
+							$disp_patient_id = str_pad($patient_id, 4, $pad_string, STR_PAD_LEFT);
+							
+							
+							echo "<td width=\"25%\">$disp_patient_id &nbsp; &nbsp; ";
+					
+							if ($phase > 0)
+								{
+									echo "<a href=\"review.php?req=$patient_id\"><button type=\"button\">Review</button></a>";
+								}
+							
+							echo "</td>";
+							unset($disp_patient_id);
+						}
+						
+					
+					$colcount++;
 				}
 		}
 		else

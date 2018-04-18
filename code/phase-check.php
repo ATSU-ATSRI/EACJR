@@ -47,7 +47,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 											WHERE
 												(date_end IS NULL);"))) { logger(__LINE__, "SQLi Prepare: $studys_QUERY->error"); }
 	if (!($studys_QUERY->execute())) { logger(__LINE__, "SQLi execute: $studys_QUERY->error"); }
-	if (!($studys_QUERY->bind_result($study_id, $quorum, $members))) { logger("SQLi rBind: $studys_QUERY->error"); }
+	if (!($studys_QUERY->bind_result($study_id, $quorum, $members))) { logger(__LINE__, "SQLi rBind: $studys_QUERY->error"); }
 	$studys_QUERY->store_result();
 	while ($studys_QUERY->fetch())
 		{			
@@ -100,7 +100,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 							
 							if (($change_array['baseline'] < $change_array['24hr']) || 
 								($change_array['baseline'] < $change_array['72hr']) || 
-								($change_array['baseline'] < $change_array['1_wk']) || 
 								($change_array['baseline'] == 4) ||
 								($change_array['24hr'] == 4) ||
 								($change_array['72hr'] == 4) ||

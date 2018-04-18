@@ -4,14 +4,14 @@ if ($failed == "ALL_IS_PERFECT")
 {
 	include("datacon.php");
 	include("menu_item.php");
-	require("PHPMailerAutoload.php");
+	require("libphp-phpmailer/PHPMailerAutoload.php");
 	
 	$mod_id = $_REQUEST['ici'];
 	
-	if (!($mod_QUERY = $dblink->prepare("SELECT email, `name`, initials, logins.rank, rank.`desc` FROM jury_room.logins INNER JOIN jury_room.rank ON jury_room.logins.rank = jury_room.rank.rank_id WHERE user_id = ?")))  { logger("SQLi Prepare: $mod_QUERY->error"); }
-	if (!($mod_QUERY->bind_param('i', $mod_id)))  { logger("SQLi Prepare: $mod_QUERY->error"); }
-	if (!($mod_QUERY->execute())) { logger("SQLi execute: $check_QUERY->error"); }
-	if (!($mod_QUERY->bind_result($mod_email, $mod_name, $mod_initials, $mod_rank_id, $mod_rank))) { logger("SQLi rBind: $check_QUERY->error"); }
+	if (!($mod_QUERY = $dblink->prepare("SELECT email, `name`, initials, logins.rank, rank.`desc` FROM jury_room.logins INNER JOIN jury_room.rank ON jury_room.logins.rank = jury_room.rank.rank_id WHERE user_id = ?")))  { logger(__LINE__, "SQLi Prepare: $mod_QUERY->error"); }
+	if (!($mod_QUERY->bind_param('i', $mod_id)))  { logger(__LINE__, "SQLi Prepare: $mod_QUERY->error"); }
+	if (!($mod_QUERY->execute())) { logger(__LINE__, "SQLi execute: $check_QUERY->error"); }
+	if (!($mod_QUERY->bind_result($mod_email, $mod_name, $mod_initials, $mod_rank_id, $mod_rank))) { logger(__LINE__, "SQLi rBind: $check_QUERY->error"); }
 	$mod_QUERY->store_result();
 	$mod_QUERY->fetch();
 	
@@ -53,9 +53,9 @@ if ($failed == "ALL_IS_PERFECT")
 				<TD width=\"40%\">User's access level:</TD>
 					<TD width=\"60%\"><SELECT name=\"rank\">";
 			
-			if (!($rank_QUERY = $dblink->prepare("SELECT rank.rank_id, rank.`desc` FROM jury_room.rank"))) { logger("SQLi Prepare: $rank_QUERY->error"); }
-			if (!($rank_QUERY->execute())) { logger("SQLi execute: $rank_QUERY->error"); }
-			if (!($rank_QUERY->bind_result($rank_id, $rank_desc))) { logger("SQLi rBind: $rank_QUERY->error"); }
+			if (!($rank_QUERY = $dblink->prepare("SELECT rank.rank_id, rank.`desc` FROM jury_room.rank"))) { logger(__LINE__, "SQLi Prepare: $rank_QUERY->error"); }
+			if (!($rank_QUERY->execute())) { logger(__LINE__, "SQLi execute: $rank_QUERY->error"); }
+			if (!($rank_QUERY->bind_result($rank_id, $rank_desc))) { logger(__LINE__, "SQLi rBind: $rank_QUERY->error"); }
 			$rank_QUERY->store_result();
 			
 			while ($rank_QUERY->fetch())
@@ -163,7 +163,7 @@ if ($failed == "ALL_IS_PERFECT")
 							$mail->WordWrap = 50;
 							$mail->IsHTML(true);
 							$mail->Mailer = "smtp";
-							$mail->Host = "smtp.gmail.com:587";
+							$mail->Host = "SMTP HOST HERE";
 							$mail->Username = $mail_username;
 							$mail->Password = $mail_password;
 							$mail->SMTPAuth = true;
@@ -181,7 +181,7 @@ if ($failed == "ALL_IS_PERFECT")
 										Greetings, $new_name.<br />
 										<br />
 										Your user account has been modified by $admin_name, in the EAC Portal. <br />
-										URL: https://this.website.not.ready <br />
+										URL: http://URL GOES HERE/ <br />
 										<br />
 										User name: $new_email<br />
 										Single use password: $passer<br />
@@ -196,7 +196,7 @@ if ($failed == "ALL_IS_PERFECT")
 										Greetings, $new_name.<br />
 										<br />
 										Your user account has been modified by $admin_name, in the EAC Portal. <br />
-										URL: https://this.website.not.ready <br />
+										URL: http://URL GOES HERE/ <br />
 										<br />
 										User name: $new_email<br />
 										<br />
@@ -210,7 +210,7 @@ if ($failed == "ALL_IS_PERFECT")
 							if (!$mail->Send())
 								{
 									$mailerror = $mail->ErrorInfo;
-									logger("PHPMailer Error: $mailerror");
+									logger(__LINE__, "PHPMailer Error: $mailerror");
 								}
 								else
 								{
@@ -222,15 +222,15 @@ if ($failed == "ALL_IS_PERFECT")
 					if ($passreset == 1)
 						{
 							$bypassdate = "1900-01-01";		// used to set the new user's password as expired 
-							if (!($adduser_QUERY = $dblink->prepare("UPDATE jury_room.logins SET name=?, initials=?, email=?, pass=?, pass_date=?, rank=? WHERE user_id = ?"))) { logger("SQLi Prepare: $update_QUERY->error"); }
-							if (!($adduser_QUERY->bind_param('sssssii', $new_name, $new_initials, $new_email, $passer, $bypassdate, $new_rank_id, $mod_id))) { logger("SQLi pBind: $adduser_QUERY->error"); }
+							if (!($adduser_QUERY = $dblink->prepare("UPDATE jury_room.logins SET name=?, initials=?, email=?, pass=?, pass_date=?, rank=? WHERE user_id = ?"))) { logger(__LINE__, "SQLi Prepare: $update_QUERY->error"); }
+							if (!($adduser_QUERY->bind_param('sssssii', $new_name, $new_initials, $new_email, $passer, $bypassdate, $new_rank_id, $mod_id))) { logger(__LINE__, "SQLi pBind: $adduser_QUERY->error"); }
 						}
 						else
 						{
-							if (!($adduser_QUERY = $dblink->prepare("UPDATE jury_room.logins SET name=?, initials=?, email=?, rank=? WHERE user_id = ?"))) { logger("SQLi Prepare: $update_QUERY->error"); }
-							if (!($adduser_QUERY->bind_param('sssii', $new_name, $new_initials, $new_email, $new_rank_id, $mod_id))) { logger("SQLi pBind: $adduser_QUERY->error"); }
+							if (!($adduser_QUERY = $dblink->prepare("UPDATE jury_room.logins SET name=?, initials=?, email=?, rank=? WHERE user_id = ?"))) { logger(__LINE__, "SQLi Prepare: $update_QUERY->error"); }
+							if (!($adduser_QUERY->bind_param('sssii', $new_name, $new_initials, $new_email, $new_rank_id, $mod_id))) { logger(__LINE__, "SQLi pBind: $adduser_QUERY->error"); }
 						}
-					if (!($adduser_QUERY->execute())) { logger("SQLi execute: $adduser_QUERY->error"); }
+					if (!($adduser_QUERY->execute())) { logger(__LINE__, "SQLi execute: $adduser_QUERY->error"); }
 					$adduser_QUERY->close();	
 
 					$mod_QUERY->close();
