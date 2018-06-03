@@ -19,13 +19,15 @@ del /F /Q "%curr_dir%\code\logfile.txt"
 
 ECHO Gathering input files.
 del /F /Q "%curr_dir%\input_data\filelist.txt"
-dir /A-D /B /OD /S "..\input_data\*.csv" >> "%curr_dir%\input_data\filelist.txt
+del /F /Q "%curr_dir%\input_data\petlist.txt"
+dir /A-D /B /OD /S "..\input_data\*survey.csv" >> "%curr_dir%\input_data\filelist.txt
+dir /A-D /B /OD /S "..\input_data\*pet.csv" >> "%curr_dir%\input_data\petlist.txt
 
 ECHO Processing Data: !time!.
 @REM server config issue
 @REM php "%curr_dir%\code\push2portal.php"
-C:\Tools\php-5.6.22nts\php.exe "%curr_dir%\code\push2portal.php"
-@REM php "%curr_dir%\code\push2portal.php"
+C:\Store\Scripting\PHP\php-5.6.17\php.exe "%curr_dir%\code\push2portal.php"
+
 
 chdir /d "%curr_dir%"
 
