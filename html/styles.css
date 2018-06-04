@@ -25,11 +25,20 @@ thead {
 	overflow-y: visible;
 	}
 
+	thead2 {
+	overflow-y: scroll;
+	}
+
 tbody { 
 	overflow-y: scroll;
 	height: 500px;
 	}
 
+tbody2 { 
+	overflow-y: scroll;
+	height: 300px;
+	}
+	
 th {
 	background-color: cornsilk;
 	text-align: left;

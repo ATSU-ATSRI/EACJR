@@ -572,9 +572,9 @@ if ($failed == "ALL_IS_PERFECT")
 					$pet_QUERY->fetch();
 					echo "
 					<TABLE border=\"1\">
-						
+						<thead2>
 						<TR>
-							<TH width=\"100%\"><center>PET form : Treatment Method </center></TH></TR>
+							<TH width=\"100%\"><center> OMT Treatment Method </center></TH></TR>
 						<TR>
 							<TH width=\"25%\">Region </TH>
 							<TH width=\"5%\"> ART/Still </TH>
@@ -584,15 +584,15 @@ if ($failed == "ALL_IS_PERFECT")
 							<TH width=\"5%\"> HVLA </TH>
 							<TH width=\"5%\"> IND/Func </TH>
 							<TH width=\"5%\"> Lymph </TH>
-							<TH width=\"5%\"> ME </TH>
-							<TH width=\"5%\"> MFR </TH>
-							<TH width=\"5%\"> PH </TH>
-							<TH width=\"5%\"> ST </TH>
-							<TH width=\"5%\"> VIS </TH>
-							<TH width=\"5%\"> Other </TH>
-							<TH width=\"5%\"> Specify </TH>
+							<TH width=\"4%\"> ME </TH>
+							<TH width=\"4%\"> MFR </TH>
+							<TH width=\"4%\"> PH </TH>
+							<TH width=\"4%\"> ST </TH>
+							<TH width=\"4%\"> VIS </TH>
+							<TH width=\"4%\"> Other </TH>
+							<TH width=\"11%\"> Specify </TH>
 							<TH width=\"10%\"> Response </TH>
-						</TR>
+						</TR></thead2><tbody2>
 						";
 						
 					if (isset($HF_ART) || isset($HF_BLT) || isset($HF_CR) || isset($HF_CS) || isset($HF_HVLA) || isset($HF_IND) || isset($HF_Lymph) || isset($HF_ME) || isset($HF_MFR) || isset($HF_PH) || isset($HF_ST) || isset($HF_VIS) || isset($HF_Other) || (strlen($HF_Specify) > 0) || ($HF_Response !== "Off"))
@@ -607,13 +607,13 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"5%\">$HF_HVLA</TD>
 								<TD width=\"5%\">$HF_IND</TD>
 								<TD width=\"5%\">$HF_Lymph</TD>
-								<TD width=\"5%\">$HF_ME</TD>
-								<TD width=\"5%\">$HF_MFR</TD>
-								<TD width=\"5%\">$HF_PH</TD>
-								<TD width=\"5%\">$HF_ST</TD>
-								<TD width=\"5%\">$HF_VIS</TD>
-								<TD width=\"5%\">$HF_Other</TD>
-								<TD width=\"5%\">$HF_Specify</TD>
+								<TD width=\"4%\">$HF_ME</TD>
+								<TD width=\"4%\">$HF_MFR</TD>
+								<TD width=\"4%\">$HF_PH</TD>
+								<TD width=\"4%\">$HF_ST</TD>
+								<TD width=\"4%\">$HF_VIS</TD>
+								<TD width=\"4%\">$HF_Other</TD>
+								<TD width=\"11%\">$HF_Specify</TD>
 								<TD width=\"10%\">";
 									if ($HF_Response == "Off") {echo "No Response";} else {echo "$HF_Response";}
 							echo "</TD>
@@ -632,13 +632,13 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"5%\">$Neck_HVLA</TD>
 								<TD width=\"5%\">$Neck_IND</TD>
 								<TD width=\"5%\">$Neck_Lymph</TD>
-								<TD width=\"5%\">$Neck_ME</TD>
-								<TD width=\"5%\">$Neck_MFR</TD>
-								<TD width=\"5%\">$Neck_PH</TD>
-								<TD width=\"5%\">$Neck_ST</TD>
-								<TD width=\"5%\">$Neck_VIS</TD>
-								<TD width=\"5%\">$Neck_Other</TD>
-								<TD width=\"5%\">$Neck_Specify</TD>
+								<TD width=\"4%\">$Neck_ME</TD>
+								<TD width=\"4%\">$Neck_MFR</TD>
+								<TD width=\"4%\">$Neck_PH</TD>
+								<TD width=\"4%\">$Neck_ST</TD>
+								<TD width=\"4%\">$Neck_VIS</TD>
+								<TD width=\"4%\">$Neck_Other</TD>
+								<TD width=\"11%\">$Neck_Specify</TD>
 								<TD width=\"10%\">";
 									if ($Neck_Response == "Off") {echo "No Response";} else {echo "$Neck_Response";}
 							echo "</TD>
@@ -657,13 +657,13 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"5%\">$Thor_HVLA</TD>
 								<TD width=\"5%\">$Thor_IND</TD>
 								<TD width=\"5%\">$Thor_Lymph</TD>
-								<TD width=\"5%\">$Thor_ME</TD>
-								<TD width=\"5%\">$Thor_MFR</TD>
-								<TD width=\"5%\">$Thor_PH</TD>
-								<TD width=\"5%\">$Thor_ST</TD>
-								<TD width=\"5%\">$Thor_VIS</TD>
-								<TD width=\"5%\">$Thor_Other</TD>
-								<TD width=\"5%\">$Thor_Specify</TD>
+								<TD width=\"4%\">$Thor_ME</TD>
+								<TD width=\"4%\">$Thor_MFR</TD>
+								<TD width=\"4%\">$Thor_PH</TD>
+								<TD width=\"4%\">$Thor_ST</TD>
+								<TD width=\"4%\">$Thor_VIS</TD>
+								<TD width=\"4%\">$Thor_Other</TD>
+								<TD width=\"11%\">$Thor_Specify</TD>
 								<TD width=\"10%\">";
 									if ($Thor_Response == "Off") {echo "No Response";} else {echo "$Thor_Response";}
 							echo "</TD>
@@ -682,13 +682,13 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"5%\">$Ribs_HVLA</TD>
 								<TD width=\"5%\">$Ribs_IND</TD>
 								<TD width=\"5%\">$Ribs_Lymph</TD>
-								<TD width=\"5%\">$Ribs_ME</TD>
-								<TD width=\"5%\">$Ribs_MFR</TD>
-								<TD width=\"5%\">$Ribs_PH</TD>
-								<TD width=\"5%\">$Ribs_ST</TD>
-								<TD width=\"5%\">$Ribs_VIS</TD>
-								<TD width=\"5%\">$Ribs_Other</TD>
-								<TD width=\"5%\">$Ribs_Specify</TD>
+								<TD width=\"4%\">$Ribs_ME</TD>
+								<TD width=\"4%\">$Ribs_MFR</TD>
+								<TD width=\"4%\">$Ribs_PH</TD>
+								<TD width=\"4%\">$Ribs_ST</TD>
+								<TD width=\"4%\">$Ribs_VIS</TD>
+								<TD width=\"4%\">$Ribs_Other</TD>
+								<TD width=\"11%\">$Ribs_Specify</TD>
 								<TD width=\"10%\">";
 									if ($Ribs_Response == "Off") {echo "No Response";} else {echo "$Ribs_Response";}
 							echo "</TD>
@@ -707,13 +707,13 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"5%\">$Lumb_HVLA</TD>
 								<TD width=\"5%\">$Lumb_IND</TD>
 								<TD width=\"5%\">$Lumb_Lymph</TD>
-								<TD width=\"5%\">$Lumb_ME</TD>
-								<TD width=\"5%\">$Lumb_MFR</TD>
-								<TD width=\"5%\">$Lumb_PH</TD>
-								<TD width=\"5%\">$Lumb_ST</TD>
-								<TD width=\"5%\">$Lumb_VIS</TD>
-								<TD width=\"5%\">$Lumb_Other</TD>
-								<TD width=\"5%\">$Lumb_Specify</TD>
+								<TD width=\"4%\">$Lumb_ME</TD>
+								<TD width=\"4%\">$Lumb_MFR</TD>
+								<TD width=\"4%\">$Lumb_PH</TD>
+								<TD width=\"4%\">$Lumb_ST</TD>
+								<TD width=\"4%\">$Lumb_VIS</TD>
+								<TD width=\"4%\">$Lumb_Other</TD>
+								<TD width=\"11%\">$Lumb_Specify</TD>
 								<TD width=\"10%\">";
 									if ($Lumb_Response == "Off") {echo "No Response";} else {echo "$Lumb_Response";}
 							echo "</TD>
@@ -732,13 +732,13 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"5%\">$Sac_HVLA</TD>
 								<TD width=\"5%\">$Sac_Ind</TD>
 								<TD width=\"5%\">$Sac_Lymph</TD>
-								<TD width=\"5%\">$Sac_ME</TD>
-								<TD width=\"5%\">$Sac_MFR</TD>
-								<TD width=\"5%\">$Sac_PH</TD>
-								<TD width=\"5%\">$Sac_ST</TD>
-								<TD width=\"5%\">$Sac_VIS</TD>
-								<TD width=\"5%\">$Sac_Other</TD>
-								<TD width=\"5%\">$Sac_Specify</TD>
+								<TD width=\"4%\">$Sac_ME</TD>
+								<TD width=\"4%\">$Sac_MFR</TD>
+								<TD width=\"4%\">$Sac_PH</TD>
+								<TD width=\"4%\">$Sac_ST</TD>
+								<TD width=\"4%\">$Sac_VIS</TD>
+								<TD width=\"4%\">$Sac_Other</TD>
+								<TD width=\"11%\">$Sac_Specify</TD>
 								<TD width=\"10%\">";
 									if ($Sac_Response == "Off") {echo "No Response";} else {echo "$Sac_Response";}
 							echo "</TD>
@@ -757,13 +757,13 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"5%\">$Pelvis_HVLA</TD>
 								<TD width=\"5%\">$Pelvis_IND</TD>
 								<TD width=\"5%\">$Pelvis_Lymph</TD>
-								<TD width=\"5%\">$Pelvis_ME</TD>
-								<TD width=\"5%\">$Pelvis_MFR</TD>
-								<TD width=\"5%\">$Pelvis_PH</TD>
-								<TD width=\"5%\">$Pelvis_ST</TD>
-								<TD width=\"5%\">$Pelvis_VIS</TD>
-								<TD width=\"5%\">$Pelvis_Other</TD>
-								<TD width=\"5%\">$Pelvis_Specify</TD>
+								<TD width=\"4%\">$Pelvis_ME</TD>
+								<TD width=\"4%\">$Pelvis_MFR</TD>
+								<TD width=\"4%\">$Pelvis_PH</TD>
+								<TD width=\"4%\">$Pelvis_ST</TD>
+								<TD width=\"4%\">$Pelvis_VIS</TD>
+								<TD width=\"4%\">$Pelvis_Other</TD>
+								<TD width=\"11%\">$Pelvis_Specify</TD>
 								<TD width=\"10%\">";
 									if ($Pelvis_Response == "Off") {echo "No Response";} else {echo "$Pelvis_Response";}
 							echo "</TD>
@@ -782,13 +782,13 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"5%\">$Abd_HVLA</TD>
 								<TD width=\"5%\">$Abd_IND</TD>
 								<TD width=\"5%\">$Abd_Lymph</TD>
-								<TD width=\"5%\">$Abd_ME</TD>
-								<TD width=\"5%\">$Abd_MFR</TD>
-								<TD width=\"5%\">$Abd_PH</TD>
-								<TD width=\"5%\">$Abd_ST</TD>
-								<TD width=\"5%\">$Abd_VIS</TD>
-								<TD width=\"5%\">$Abd_Other</TD>
-								<TD width=\"5%\">$Abd_Specify</TD>
+								<TD width=\"4%\">$Abd_ME</TD>
+								<TD width=\"4%\">$Abd_MFR</TD>
+								<TD width=\"4%\">$Abd_PH</TD>
+								<TD width=\"4%\">$Abd_ST</TD>
+								<TD width=\"4%\">$Abd_VIS</TD>
+								<TD width=\"4%\">$Abd_Other</TD>
+								<TD width=\"11%\">$Abd_Specify</TD>
 								<TD width=\"10%\">";
 									if ($Abd_Response == "Off") {echo "No Response";} else {echo "$Abd_Response";}
 							echo "</TD>
@@ -807,13 +807,13 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"5%\">$Up_Ex_HVLA</TD>
 								<TD width=\"5%\">$Up_Ex_IND</TD>
 								<TD width=\"5%\">$Up_Ex_IND</TD>
-								<TD width=\"5%\">$Up_Ex_ME</TD>
-								<TD width=\"5%\">$Up_Ex_MFR</TD>
-								<TD width=\"5%\">$Up_Ex_PH</TD>
-								<TD width=\"5%\">$Up_Ex_ST</TD>
-								<TD width=\"5%\">$Up_Ex_VIS</TD>
-								<TD width=\"5%\">$Up_Ex_Other</TD>
-								<TD width=\"5%\">$Up_Ex_Specify</TD>
+								<TD width=\"4%\">$Up_Ex_ME</TD>
+								<TD width=\"4%\">$Up_Ex_MFR</TD>
+								<TD width=\"4%\">$Up_Ex_PH</TD>
+								<TD width=\"4%\">$Up_Ex_ST</TD>
+								<TD width=\"4%\">$Up_Ex_VIS</TD>
+								<TD width=\"4%\">$Up_Ex_Other</TD>
+								<TD width=\"11%\">$Up_Ex_Specify</TD>
 								<TD width=\"10%\">";
 									if ($Up_Ex_Response == "Off") {echo "No Response";} else {echo "$Up_Ex_Response";}
 							echo "</TD>
@@ -832,13 +832,13 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"5%\">$Should_HVLA</TD>
 								<TD width=\"5%\">$Should_IND</TD>
 								<TD width=\"5%\">$Should_Lymph</TD>
-								<TD width=\"5%\">$Should_ME</TD>
-								<TD width=\"5%\">$Should_MFR</TD>
-								<TD width=\"5%\">$Should_PH</TD>
-								<TD width=\"5%\">$Should_ST</TD>
-								<TD width=\"5%\">$Should_VIS</TD>
-								<TD width=\"5%\">$Should_Other</TD>
-								<TD width=\"5%\">$Should_Specify</TD>
+								<TD width=\"4%\">$Should_ME</TD>
+								<TD width=\"4%\">$Should_MFR</TD>
+								<TD width=\"4%\">$Should_PH</TD>
+								<TD width=\"4%\">$Should_ST</TD>
+								<TD width=\"4%\">$Should_VIS</TD>
+								<TD width=\"4%\">$Should_Other</TD>
+								<TD width=\"11%\">$Should_Specify</TD>
 								<TD width=\"10%\">";
 									if ($Should_Response == "Off") {echo "No Response";} else {echo "$Should_Response";}
 							echo "</TD>
@@ -857,13 +857,13 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"5%\">$Elbow_HVLA</TD>
 								<TD width=\"5%\">$Elbow_IND</TD>
 								<TD width=\"5%\">$Elbow_Lymph</TD>
-								<TD width=\"5%\">$Elbow_ME</TD>
-								<TD width=\"5%\">$Elbow_MFR</TD>
-								<TD width=\"5%\">$Elbow_PH</TD>
-								<TD width=\"5%\">$Elbow_ST</TD>
-								<TD width=\"5%\">$Elbow_VIS</TD>
-								<TD width=\"5%\">$Elbow_Other</TD>
-								<TD width=\"5%\">$Elbow_Specify</TD>
+								<TD width=\"4%\">$Elbow_ME</TD>
+								<TD width=\"4%\">$Elbow_MFR</TD>
+								<TD width=\"4%\">$Elbow_PH</TD>
+								<TD width=\"4%\">$Elbow_ST</TD>
+								<TD width=\"4%\">$Elbow_VIS</TD>
+								<TD width=\"4%\">$Elbow_Other</TD>
+								<TD width=\"11%\">$Elbow_Specify</TD>
 								<TD width=\"10%\">";
 									if ($Elbow_Response == "Off") {echo "No Response";} else {echo "$Elbow_Response";}
 							echo "</TD>
@@ -882,13 +882,13 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"5%\">$Wrist_HVLA</TD>
 								<TD width=\"5%\">$Wrist_IND</TD>
 								<TD width=\"5%\">$Wrist_Lymph</TD>
-								<TD width=\"5%\">$Wrist_ME</TD>
-								<TD width=\"5%\">$Wrist_MFR</TD>
-								<TD width=\"5%\">$Wrist_PH</TD>
-								<TD width=\"5%\">$Wrist_ST</TD>
-								<TD width=\"5%\">$Wrist_VIS</TD>
-								<TD width=\"5%\">$Wrist_Other</TD>
-								<TD width=\"5%\">$Wrist_Specify</TD>
+								<TD width=\"4%\">$Wrist_ME</TD>
+								<TD width=\"4%\">$Wrist_MFR</TD>
+								<TD width=\"4%\">$Wrist_PH</TD>
+								<TD width=\"4%\">$Wrist_ST</TD>
+								<TD width=\"4%\">$Wrist_VIS</TD>
+								<TD width=\"4%\">$Wrist_Other</TD>
+								<TD width=\"11%\">$Wrist_Specify</TD>
 								<TD width=\"10%\">";
 									if ($Wrist_Response == "Off") {echo "No Response";} else {echo "$Wrist_Response";}
 							echo "</TD>
@@ -907,13 +907,13 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"5%\">$Low_Ex_HVLA</TD>
 								<TD width=\"5%\">$Low_Ex_IND</TD>
 								<TD width=\"5%\">$Low_Ex_Lymph</TD>
-								<TD width=\"5%\">$Low_Ex_ME</TD>
-								<TD width=\"5%\">$Low_Ex_MFR</TD>
-								<TD width=\"5%\">$Low_Ex_PH</TD>
-								<TD width=\"5%\">$Low_Ex_ST</TD>
-								<TD width=\"5%\">$Low_Ex_VIS</TD>
-								<TD width=\"5%\">$Low_Ex_Other</TD>
-								<TD width=\"5%\">$Low_Ex_Specify</TD>
+								<TD width=\"4%\">$Low_Ex_ME</TD>
+								<TD width=\"4%\">$Low_Ex_MFR</TD>
+								<TD width=\"4%\">$Low_Ex_PH</TD>
+								<TD width=\"4%\">$Low_Ex_ST</TD>
+								<TD width=\"4%\">$Low_Ex_VIS</TD>
+								<TD width=\"4%\">$Low_Ex_Other</TD>
+								<TD width=\"11%\">$Low_Ex_Specify</TD>
 								<TD width=\"10%\">";
 									if ($Low_Ex_Response == "Off") {echo "No Response";} else {echo "$Low_Ex_Response";}
 							echo "</TD>
@@ -932,13 +932,13 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"5%\">$Thigh_HVLA</TD>
 								<TD width=\"5%\">$Thigh_Ind</TD>
 								<TD width=\"5%\">$Thigh_Lymph</TD>
-								<TD width=\"5%\">$Thigh_ME</TD>
-								<TD width=\"5%\">$Thigh_MFR</TD>
-								<TD width=\"5%\">$Thigh_PH</TD>
-								<TD width=\"5%\">$Thigh_ST</TD>
-								<TD width=\"5%\">$Thigh_VIS</TD>
-								<TD width=\"5%\">$Thigh_Other</TD>
-								<TD width=\"5%\">$Thigh_Specify</TD>
+								<TD width=\"4%\">$Thigh_ME</TD>
+								<TD width=\"4%\">$Thigh_MFR</TD>
+								<TD width=\"4%\">$Thigh_PH</TD>
+								<TD width=\"4%\">$Thigh_ST</TD>
+								<TD width=\"4%\">$Thigh_VIS</TD>
+								<TD width=\"4%\">$Thigh_Other</TD>
+								<TD width=\"11%\">$Thigh_Specify</TD>
 								<TD width=\"10%\">";
 									if ($Thigh_Response == "Off") {echo "No Response";} else {echo "$Thigh_Response";}
 							echo "</TD>
@@ -957,13 +957,13 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"5%\">$Knee_HVLA</TD>
 								<TD width=\"5%\">$Knee_IND</TD>
 								<TD width=\"5%\">$Knee_Lymph</TD>
-								<TD width=\"5%\">$Knee_ME</TD>
-								<TD width=\"5%\">$Knee_MFR</TD>
-								<TD width=\"5%\">$Knee_PH</TD>
-								<TD width=\"5%\">$Knee_PH</TD>
-								<TD width=\"5%\">$Knee_VIS</TD>
-								<TD width=\"5%\">$Knee_Other</TD>
-								<TD width=\"5%\">$Knee_Specify</TD>
+								<TD width=\"4%\">$Knee_ME</TD>
+								<TD width=\"4%\">$Knee_MFR</TD>
+								<TD width=\"4%\">$Knee_PH</TD>
+								<TD width=\"4%\">$Knee_PH</TD>
+								<TD width=\"4%\">$Knee_VIS</TD>
+								<TD width=\"4%\">$Knee_Other</TD>
+								<TD width=\"11%\">$Knee_Specify</TD>
 								<TD width=\"10%\">";
 									if ($Knee_Response == "Off") {echo "No Response";} else {echo "$Knee_Response";}
 							echo "</TD>
@@ -982,19 +982,22 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"5%\">$Ankle_HVLA</TD>
 								<TD width=\"5%\">$Ankle_IND</TD>
 								<TD width=\"5%\">$Ankle_Lymph</TD>
-								<TD width=\"5%\">$Ankle_ME</TD>
-								<TD width=\"5%\">$Ankle_MFR</TD>
-								<TD width=\"5%\">$Ankle_PH</TD>
-								<TD width=\"5%\">$Ankle_ST</TD>
-								<TD width=\"5%\">$Ankle_VIS</TD>
-								<TD width=\"5%\">$Ankle_Other</TD>
-								<TD width=\"5%\">$Ankle_Specify</TD>
+								<TD width=\"4%\">$Ankle_ME</TD>
+								<TD width=\"4%\">$Ankle_MFR</TD>
+								<TD width=\"4%\">$Ankle_PH</TD>
+								<TD width=\"4%\">$Ankle_ST</TD>
+								<TD width=\"4%\">$Ankle_VIS</TD>
+								<TD width=\"4%\">$Ankle_Other</TD>
+								<TD width=\"11%\">$Ankle_Specify</TD>
 								<TD width=\"10%\">";
 									if ($Ankle_Response == "Off") {echo "No Response";} else {echo "$Ankle_Response";}
 							echo "</TD>
 							</TR>";
 						}
-					
+						
+					echo "<TR>
+							<TH width=\"100%\"><center> Diagnoses Documentation </center></TH></TR>";
+							
 					if (isset($C739)) 
 						{
 							echo "
@@ -1180,11 +1183,17 @@ if ($failed == "ALL_IS_PERFECT")
 							</TR>";
 						}
 						
+					if ((strlen($Procuedures_1) > 0) || (strlen($Procedures_2) > 0) || (strlen($Procedures_3) > 0) || (strlen($Procedures_4) > 0) || (strlen($Procedures_5) > 0))
+						{
+							echo "<TR>
+							<TH width=\"100%\"><center> Additional Procedures/Interventions </center></TH></TR>";
+						}
+							
 					if (strlen($Procuedures_1) > 0)
 						{
 							echo "
 							<TR>
-								<TD width=\"100%\" colspan=\"15\">List any procedures/interventions provided in addition to OMT:<br />$Procuedures_1</TD>
+								<TD width=\"100%\" colspan=\"15\">$Procuedures_1</TD>
 							</TR>";
 						}
 
@@ -1192,7 +1201,7 @@ if ($failed == "ALL_IS_PERFECT")
 						{
 							echo "
 							<TR>
-								<TD width=\"100%\" colspan=\"15\">List any procedures/interventions provided in addition to OMT:<br />$Procuedures_2</TD>
+								<TD width=\"100%\" colspan=\"15\">$Procedures_2</TD>
 							</TR>";
 						}
 
@@ -1200,7 +1209,7 @@ if ($failed == "ALL_IS_PERFECT")
 						{
 							echo "
 							<TR>
-								<TD width=\"100%\" colspan=\"15\">List any procedures/interventions provided in addition to OMT:<br />$Procuedures_3</TD>
+								<TD width=\"100%\" colspan=\"15\">$Procedures_3</TD>
 							</TR>";
 						}
 
@@ -1208,7 +1217,7 @@ if ($failed == "ALL_IS_PERFECT")
 						{
 							echo "
 							<TR>
-								<TD width=\"100%\" colspan=\"15\">List any procedures/interventions provided in addition to OMT:<br />$Procuedures_4</TD>
+								<TD width=\"100%\" colspan=\"15\">$Procedures_4</TD>
 							</TR>";
 						}
 
@@ -1216,11 +1225,11 @@ if ($failed == "ALL_IS_PERFECT")
 						{
 							echo "
 							<TR>
-								<TD width=\"100%\" colspan=\"15\">List any procedures/interventions provided in addition to OMT:<br />$Procuedures_5</TD>
+								<TD width=\"100%\" colspan=\"15\">$Procedures_5</TD>
 							</TR>";
 						}
 				echo "
-						
+					</tbody2>	
 					</TABLE>";
 				}
 			
