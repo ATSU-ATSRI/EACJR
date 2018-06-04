@@ -4,6 +4,14 @@ if ($failed == "ALL_IS_PERFECT")
 {
 	include('menu_item.php');
 
+
+if (!($study_QUERY = $dblink->prepare("SELECT `study_id`, `name` FROM `studys` WHERE (CURDATE() BETWEEN `date_start` AND `date_end`) AND (study_id = ?);"))) { logger(__LINE__, "SQLi Prepare: $study_QUERY->error"); }
+if (!($study_QUERY->bind_param($_SESSION["study"]))) { logger(__LINE__, "SQLi pBind: $study_QUERY->error"; }
+if (!($study_QUERY->execute())) { logger(__LINE__, "SQLi execute: $study_QUERY->error"); }
+if (!($study_QUERY->bind_result($study_id, $study_name))) { logger(__LINE__, "SQLi rBind: $study_QUERY->error"); }
+$study_QUERY->store_result();
+if ($study_QUERY->num_rows > 0)
+	{
 	if (!($events_QUERY = $dblink->prepare("
 										SELECT 
 											patient.patient_id,
@@ -178,6 +186,14 @@ if ($failed == "ALL_IS_PERFECT")
 				}
 		}
 		else
+		{
+			echo "
+				<tr>
+					<td colspan=\"4\" width=\"100%\"><center>No records availiable to review.</center></td>
+				</tr>";
+		}
+	}
+	else
 		{
 			echo "
 				<tr>
