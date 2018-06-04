@@ -207,20 +207,30 @@ if ($failed == "ALL_IS_PERFECT")
 
 							echo "</TD>
 									<TD width=\"11%\"> $pt_24hr_severity <br /><br />";
+											echo "
+													<b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; ";
 											if (strlen($pt_24hr_related) > 0)
-											{
-												echo "
-													<b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; $pt_24hr_related <br /><br />
-													<INPUT type=\"hidden\" name=\"$event_id-pt_24hr_related\" id=\"$event_id-pt_24hr_related\" value=\"$pt_24hr_related\">";
-											}
+												{
+													echo " $pt_24hr_related <br /><br />
+														<INPUT type=\"hidden\" name=\"$event_id-pt_24hr_related\" id=\"$event_id-pt_24hr_related\" value=\"$pt_24hr_related\">";
+												}
+												else
+												{	
+													echo " No Response.";
+												}
 											echo "</TD>
 									<TD width=\"11%\"> $pt_72hr_severity <br /><br />";
+											echo "
+													<b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp;";
 											if (strlen($pt_72hr_related) > 0)
-											{
-												echo "
-													<b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; $pt_72hr_related <br /><br />
+												{ 
+													echo " $pt_72hr_related <br /><br />
 													<INPUT type=\"hidden\" name=\"$event_id-pt_72hr_related\" id=\"$event_id-pt_72hr_related\" value=\"$pt_72hr_related\">";
-											}
+												}
+												else
+												{
+													echo " No Response.";
+												}
 											echo "
 											</TD>
 									<TD width=\"11%\"> $pt_1wk </TD>";
