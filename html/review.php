@@ -1082,10 +1082,10 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"40%\" colspan=\"6\">$Written_Diagnosis_1</TD>
 								<TD width=\"20%\"colspan=\"3\">$Diagnosis_Code_1</TD>
 								<TD width=\"20%\"colspan=\"3\">Related to Chief Complaint?  ";
-									if (isset($Chief_Related_1)) {echo "$Chief_Related_1";} else {echo "No Response";}
+									if (isset($Chief_Related_1) && ($Chief_Related_1 !== "Off")) {echo "$Chief_Related_1";} else {echo "No Response";}
 							echo "</TD>
 								<TD width=\"20%\"colspan=\"3\">Related to Somatic Dysfunction?  ";
-									if (isset($SD_Related_1)) {echo "$SD_Related_1";} else {echo "No Response";}
+									if (isset($SD_Related_1) && ($SD_Related_1 !== "Off")) {echo "$SD_Related_1";} else {echo "No Response";}
 							echo "</TD>
 							</TR>";
 						}
@@ -1097,10 +1097,10 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"40%\" colspan=\"6\">$Written_Diagnosis_2</TD>
 								<TD width=\"20%\" colspan=\"3\">$Diagnosis_Code_2</TD>
 								<TD width=\"20%\" colspan=\"3\">Related to Chief Complaint?  ";
-									if (isset($Chief_Related_2)) {echo "$Chief_Related_2";} else {echo "No Response";}
+									if (isset($Chief_Related_2) && ($Chief_Related_2 !== "Off")) {echo "$Chief_Related_2";} else {echo "No Response";}
 							echo "</TD>
 								<TD width=\"20%\"colspan=\"3\">Related to Somatic Dysfunction?  ";
-									if (isset($SD_Related_2)) {echo "$SD_Related_2";} else {echo "No Response";}
+									if (isset($SD_Related_2) && ($SD_Related_2 !== "Off")) {echo "$SD_Related_2";} else {echo "No Response";}
 							echo "</TD>
 							</TR>";
 						}
@@ -1112,10 +1112,10 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"40%\" colspan=\"6\">$Written_Diagnosis_3</TD>
 								<TD width=\"20%\" colspan=\"3\">$Diagnosis_Code_3</TD>
 								<TD width=\"20%\" colspan=\"3\">Related to Chief Complaint?  ";
-									if (isset($Chief_Related_3)) {echo "$Chief_Related_3";} else {echo "No Response";}
+									if (isset($Chief_Related_3) && ($Chief_Related_3 !== "Off")) {echo "$Chief_Related_3";} else {echo "No Response";}
 							echo "</TD>
 								<TD width=\"20%\"colspan=\"3\">Related to Somatic Dysfunction?  ";
-									if (isset($SD_Related_3)) {echo "$SD_Related_3";} else {echo "No Response";}
+									if (isset($SD_Related_3) && ($SD_Related_3 !== "Off")) {echo "$SD_Related_3";} else {echo "No Response";}
 							echo "</TD>
 							</TR>";
 						}
@@ -1127,10 +1127,10 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"40%\" colspan=\"6\">$Written_Diagnosis_4</TD>
 								<TD width=\"20%\" colspan=\"3\">$Diagnosis_Code_4</TD>
 								<TD width=\"20%\" colspan=\"3\">Related to Chief Complaint?  ";
-									if (isset($Chief_Related_4)) {echo "$Chief_Related_4";} else {echo "No Response";}
+									if (isset($Chief_Related_4) && ($Chief_Related_4 !== "Off")) {echo "$Chief_Related_4";} else {echo "No Response";}
 							echo "</TD>
 								<TD width=\"20%\"colspan=\"3\">Related to Somatic Dysfunction?  ";
-									if (isset($SD_Related_4)) {echo "$SD_Related_4";} else {echo "No Response";}
+									if (isset($SD_Related_4) && ($SD_Related_4 !== "Off")) {echo "$SD_Related_4";} else {echo "No Response";}
 							echo "</TD>
 							</TR>";
 						}
@@ -1142,10 +1142,10 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"40%\" colspan=\"6\">$Written_Diagnosis_5</TD>
 								<TD width=\"20%\" colspan=\"3\">$Diagnosis_Code_5</TD>
 								<TD width=\"20%\" colspan=\"3\">Related to Chief Complaint?  ";
-									if (isset($Chief_Related_5)) {echo "$Chief_Related_5";} else {echo "No Response";}
+									if (isset($Chief_Related_5) && ($Chief_Related_5 !== "Off")) {echo "$Chief_Related_5";} else {echo "No Response";}
 							echo "</TD>
 								<TD width=\"20%\"colspan=\"3\">Related to Somatic Dysfunction?  ";
-									if (isset($SD_Related_5)) {echo "$SD_Related_5";} else {echo "No Response";}
+									if (isset($SD_Related_5) && ($SD_Related_6 !== "Off")) {echo "$SD_Related_5";} else {echo "No Response";}
 							echo "</TD>
 							</TR>";
 						}
@@ -1157,10 +1157,10 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"40%\" colspan=\"6\">$Written_Diagnosis_6</TD>
 								<TD width=\"20%\" colspan=\"3\">$Diagnosis_Code_6</TD>
 								<TD width=\"20%\" colspan=\"3\">Related to Chief Complaint?  ";
-									if (isset($Chief_Related_6)) {echo "$Chief_Related_6";} else {echo "No Response";}
+									if (isset($Chief_Related_6) && ($Chief_Related_6 !== "Off")) {echo "$Chief_Related_6";} else {echo "No Response";}
 							echo "</TD>
 								<TD width=\"20%\"colspan=\"3\">Related to Somatic Dysfunction?  ";
-									if (isset($SD_Related_6)) {echo "$SD_Related_6";} else {echo "No Response";}
+									if (isset($SD_Related_6) && ($SD_Related_6 !== "Off")) {echo "$SD_Related_6";} else {echo "No Response";}
 							echo "</TD>
 							</TR>";
 						}
@@ -1172,10 +1172,10 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"40%\" colspan=\"6\">$Written_Diagnosis_7</TD>
 								<TD width=\"20%\" colspan=\"3\">$Diagnosis_Code_7</TD>
 								<TD width=\"20%\" colspan=\"3\">Related to Chief Complaint?  ";
-									if (isset($Chief_Related_7)) {echo "$Chief_Related_7";} else {echo "No Response";}
+									if (isset($Chief_Related_7) && ($Chief_Related_7 !== "Off")) {echo "$Chief_Related_7";} else {echo "No Response";}
 							echo "</TD>
 								<TD width=\"20%\"colspan=\"3\">Related to Somatic Dysfunction? ";
-									if (isset($SD_Related_7)) {echo "$SD_Related_7";} else {echo "No Response";}
+									if (isset($SD_Related_7) && ($SD_Related_7 !== "Off")) {echo "$SD_Related_7";} else {echo "No Response";}
 							echo "</TD>
 							</TR>";
 						}
