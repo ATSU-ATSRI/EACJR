@@ -45,7 +45,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 											FROM
 												studys
 											WHERE
-												(date_end IS NULL);"))) { logger(__LINE__, "SQLi Prepare: $studys_QUERY->error"); }
+												(CURDATE() BETWEEN `date_start` AND `date_end`);"))) { logger(__LINE__, "SQLi Prepare: $studys_QUERY->error"); }
 	if (!($studys_QUERY->execute())) { logger(__LINE__, "SQLi execute: $studys_QUERY->error"); }
 	if (!($studys_QUERY->bind_result($study_id, $quorum, $members))) { logger(__LINE__, "SQLi rBind: $studys_QUERY->error"); }
 	$studys_QUERY->store_result();
