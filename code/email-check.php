@@ -52,7 +52,7 @@ if ($study_QUERY->num_rows > 0)
 										symptom.event_id = review.event_id
 									WHERE
 										(
-											(patient.study_id IN('2')) AND(
+											(patient.study_id IN(?)) AND(
 												patient.patient_id NOT IN(
 												SELECT
 													patient.patient_id
@@ -67,7 +67,7 @@ if ($study_QUERY->num_rows > 0)
 												ON
 													symptom.event_id = review.event_id
 												WHERE
-													(review.user_id = '1')
+													(review.user_id = ?)
 											)
 											) AND(
 												(
