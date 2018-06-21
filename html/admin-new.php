@@ -16,7 +16,9 @@ if ($failed == "ALL_IS_PERFECT")
 			<br />
 			<a href=\"admin-history.php\"><button type=\"button\">View user history</button></a><br />		
 			<br />
-			<a href=\"admin-message.php\"><button type=\"button\">View Admin Messages</button></a><br />
+			<a href=\"admin-message.php\"><button type=\"button\">View Admin messages</button></a><br />
+			<br />
+			<a href=\"admin-study.php\"><button type=\"button\">View study information</button></a><br /?
 			<br />
 			
 		</span>
@@ -58,10 +60,10 @@ if ($failed == "ALL_IS_PERFECT")
 					$new_initials = $_POST['new_initials'];
 					$new_email = $_POST['new_email'];					
 					
-					if (!($check_QUERY = $dblink->prepare("SELECT email FROM logins WHERE email=?"))) { logger("SQLi Prepare: $check_QUERY->error"); }
-					if (!($check_QUERY->bind_param('s', $new_email))) { logger("SQLi pBind: $check_QUERY->error"); }
-					if (!($check_QUERY->execute())) { logger("SQLi execute: $check_QUERY->error"); }
-					if (!($check_QUERY->bind_result($check_user))) { logger("SQLi rBind: $check_QUERY->error"); }
+					if (!($check_QUERY = $dblink->prepare("SELECT email FROM logins WHERE email=?"))) { logger(__LINE__, "SQLi Prepare: $check_QUERY->error"); }
+					if (!($check_QUERY->bind_param('s', $new_email))) { logger(__LINE__, "SQLi pBind: $check_QUERY->error"); }
+					if (!($check_QUERY->execute())) { logger(__LINE__, "SQLi execute: $check_QUERY->error"); }
+					if (!($check_QUERY->bind_result($check_user))) { logger(__LINE__, "SQLi rBind: $check_QUERY->error"); }
 					$check_QUERY->store_result();
 					
 					if ($check_QUERY->num_rows() < 1)
@@ -71,7 +73,7 @@ if ($failed == "ALL_IS_PERFECT")
 							$pwords1 = array ("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z");
 							$pwords2 = array ("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z");
 							$pwords3 = array ("1", "2", "3", "4", "5", "6", "7", "8", "9", "0");
-							$pwords4 = Array ("!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "+", "-", "?", "~", "_", "=", ">", "<");
+							$pwords4 = Array ("!", "@", "#", "$", "%", "^", "*", "(", ")", "+", "-", "?", "~", "_", "=", ">", "<");
 							$i = 0;
 							$l = 7; //this is how many chars you want MAX
 							$passer = "";
@@ -121,9 +123,9 @@ if ($failed == "ALL_IS_PERFECT")
 									}
 							$bypassdate = "1900-01-01";		// used to set the new user's password as expired for first login.
 							
-							if (!($adduser_QUERY = $dblink->prepare("INSERT INTO jury_room.logins (name, initials, email, pass, pass_date, rank) VALUES (?, ?, ?, ?, ?, 1)"))) { logger("SQLi Prepare: $adduser_QUERY->error"); }
-							if (!($adduser_QUERY->bind_param('sssss', $new_name, $new_initials, $new_email, $passer, $bypassdate))) { logger("SQLi pBind: $adduser_QUERY->error"); }
-							if (!($adduser_QUERY->execute())) { logger("SQLi execute: $adduser_QUERY->error"); }
+							if (!($adduser_QUERY = $dblink->prepare("INSERT INTO jury_room.logins (name, initials, email, pass, pass_date, rank) VALUES (?, ?, ?, ?, ?, 1)"))) { logger(__LINE__, "SQLi Prepare: $adduser_QUERY->error"); }
+							if (!($adduser_QUERY->bind_param('sssss', $new_name, $new_initials, $new_email, $passer, $bypassdate))) { logger(__LINE__, "SQLi pBind: $adduser_QUERY->error"); }
+							if (!($adduser_QUERY->execute())) { logger(__LINE__, "SQLi execute: $adduser_QUERY->error"); }
 							$adduser_QUERY->close();
 							
 							$admin_name = $_SESSION["name"];
@@ -133,7 +135,7 @@ if ($failed == "ALL_IS_PERFECT")
 							$mail->WordWrap = 50;
 							$mail->IsHTML(true);
 							$mail->Mailer = "smtp";
-							$mail->Host = "smtp.gmail.com:587";
+							$mail->Host = $mail_host;
 							$mail->Username = $mail_username;
 							$mail->Password = $mail_password;
 							$mail->SMTPAuth = true;
@@ -149,7 +151,7 @@ if ($failed == "ALL_IS_PERFECT")
 								Greetings, $new_name.<br />
 								<br />
 								A user account has been created for you by $admin_name, in the EAC Portal. <br />
-								URL: https://this.website.not.ready <br />
+								URL: https://URL GOES HERE <br />
 								<br />
 								User name: $new_email<br />
 								Single use password: $passer<br />
@@ -163,7 +165,7 @@ if ($failed == "ALL_IS_PERFECT")
 							if (!$mail->Send())
 								{
 									$mailerror = $mail->ErrorInfo;
-									logger("PHPMailer Error: $mailerror");
+									logger(__LINE__, "PHPMailer Error: $mailerror");
 								}
 								else
 								{

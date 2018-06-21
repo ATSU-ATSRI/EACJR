@@ -5,9 +5,9 @@ if ($failed == "ALL_IS_PERFECT")
 	include("menu_item.php");
 	include_once("datacon.php");
 
-	if (!($msg_QUERY = $dblink->prepare("SELECT id, subject, text, active FROM jury_room.message;"))) {logger("SQLi Prepare: $msg_QUERY->error");}
-		if (!($msg_QUERY->execute())) { logger("SQLi execute: $msg_QUERY->error"); }
-		if (!($msg_QUERY->bind_result($msg_id, $msg_subject, $msg_text, $msg_active))) {logger("SQLi rBind: $msg_QUERY->error");}
+	if (!($msg_QUERY = $dblink->prepare("SELECT id, subject, text, active FROM jury_room.message;"))) {logger(__LINE__, "SQLi Prepare: $msg_QUERY->error");}
+		if (!($msg_QUERY->execute())) { logger(__LINE__, "SQLi execute: $msg_QUERY->error"); }
+		if (!($msg_QUERY->bind_result($msg_id, $msg_subject, $msg_text, $msg_active))) {logger(__LINE__, "SQLi rBind: $msg_QUERY->error");}
 		$msg_QUERY->store_result();
 		
 	
@@ -23,11 +23,14 @@ if ($failed == "ALL_IS_PERFECT")
 	echo "
 			<span class=\"left-col\">
 			
-			<a href=\"admin-new.php\"><button type=\"button\">Add new user</button></a><br />
+			
+			<a href=\"admin.php\"><button type=\"button\">View user list</button></a><br />
+			<br />
+			<a href=\"admin-new.php\"><button type=\"button\">Add a new user</button></a><br />
 			<br />
 			<a href=\"admin-history.php\"><button type=\"button\">View user history</button></a><br />		
 			<br />
-			<a href=\"admin.php\"><button type=\"button\">View user list</button></a><br />
+			<a href=\"admin-study.php\"><button type=\"button\">View study information</button></a><br /?
 			<br />
 			
 		</span>
@@ -89,9 +92,9 @@ echo "	<TR><TH width=\"50%\"></TH><TH width=\"50%\"><input type=\"submit\" name=
 							$msg_toggle = "0";
 						}
 				
-					if (!($update_QUERY = $dblink->prepare("UPDATE jury_room.message SET active=? WHERE id=?"))) {logger("SQLi Prepare: $update_QUERY->error");}
-					if (!($update_QUERY->bind_param('ss', $msg_toggle, $toggle_id))) { logger("SQLi Bind Error: $update_QUERY->error"); }
-					if (!($update_QUERY->execute())) { logger("SQLi execute: $update_QUERY->error"); }
+					if (!($update_QUERY = $dblink->prepare("UPDATE jury_room.message SET active=? WHERE id=?"))) {logger(__LINE__, "SQLi Prepare: $update_QUERY->error");}
+					if (!($update_QUERY->bind_param('ss', $msg_toggle, $toggle_id))) { logger(__LINE__, "SQLi Bind Error: $update_QUERY->error"); }
+					if (!($update_QUERY->execute())) { logger(__LINE__, "SQLi execute: $update_QUERY->error"); }
 					$update_QUERY->close();
 					$dblink->close();
 					$_SESSION['pass_fail'] = "Message Updated.";

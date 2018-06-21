@@ -22,9 +22,13 @@ if ($failed == "ALL_IS_PERFECT")
 			
 			<a href=\"admin.php\"><button type=\"button\">View user list</button></a><br />
 			<br />
+			<a href=\"admin-new.php\"><button type=\"button\">Add a new user</button></a><br />
+			<br />
 			<a href=\"admin-history.php\"><button type=\"button\">View user history</button></a><br />		
 			<br />
-			<a href=\"admin-message.php\"><button type=\"button\">View Admin Messages</button></a><br />
+			<a href=\"admin-message.php\"><button type=\"button\">View Admin messages</button></a><br />
+			<br />
+			<a href=\"admin-study.php\"><button type=\"button\">View study information</button></a><br /?
 			<br />
 			
 		</span>
@@ -103,7 +107,7 @@ if ($failed == "ALL_IS_PERFECT")
 							$pwords1 = array ("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z");
 							$pwords2 = array ("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z");
 							$pwords3 = array ("1", "2", "3", "4", "5", "6", "7", "8", "9", "0");
-							$pwords4 = Array ("!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "+", "-", "?", "~", "_", "=");
+							$pwords4 = Array ("!", "@", "#", "$", "%", "^", "*", "(", ")", "+", "-", "?", "~", "_", "=");
 							$i = 0;
 							$l = 7; //this is how many chars you want MAX
 							$passer = "";
@@ -163,7 +167,7 @@ if ($failed == "ALL_IS_PERFECT")
 							$mail->WordWrap = 50;
 							$mail->IsHTML(true);
 							$mail->Mailer = "smtp";
-							$mail->Host = "SMTP HOST HERE";
+							$mail->Host = $mail_host;
 							$mail->Username = $mail_username;
 							$mail->Password = $mail_password;
 							$mail->SMTPAuth = true;
@@ -181,7 +185,7 @@ if ($failed == "ALL_IS_PERFECT")
 										Greetings, $new_name.<br />
 										<br />
 										Your user account has been modified by $admin_name, in the EAC Portal. <br />
-										URL: http://URL GOES HERE/ <br />
+										URL: https://URL GOES HERE <br />
 										<br />
 										User name: $new_email<br />
 										Single use password: $passer<br />
@@ -196,7 +200,7 @@ if ($failed == "ALL_IS_PERFECT")
 										Greetings, $new_name.<br />
 										<br />
 										Your user account has been modified by $admin_name, in the EAC Portal. <br />
-										URL: http://URL GOES HERE/ <br />
+										URL: https://URL GOES HERE <br />
 										<br />
 										User name: $new_email<br />
 										<br />

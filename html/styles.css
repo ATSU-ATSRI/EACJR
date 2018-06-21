@@ -25,10 +25,10 @@ thead {
 	overflow-y: visible;
 	}
 
-	thead2 {
+thead2 {
 	overflow-y: scroll;
 	}
-
+	
 tbody { 
 	overflow-y: scroll;
 	height: 500px;
@@ -37,6 +37,11 @@ tbody {
 tbody2 { 
 	overflow-y: scroll;
 	height: 300px;
+	}
+
+tbody3 { 
+	overflow-y: scroll;
+	height: 100px;
 	}
 	
 th {

@@ -5,9 +5,9 @@ if ($failed == "ALL_IS_PERFECT")
 	include("datacon.php");
 	include("menu_item.php");
 	
-	if (!($look_QUERY = $dblink->prepare("SELECT user_id, email, pass_date, `name`, initials, rank.`desc` FROM jury_room.logins INNER JOIN jury_room.rank ON jury_room.logins.rank = jury_room.rank.rank_id WHERE rank > 0 ORDER BY name DESC;"))) {logger("SQLi Prepare: $look_QUERY->error");}
-	if (!($look_QUERY->execute())) { logger("SQLi execute: $look_QUERY->error"); }
-	if (!($look_QUERY->bind_result($look_id, $look_email, $look_pass_date, $look_name, $look_initials, $look_rank))) {logger("SQLi rBind: $look_QUERY->error");}
+	if (!($look_QUERY = $dblink->prepare("SELECT user_id, email, pass_date, `name`, initials, rank.`desc` FROM jury_room.logins INNER JOIN jury_room.rank ON jury_room.logins.rank = jury_room.rank.rank_id WHERE rank > 0 ORDER BY name DESC;"))) {logger(__LINE__, "SQLi Prepare: $look_QUERY->error");}
+	if (!($look_QUERY->execute())) { logger(__LINE__, "SQLi execute: $look_QUERY->error"); }
+	if (!($look_QUERY->bind_result($look_id, $look_email, $look_pass_date, $look_name, $look_initials, $look_rank))) {logger(__LINE__, "SQLi rBind: $look_QUERY->error");}
 	$look_QUERY->store_result();
 	
 	echo "
@@ -15,11 +15,13 @@ if ($failed == "ALL_IS_PERFECT")
 		
 		<span class=\"left-col\">
 			
-			<a href=\"admin-new.php\"><button type=\"button\">Add new user</button></a><br />
+			<a href=\"admin-new.php\"><button type=\"button\">Add a new user</button></a><br />
 			<br />
 			<a href=\"admin-history.php\"><button type=\"button\">View user history</button></a><br />		
 			<br />
-			<a href=\"admin-message.php\"><button type=\"button\">View Admin Messages</button></a><br />
+			<a href=\"admin-message.php\"><button type=\"button\">View Admin messages</button></a><br />
+			<br />
+			<a href=\"admin-study.php\"><button type=\"button\">View study information</button></a><br /?
 			<br />
 			
 		</span>
@@ -71,9 +73,9 @@ if ($failed == "ALL_IS_PERFECT")
 		}
 		$look_QUERY->close();
 		
-		if (!($nolook_QUERY = $dblink->prepare("SELECT user_id, email, pass_date, `name`, initials, rank.`desc` FROM jury_room.logins INNER JOIN jury_room.rank ON jury_room.logins.rank = jury_room.rank.rank_id WHERE rank = 0 ORDER BY name DESC;"))) {logger("SQLi Prepare: $nolook_QUERY->error");}
-		if (!($nolook_QUERY->execute())) { logger("SQLi execute: $nolook_QUERY->error"); }
-		if (!($nolook_QUERY->bind_result($look_id, $look_email, $look_pass_date, $look_name, $look_initials, $look_rank))) {logger("SQLi rBind: $nolook_QUERY->error");}
+		if (!($nolook_QUERY = $dblink->prepare("SELECT user_id, email, pass_date, `name`, initials, rank.`desc` FROM jury_room.logins INNER JOIN jury_room.rank ON jury_room.logins.rank = jury_room.rank.rank_id WHERE rank = 0 ORDER BY name DESC;"))) {logger(__LINE__, "SQLi Prepare: $nolook_QUERY->error");}
+		if (!($nolook_QUERY->execute())) { logger(__LINE__, "SQLi execute: $nolook_QUERY->error"); }
+		if (!($nolook_QUERY->bind_result($look_id, $look_email, $look_pass_date, $look_name, $look_initials, $look_rank))) {logger(__LINE__, "SQLi rBind: $nolook_QUERY->error");}
 		$nolook_QUERY->store_result();
 		if (($nolook_QUERY->num_rows) > 0)	
 		{

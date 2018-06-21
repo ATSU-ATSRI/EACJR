@@ -16,13 +16,15 @@ if ($failed == "ALL_IS_PERFECT")
 		
 	echo "	<span class=\"left-col\">
 			
-			<a href=\"admin-new.php\"><button type=\"button\">Add new user</button></a><br />
+			<a href=\"admin.php\"><button type=\"button\">View user list</button></a><br />
+			<br />
+			<a href=\"admin-new.php\"><button type=\"button\">Add a new user</button></a><br />
 			<br />
 			<a href=\"admin-history.php\"><button type=\"button\">View user history</button></a><br />		
 			<br />
-			<a href=\"admin.php\"><button type=\"button\">View user list</button></a><br />
+			<a href=\"admin-message.php\"><button type=\"button\">View Admin messages</button></a><br />
 			<br />
-			<a href=\"admin-message.php\"><button type=\"button\">View Admin Messages</button></a><br />
+			<a href=\"admin-study.php\"><button type=\"button\">View study information</button></a><br /?
 			<br />
 			
 		</span>
@@ -49,9 +51,9 @@ if ($failed == "ALL_IS_PERFECT")
 					$msg_text = $_POST['msg_text'];
 					$msg_text .= " (Posted " . date('Y-m-d Hi') . ")";
 					
-					if (!($update_QUERY = $dblink->prepare("INSERT INTO jury_room.message (subject, text) VALUES(?, ?)"))) {logger("SQLi Prepare: $update_QUERY->error");}
-					if (!($update_QUERY->bind_param('ss', $msg_subject, $msg_text))) { logger("SQLi Bind Error: $update_QUERY->error"); }
-					if (!($update_QUERY->execute())) { logger("SQLi execute: $update_QUERY->error"); }
+					if (!($update_QUERY = $dblink->prepare("INSERT INTO jury_room.message (subject, text) VALUES(?, ?)"))) {logger(__LINE__, "SQLi Prepare: $update_QUERY->error");}
+					if (!($update_QUERY->bind_param('ss', $msg_subject, $msg_text))) { logger(__LINE__, "SQLi Bind Error: $update_QUERY->error"); }
+					if (!($update_QUERY->execute())) { logger(__LINE__, "SQLi execute: $update_QUERY->error"); }
 					$update_QUERY->close();
 					$dblink->close();
 					$_SESSION['pass_fail'] = "Message Added.";
@@ -60,7 +62,7 @@ if ($failed == "ALL_IS_PERFECT")
 				}
 				else
 				{
-					$_SESSION['pass_fail'] = "You have to enter a message to save a message, Duh!";
+					$_SESSION['pass_fail'] = "You have to enter a message to save a message!";
 					header('Location: admin-message-insert.php');
 				}
 		}

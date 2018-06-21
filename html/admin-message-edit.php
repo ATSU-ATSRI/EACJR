@@ -6,10 +6,10 @@ if ($failed == "ALL_IS_PERFECT")
 	include("menu_item.php");
 	$msg_id = $_REQUEST['tag'];
 	
-	if (!($msg_QUERY = $dblink->prepare("SELECT id, subject, text, active FROM jury_room.message WHERE (id = ?);"))) {logger("SQLi Prepare: $msg_QUERY->error");}
-	if (!($msg_QUERY->bind_param('s', $msg_id))) {logger("SQLi pBind: $msg_QUERY->error");}
-	if (!($msg_QUERY->execute())) {logger("SQLi execute: $msg_QUERY->error");}
-	if (!($msg_QUERY->bind_result($msg_id, $msg_subject, $msg_text, $msg_active))) {logger("SQLi rBind: $msg_QUERY->error");}
+	if (!($msg_QUERY = $dblink->prepare("SELECT id, subject, text, active FROM jury_room.message WHERE (id = ?);"))) {logger(__LINE__, "SQLi Prepare: $msg_QUERY->error");}
+	if (!($msg_QUERY->bind_param('s', $msg_id))) {logger(__LINE__, "SQLi pBind: $msg_QUERY->error");}
+	if (!($msg_QUERY->execute())) {logger(__LINE__, "SQLi execute: $msg_QUERY->error");}
+	if (!($msg_QUERY->bind_result($msg_id, $msg_subject, $msg_text, $msg_active))) {logger(__LINE__, "SQLi rBind: $msg_QUERY->error");}
 	$msg_QUERY->store_result();
 		
 	
@@ -18,13 +18,15 @@ if ($failed == "ALL_IS_PERFECT")
 		
 			<span class=\"left-col\">
 			
-			<a href=\"admin-new.php\"><button type=\"button\">Add new user</button></a><br />
+			<a href=\"admin.php\"><button type=\"button\">View user list</button></a><br />
+			<br />
+			<a href=\"admin-new.php\"><button type=\"button\">Add a new user</button></a><br />
 			<br />
 			<a href=\"admin-history.php\"><button type=\"button\">View user history</button></a><br />		
 			<br />
-			<a href=\"admin.php\"><button type=\"button\">View user list</button></a><br />
+			<a href=\"admin-message.php\"><button type=\"button\">View Admin messages</button></a><br />
 			<br />
-			<a href=\"admin-message.php\"><button type=\"button\">View Admin Messages</button></a><br />
+			<a href=\"admin-study.php\"><button type=\"button\">View study information</button></a><br /?
 			<br />
 			
 		</span>
@@ -67,9 +69,9 @@ echo "	</table>
 		{
 			if (isset($_POST['del_msg']))
 				{
-					if (!($update_QUERY = $dblink->prepare("DELETE FROM `jury_room`.`message` WHERE `id`=?;"))) {logger("SQLi Prepare: $update_QUERY->error");}
-					if (!($update_QUERY->bind_param('s', $msg_id))) { logger("SQLi Bind Error: $update_QUERY->error"); }
-					if (!($update_QUERY->execute())) { logger("SQLi execute: $update_QUERY->error"); }
+					if (!($update_QUERY = $dblink->prepare("DELETE FROM `jury_room`.`message` WHERE `id`=?;"))) {logger(__LINE__, "SQLi Prepare: $update_QUERY->error");}
+					if (!($update_QUERY->bind_param('s', $msg_id))) { logger(__LINE__, "SQLi Bind Error: $update_QUERY->error"); }
+					if (!($update_QUERY->execute())) { logger(__LINE__, "SQLi execute: $update_QUERY->error"); }
 					$update_QUERY->close();
 					$dblink->close();
 					$_SESSION['pass_fail'] = "Message Deleted.";
@@ -97,9 +99,9 @@ echo "	</table>
 						
 					if ($set == 1)
 						{
-							if (!($update_QUERY = $dblink->prepare("UPDATE jury_room.message SET subject=?, text=? WHERE id=?"))) {logger("SQLi Prepare: $update_QUERY->error");}
-							if (!($update_QUERY->bind_param('sss', $msg_subject, $msg_text, $msg_id))) { logger("SQLi Bind Error: $update_QUERY->error"); }
-							if (!($update_QUERY->execute())) { logger("SQLi execute: $update_QUERY->error"); }
+							if (!($update_QUERY = $dblink->prepare("UPDATE jury_room.message SET subject=?, text=? WHERE id=?"))) {logger(__LINE__, "SQLi Prepare: $update_QUERY->error");}
+							if (!($update_QUERY->bind_param('sss', $msg_subject, $msg_text, $msg_id))) { logger(__LINE__, "SQLi Bind Error: $update_QUERY->error"); }
+							if (!($update_QUERY->execute())) { logger(__LINE__, "SQLi execute: $update_QUERY->error"); }
 							$update_QUERY->close();
 							$dblink->close();
 							$_SESSION['pass_fail'] = "Message Updated.";
