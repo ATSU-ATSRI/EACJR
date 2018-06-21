@@ -112,9 +112,15 @@ if ($failed == "ALL_IS_PERFECT")
 		$study_QUERY->fetch();
 	
 	echo "
-		<div class=\"main\">
+		<div class=\"main\">";
 		
-			<span class=\"left-col\">
+		if (isset($_SESSION['pass_fail']))
+			{
+				echo "<div class=\"alert\">". $_SESSION['pass_fail'] ." </div>";
+				unset($_SESSION['pass_fail']);
+			}
+		
+	echo "	<span class=\"left-col\">
 			
 			<a href=\"admin-new.php\"><button type=\"button\">Add new user</button></a><br />
 			<br />
