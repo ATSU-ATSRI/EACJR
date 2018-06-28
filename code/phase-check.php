@@ -213,7 +213,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 								// count($phase_array[$e_id]) => number of votes recorded
 								// count(array_unique($votes)) => number of votes that DON'T match the others.
 								// if >50% votes equal set patient.phase = 0 else set patient.phase++
-								if 	((count(array_unique($votes)) / count($phase_array[$e_id])) < 0.49)
+								if 	((count(array_unique($votes)) / count($phase_array[$e_id])) < 0.8)
 									{
 										$new_phase = 0;
 									}

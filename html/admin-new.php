@@ -4,7 +4,7 @@ if ($failed == "ALL_IS_PERFECT")
 {
 	include("datacon.php");
 	include("menu_item.php");
-	require("PHPMailerAutoload.php");
+	require("libphp-phpmailer/PHPMailerAutoload.php");
 	
 	
 	echo "
@@ -122,9 +122,9 @@ if ($failed == "ALL_IS_PERFECT")
 											}
 									}
 							$bypassdate = "1900-01-01";		// used to set the new user's password as expired for first login.
-							
+							$passerDB = password_hash($passer, PASSWORD_BCRYPT, $options);
 							if (!($adduser_QUERY = $dblink->prepare("INSERT INTO jury_room.logins (name, initials, email, pass, pass_date, rank) VALUES (?, ?, ?, ?, ?, 1)"))) { logger(__LINE__, "SQLi Prepare: $adduser_QUERY->error"); }
-							if (!($adduser_QUERY->bind_param('sssss', $new_name, $new_initials, $new_email, $passer, $bypassdate))) { logger(__LINE__, "SQLi pBind: $adduser_QUERY->error"); }
+							if (!($adduser_QUERY->bind_param('sssss', $new_name, $new_initials, $new_email, $passerDB, $bypassdate))) { logger(__LINE__, "SQLi pBind: $adduser_QUERY->error"); }
 							if (!($adduser_QUERY->execute())) { logger(__LINE__, "SQLi execute: $adduser_QUERY->error"); }
 							$adduser_QUERY->close();
 							
@@ -151,7 +151,7 @@ if ($failed == "ALL_IS_PERFECT")
 								Greetings, $new_name.<br />
 								<br />
 								A user account has been created for you by $admin_name, in the EAC Portal. <br />
-								URL: https://URL GOES HERE <br />
+								URL: $host_url <br />
 								<br />
 								User name: $new_email<br />
 								Single use password: $passer<br />

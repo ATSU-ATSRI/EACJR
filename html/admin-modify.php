@@ -156,6 +156,7 @@ if ($failed == "ALL_IS_PERFECT")
 											}
 									}
 							$bypassdate = "1900-01-01";		// used to set the new user's password as expired for first login.
+							$passerDB = password_hash($passer, PASSWORD_BCRYPT, $options);
 						}
 											
 					if ($notifyuser == 1)
@@ -185,7 +186,7 @@ if ($failed == "ALL_IS_PERFECT")
 										Greetings, $new_name.<br />
 										<br />
 										Your user account has been modified by $admin_name, in the EAC Portal. <br />
-										URL: https://URL GOES HERE <br />
+										URL: $host_url <br />
 										<br />
 										User name: $new_email<br />
 										Single use password: $passer<br />
@@ -200,7 +201,7 @@ if ($failed == "ALL_IS_PERFECT")
 										Greetings, $new_name.<br />
 										<br />
 										Your user account has been modified by $admin_name, in the EAC Portal. <br />
-										URL: https://URL GOES HERE <br />
+										URL: $host_url <br />
 										<br />
 										User name: $new_email<br />
 										<br />
@@ -227,7 +228,7 @@ if ($failed == "ALL_IS_PERFECT")
 						{
 							$bypassdate = "1900-01-01";		// used to set the new user's password as expired 
 							if (!($adduser_QUERY = $dblink->prepare("UPDATE jury_room.logins SET name=?, initials=?, email=?, pass=?, pass_date=?, rank=? WHERE user_id = ?"))) { logger(__LINE__, "SQLi Prepare: $update_QUERY->error"); }
-							if (!($adduser_QUERY->bind_param('sssssii', $new_name, $new_initials, $new_email, $passer, $bypassdate, $new_rank_id, $mod_id))) { logger(__LINE__, "SQLi pBind: $adduser_QUERY->error"); }
+							if (!($adduser_QUERY->bind_param('sssssii', $new_name, $new_initials, $new_email, $passerDB, $bypassdate, $new_rank_id, $mod_id))) { logger(__LINE__, "SQLi pBind: $adduser_QUERY->error"); }
 						}
 						else
 						{
