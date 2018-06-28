@@ -195,7 +195,7 @@ if ($failed == "ALL_IS_PERFECT")
 			<div class=\"ft-head\"> Users not in this study </div>
 			<div class=\"ft\">";
 	
-	if (!($logouts_QUERY = $dblink->prepare("SELECT user_id, name, study FROM `logins` where NOT FIND_IN_SET(?,study);"))) { logger(__LINE__, "SQLi Prepare: $logouts_QUERY->error"); }
+	if (!($logouts_QUERY = $dblink->prepare("SELECT user_id, name, study FROM `logins` where ((NOT FIND_IN_SET(?,study)) OR (study IS NULL)) AND (`logins`.`rank` > 0);"))) { logger(__LINE__, "SQLi Prepare: $logouts_QUERY->error"); }
 	if (!($logouts_QUERY->bind_param('s', $study_id))) { logger(__LINE__, "SQLi rBind error: $logouts_QUERY->error"); }
 	if (!($logouts_QUERY->execute())) { logger(__LINE__, "SQLi execute error: $logouts_QUERY->error"); }	
 	if (!($logouts_QUERY->bind_result($logouts_user_id, $logouts_name, $logouts_study))) { logger(__LINE__, "SQLi rBind error: $logouts_QUERY->error"); }
