@@ -36,18 +36,17 @@ if ($failed == "ALL_IS_PERFECT")
 		
 		<span class=\"right-col\">
 		
-		<table border=\"1\" width=\"100%\">
+		<table padding=\"0.1em\" border=\"1px\">
 			<thead>
-			<TR>
-				<TH width=\"20%\"> Study Name </TH>
-				<TH width=\"10%\"> Study location </TH>
-				<TH width=\"10%\"> Voting starts on: </TH>
-				<TH width=\"10%\"> Voting ends on: </TH>
-				<TH width=\"8%\"> Study's quorum % </TH>
-				<TH width=\"17%\"> PI Name </TH>
-				<TH width=\"15%\"> PI Email </TH>
-				<TH width=\"10%\"> </TH>
-			</TR>	
+				<th width=\"19%\">Study Name</th>
+				<th width=\"9%\">Study location</th>
+				<th width=\"9%\">Voting starts</th>
+				<th width=\"9%\">Voting ends</th>
+				<th width=\"7%\">Study's quorum</th>
+				<th width=\"15%\">PI Name</th>
+				<th width=\"14%\">PI Email</th>
+				<th width=\"9%\">&nbsp;</th>
+				<th width=\"9%\">&nbsp;</th>
 			</thead>
 			<tbody>
 		<form name=\"display_study\" method=\"POST\">			
@@ -57,26 +56,28 @@ if ($failed == "ALL_IS_PERFECT")
 			{
 				while($study_QUERY->fetch())
 					{
-						echo "	<TR>
-									<TD width=\"20%\">$study_name</TD>
-									<TD width=\"10%\">$study_location</TD>
-									<TD width=\"10%\">$date_start</TD>
-									<TD width=\"10%\">$date_end</TD>
-									<TD width=\"8%\">$quorum</TD>
-									<TD width=\"17%\">$pi_name</TD>
-									<TD width=\"15%\">$pi_email</TD>
-									<TD width=\"10%\"> <a href=\"admin-study-edit.php?act=$study_id\"><button type=\"button\"> Edit Study </button></a></TD>
-								</TR>";
+						echo "		<tr>
+										<td width=\"19%\">$study_name</td>
+										<td width=\"9%\">$study_location</td>
+										<td width=\"9%\">$date_start</td>
+										<td width=\"9%\">$date_end</td>
+										<td width=\"7%\">$quorum %</td>
+										<td width=\"15%\">$pi_name</td>
+										<td width=\"14%\">$pi_email</td>
+										<td width=\"9%\"> <a href=\"admin-study-edit.php?act=$study_id\"><button type=\"button\"> Edit Study </button></a></td>
+										<td width=\"9%\"> <a href=\"admin-study-status.php?act=$study_id\"><button type=\"button\"> View Status </button></a></td>
+									</tr>
+									";
 					}
 			}
 			else
 			{
-				echo "<TR><TD colspan=\"3\" width=\100%\"><center> - - - - > No Study to display < - - - -</center></TD></TR>";
+				echo "<tr><td colspan=\"9\"><center> - - - - > No Study to display < - - - -</center></td></tr>";
 			}
 	
 echo "	</form>
-		</tbody>
-		</table>
+				</tbody>
+			</table>
 		<br />
 		
 		<a href=\"admin-study-insert.php\"><button type=\"button\"> New Study </button></a><br />

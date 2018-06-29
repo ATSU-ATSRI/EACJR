@@ -43,7 +43,7 @@ tbody3 {
 	overflow-y: scroll;
 	height: 100px;
 	}
-	
+
 th {
 	background-color: cornsilk;
 	text-align: left;
@@ -63,6 +63,7 @@ td {
 	vertical-align: top;
 	}	
 
+	
 div.ft {
     width: 100%;
 	}
@@ -87,6 +88,46 @@ div.ft>div:nth-child(2n) {
     width: 60%;
     float: left;
     background: white;
+	}
+	
+div.mt {
+    width: 100%;
+	display: table;
+	}
+
+div.mt-header {
+	display: table-header-group;
+	background-color: cornsilk;
+	text-align: center;
+	font-weight: bold;
+	}
+
+div.mt-body {
+	display: table-row-group;
+	}
+
+div.mt-row {
+	display: table-row;
+	}
+
+div.mt-row:nth-child(even) {
+	background: azure;
+	}
+
+div.mt-row:nth-child(odd) {
+	background: white;
+	}
+
+div.mt-cell, div.mt-head {
+	display: table-cell;
+	padding: 0.5em;
+	border: 1px solid black;
+	}
+
+div.mt-footer {
+	display: table-footer-group;
+	background-color: cornsilk;
+	font-weight: bold;
 	}
 	
 span.comment-overlay {
