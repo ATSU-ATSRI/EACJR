@@ -1,50 +1,64 @@
--- MySQL dump 10.13  Distrib 5.7.12, for Win64 (x86_64)
+-- phpMyAdmin SQL Dump
+-- version 4.6.6deb4
+-- https://www.phpmyadmin.net/
 --
--- Host: localhost    Database: jury_room
--- ------------------------------------------------------
--- Server version	5.7.15-log
+-- Host: localhost:3306
+-- Generation Time: Jul 04, 2018 at 11:38 PM
+-- Server version: 5.7.20
+-- PHP Version: 7.0.27-0+deb9u1
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `jury_room`
+--
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `review`
 --
 
-DROP TABLE IF EXISTS `review`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `review` (
-  `review_id` int(11) NOT NULL AUTO_INCREMENT,
+  `review_id` int(11) NOT NULL,
   `action_date` datetime DEFAULT CURRENT_TIMESTAMP,
   `user_id` int(10) DEFAULT NULL,
   `event_id` int(11) DEFAULT NULL,
-  `comment` varchar(180) DEFAULT NULL,
+  `comment` varchar(8000) DEFAULT NULL,
   `24hr_adverse_event` varchar(45) DEFAULT NULL,
   `72hr_adverse_event` varchar(45) DEFAULT NULL,
   `1wk_adverse_event` varchar(45) DEFAULT NULL,
   `followup_adverse_event` varchar(45) DEFAULT NULL,
   `ae_severity` varchar(45) DEFAULT NULL,
-  `omt_related` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`review_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=203 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+  `omt_related` varchar(45) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `review`
+--
+ALTER TABLE `review`
+  ADD PRIMARY KEY (`review_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `review`
+--
+ALTER TABLE `review`
+  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2017-12-14 15:19:57

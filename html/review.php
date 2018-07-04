@@ -563,7 +563,7 @@ if ($failed == "ALL_IS_PERFECT")
 						{
 							echo "<TR>
 								<TD width=\"20%\"> Your Comments: </TD>
-								<TD colspan=\"7\"> <textarea name=\"$event_id-comment\" id=\"$event_id-comment\" cols=\"80\" rows=\"2\" maxlength=\"3900\" wrap=\"physical\"></textarea></TD>
+								<TD colspan=\"7\"> <textarea name=\"$event_id-comment\" id=\"$event_id-comment\" cols=\"80\" rows=\"2\" maxlength=\"7900\" wrap=\"physical\"></textarea></TD>
 							</TR>";
 							
 							$allow_comment = 0;
