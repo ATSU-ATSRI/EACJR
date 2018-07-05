@@ -104,14 +104,15 @@ if ($failed == "ALL_IS_PERFECT")
 					<div class=\"mt-head\">Name</div>
 					<div class=\"mt-head\">Last login</div>
 					<div class=\"mt-head\">Records reviewed</div>
+					<div class=\"mt-head\">Avg time/record (h:m.s)</div>
 				</div>
 				<div class=\"mt-body\">
 				";
 	
-	if (!($active_QUERY = $dblink->prepare("SELECT review.user_id, logins.name, MAX(login_history.login) AS 'last_seen', (SELECT COUNT(DISTINCT `patient`.`patient_id`) FROM `review` INNER JOIN `symptom` ON `review`.`event_id`=`symptom`.`event_id` INNER JOIN `patient` ON `symptom`.`code`=`patient`.`code` WHERE (`patient`.`study_id` = ?)) AS 'pt.reviewed' FROM `review` INNER JOIN `symptom` ON `review`.`event_id`=`symptom`.`event_id` INNER JOIN `logins` ON `review`.`user_id`=`logins`.`user_id` INNER JOIN `login_history` ON `logins`.`user_id`=`login_history`.`id` WHERE (`symptom`.`study_id` = ?) GROUP BY user_id;"))) { logger(__LINE__, "SQLi Prepare: $active_QUERY->error"); }
+	if (!($active_QUERY = $dblink->prepare("SELECT review.user_id AS kid, logins.name, MAX(login_history.login) AS 'last_seen', ( SELECT COUNT(*) FROM `review` INNER JOIN `symptom` ON `review`.`event_id`=`symptom`.`event_id` INNER JOIN `patient` ON `symptom`.`code`=`patient`.`code` WHERE (`patient`.`study_id` = ?) AND (`review`.`user_id` = kid) ) AS 'pt.reviewed', ( SELECT ( TIMESTAMPDIFF(SECOND, MIN(`action_date`), MAX(`action_date`) ) / (COUNT(DISTINCT(`action_date`)) -1) ) AS review_time FROM `review` WHERE (`review`.`user_id` = kid) ) AS avg_review_time FROM `review` INNER JOIN `symptom` ON `review`.`event_id`=`symptom`.`event_id` INNER JOIN `logins` ON `review`.`user_id`=`logins`.`user_id` INNER JOIN `login_history` ON `logins`.`user_id`=`login_history`.`id` WHERE (`symptom`.`study_id` = ?) GROUP BY kid ORDER BY `logins`.`name`;"))) { logger(__LINE__, "SQLi Prepare: $active_QUERY->error"); }
 	if (!($active_QUERY->bind_param('ss', $study_id, $study_id))) { logger(__LINE__, "SQLi rBind error: $active_QUERY->error"); }
 	if (!($active_QUERY->execute())) { logger(__LINE__, "SQLi execute error: $active_QUERY->error"); }	
-	if (!($active_QUERY->bind_result($active_user_id, $active_name, $active_last, $active_reviewed))) { logger(__LINE__, "SQLi rBind error: $logouts_QUERY->error"); }
+	if (!($active_QUERY->bind_result($active_user_id, $active_name, $active_last, $active_reviewed, $active_reivew_time))) { logger(__LINE__, "SQLi rBind error: $logouts_QUERY->error"); }
 	$active_QUERY->store_result();
 	
 	
@@ -119,10 +120,13 @@ if ($failed == "ALL_IS_PERFECT")
 		{
 			while ($active_QUERY->fetch())
 				{
+					$active_reivew_time = sprintf("%02d", floor($active_reivew_time / 3600)) . ":" . sprintf("%02d", floor(($active_reivew_time / 60) % 60)) . "." . sprintf("%02d", $active_reivew_time % 60) ." ";
+					
 					echo "	<div class=\"mt-row\">
 								<div class=\"mt-cell\">$active_name</div>
 								<div class=\"mt-cell\">$active_last</div>
 								<div class=\"mt-cell\">$active_reviewed</div>
+								<div class=\"mt-cell\">$active_reivew_time</div>
 							</div>";
 				}
 		}
