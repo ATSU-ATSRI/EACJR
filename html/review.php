@@ -1285,7 +1285,8 @@ if ($failed == "ALL_IS_PERFECT")
 							if (!($vote_QUERY = $dblink->prepare("
 								INSERT INTO 
 									jury_room.review 
-										(	user_id, 
+										(	user_id,
+											phase,
 											event_id, 
 											comment,
 											24hr_adverse_event,
@@ -1294,8 +1295,8 @@ if ($failed == "ALL_IS_PERFECT")
 											followup_adverse_event,
 											ae_severity,
 											omt_related) 
-										VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);"))) {logger(__LINE__, "SQLi Prepare: $vote_QUERY->error");}
-							if (!($vote_QUERY->bind_param('sssssssss', $_SESSION['id'], $e_id, $comment, $p24hr_adverse_event, $p72hr_adverse_event, $p1wk_adverse_event, $followup_adverse_event, $ae_severity, $omt_related))) { logger(__LINE__, "SQLi Bind Error: $vote_QUERY->error"); }
+										VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"))) {logger(__LINE__, "SQLi Prepare: $vote_QUERY->error");}
+							if (!($vote_QUERY->bind_param('ssssssssss', $_SESSION['id'], $phase, $e_id, $comment, $p24hr_adverse_event, $p72hr_adverse_event, $p1wk_adverse_event, $followup_adverse_event, $ae_severity, $omt_related))) { logger(__LINE__, "SQLi Bind Error: $vote_QUERY->error"); }
 							if (!($vote_QUERY->execute())) { logger(__LINE__, "SQLi execute: $vote_QUERY->error"); }
 							$vote_QUERY->close();
 							

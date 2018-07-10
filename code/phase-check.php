@@ -144,49 +144,68 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 			logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
 			
 			if (!($scan_QUERY = $dblink->prepare("SELECT 
-													patient.patient_id,
-													patient.study_id,
-													symptom.event_id,
-													symptom.phase,
-													review.user_id,
-													review.24hr_adverse_event,
-													review.72hr_adverse_event,
-													review.1wk_adverse_event,
-													review.ae_severity,
-													review.omt_related,
-													(CASE
-														WHEN
-															((SELECT 
-																	COUNT(*)
-																FROM
-																	review
-																WHERE
-																	(symptom.phase > 0)
-																		AND (review.event_id = event_id)) / (SELECT 
-																	COUNT(*)
-																FROM
-																	jury_room.logins
-																WHERE
-																	logins.study = patient.study_id) > (SELECT 
-																	quorum
-																FROM
-																	studys
-																WHERE
-																	studys.study_id = patient.study_id) / 100)
-														THEN
-															'1'
-														ELSE '0'
-													END) AS has_quroum
+													`patient`.`patient_id`,
+													`patient`.`study_id`,
+													`symptom`.`event_id` AS evi,
+													`symptom`.`phase` AS pze,
+													`review`.`user_id`,
+													`review`.`24hr_adverse_event`,
+													`review`.`72hr_adverse_event`,
+													`review`.`1wk_adverse_event`,
+													`review`.`ae_severity`,
+													`review`.`omt_related`,
+													(
+														CASE
+															WHEN
+																(
+																	(
+																		SELECT 
+																			COUNT(*) 
+																		FROM 
+																			`review`
+																			RIGHT JOIN `symptom` ON `review`.`event_id`=`symptom`.`event_id` 
+																		WHERE 
+																			(symptom.phase > 0) 
+																			AND (`symptom`.`study_id` = ?)
+																			AND (`review`.`event_id` = evi)
+																			AND (`review`.`phase` = pze)
+																	)
+																/ 
+																	(
+																		SELECT 
+																			COUNT(*)
+																		FROM
+																			`jury_room`.`logins`
+																		WHERE
+																			FIND_IN_SET(?,study)
+																	)
+																> 
+																	(
+																		SELECT 
+																			`quorum`
+																		FROM
+																			`studys`
+																		WHERE
+																			`studys`.`study_id` = ?
+																	) 
+																/ 
+																	100
+																)
+															THEN
+																'1'
+																ELSE '0'
+															END
+													) AS has_quroum
 												FROM
-													patient
-														RIGHT JOIN
-													symptom ON patient.code = symptom.code
-														RIGHT JOIN
-													review ON symptom.event_id = review.event_id
+													`patient`
+														RIGHT JOIN `symptom` ON `patient`.`code` = `symptom`.`code`
+														RIGHT JOIN `review` ON `symptom`.`event_id` = `review`.`event_id`
 												WHERE
-													(patient.study_id = ?)
-														AND (symptom.phase > '0');"))) { logger(__LINE__, "SQLi Prepare: $scan_QUERY->error"); }
-			if (!($scan_QUERY->bind_param('s', $study_id))) { logger(__LINE__, "SQLi pBind: $scan_QUERY->error"); }
+													(`patient`.`study_id` = ?)
+													AND (`symptom`.`phase` > '0')
+												ORDER BY 
+													`review`.`event_id`;"))) { logger(__LINE__, "SQLi Prepare: $scan_QUERY->error"); }
+			if (!($scan_QUERY->bind_param('ssss', $study_id, $study_id, $study_id, $study_id))) { logger(__LINE__, "SQLi pBind: $scan_QUERY->error"); }
 			if (!($scan_QUERY->execute())) { logger(__LINE__, "SQLi execute: $scan_QUERY->error"); }
 			if (!($scan_QUERY->bind_result($patient_id, $study_id, $event_id, $phase, $user_id, $p24hr_adverse_event, $p72hr_adverse_event, $p1wk_adverse_event, $ae_severity, $omt_related, $has_quroum))) { logger(__LINE__, "SQL rBind: $scan_QUERY->error"); }
 			$scan_QUERY->store_result();
@@ -245,6 +264,56 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 					}
 				logger(__LINE__, "Phase quorum scan completed, cleaning up.");
 				$scan_QUERY->free_result();	
+				
+				
+		// move pt. to max(symptom.phase)
+			logger(__LINE__, "Updating pt. phase to match max(symptom.phase)");
+			logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
+			if (!($getphase_QUERY = $dblink->prepare("SELECT
+														`patient`.`patient_id`,
+															(
+																SELECT
+																	MAX(`symptom`.`phase`)
+																FROM
+																	`symptom`
+																WHERE
+																	`symptom`.`code` = `patient`.`code`
+															) AS re_phase
+													FROM
+														`patient`
+													WHERE
+														(`patient`.`phase` > 0) AND 
+														(`patient`.`phase` < (
+																SELECT
+																	MAX(`symptom`.`phase`)
+																FROM
+																	`symptom`
+																WHERE
+																	`symptom`.`code` = `patient`.`code`
+															) );")))  { logger(__LINE__, "SQLi Prepare: $getphase_QUERY->error"); }
+			if (!($getphase_QUERY->execute())) { logger(__LINE__, "SQLi execute: $getphase_QUERY->error"); }
+			if (!($getphase_QUERY->bind_result($patient_id, $re_phase))) {logger(__LINE__, "SQLi rBind: $getphase_QUERY->error"); }
+			$getphase_QUERY->store_result();
+			if ($getphase_QUERY->num_rows() > 0)
+				{
+					while ($getphase_QUERY->fetch())
+						{
+							logger(__LINE__, "  >> Moving $patient_id to Phase $re_phase.");
+							if (!($move_QUERY = $dblink->prepare("UPDATE patient 
+																SET 
+																	phase = ?
+																WHERE
+																	(patient_id = ?)"))) { logger(__LINE__, "SQLi Prepare: $move_QUERY->error"); }
+							if (!($move_QUERY->bind_param('ss', $re_phase, $patient_id))) { logger(__LINE__, "SQLi pBind: $move_QUERY->error"); }
+							if (!($move_QUERY->execute())) { logger(__LINE__, "SQLi execute: $move_QUERY->error"); }
+						}
+					logger(__LINE__, "Rephase move completed, cleaning up.");
+					$move_QUERY->free_result();
+					if (isset($re_phase)) { unset($re_phase); }
+					if (isset($patient_id)) { unset($patient_id); }
+				}
+			logger(__LINE__, "Get Rephase completed, cleaning up.");
+			$getphase_QUERY->free_result();
 			
 		// set patient.phase = 0 when all symptom.phases = 0
 		 	logger(__LINE__, "Phase completed scan started.");
@@ -291,8 +360,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 				}
 			logger(__LINE__, "Phase completed scan completed, cleaning up.");
 			$completed_QUERY->free_result();
-			
-			
+		
 		// Update and find lost patients match to max(symptom.phase)
 			logger(__LINE__, "Phase lost patient scan started.");
 			logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
