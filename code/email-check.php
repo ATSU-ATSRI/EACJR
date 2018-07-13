@@ -3,7 +3,10 @@ include("datacon.php");
 include("logger.php");
 require("/usr/share/php/PHPMailer-master/PHPMailerAutoload.php");
 
+$start_memory = memory_get_usage();
 logger(__LINE__, "=====> Start of email check. <=====");
+logger(__LINE__, "My timezone is: " . date_default_timezone_get());
+	
 if (!($study_QUERY = $dblink->prepare("SELECT `study_id`, `name` FROM `studys` WHERE (CURDATE() BETWEEN `date_start` AND `date_end`);"))) { logger(__LINE__, "SQLi Prepare: $study_QUERY->error"); }
 if (!($study_QUERY->execute())) { logger(__LINE__, "SQLi execute: $study_QUERY->error"); }
 if (!($study_QUERY->bind_result($study_id, $study_name))) { logger(__LINE__, "SQLi rBind: $study_QUERY->error"); }
