@@ -69,7 +69,7 @@ div.ft {
 	}
 
 div.ft-head {
-	width: 100%;
+	width: 95%;
 	padding: 0.5em;
 	background-color: cornsilk;
 	text-align: center;
@@ -174,7 +174,7 @@ div.main {
 	background-color: white;
 	margin: 1%;
 	width: 95%;
-	overflow: hidden;
+	overflow: auto;
 	position: relative;
 	padding: 0.1em;
 	text-align: left;
@@ -186,20 +186,20 @@ span.g-recaptcha {
 
 span.right-box {
 	background: white;
-	margin: 3%;
+	margin: 1%;
 	float: right;
-	width: 40%;
+	width: 45%;
 	border-style: none;
-	padding: 0.3em;
+	padding: 0.1em;
 	}
 
 span.left-box {
 	background: white;
-	margin: 3%;
+	margin: 1%;
 	float: left;
-	width: 40%;
+	width: 45%;
 	border-style: none;
-	padding: 0.3em;
+	padding: 0.1em;
 	}
 
 span.footer {
@@ -226,7 +226,7 @@ div.alert {
 	}	
 
 span.left-col {
-	margin: .2%;
+	margin: 0.1%;
 	float: left;
 	width: 17%;
 	border-style: none;
@@ -237,9 +237,9 @@ span.left-col {
 	}
 
 span.right-col {
-	margin: .2%;
+	margin: 0.1%;
 	float: right;
-	width: 77.5%;
+	width: 77%;
 	border-style: none;
 	background-color: white;
 	padding: 0.2em;
