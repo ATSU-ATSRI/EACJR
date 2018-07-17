@@ -182,13 +182,13 @@ while ($study_QUERY->fetch())
 															)
 													) OR(patient.phase > '-1')
 													)
-												)
+												) AND (patient.phase > '0')
 											)
 										GROUP BY
 											patient.patient_id,
 											patient.code
 										ORDER BY
-											patient.phase DESC,
+											patient.phase ASC,
 											patient.patient_id ASC;"))) { logger(__LINE__, "SQLi Prepare: $events_QUERY->error"); }
 	if (!($events_QUERY->bind_param('ss', $study_id_this, $_SESSION["id"]))) { logger(__LINE__, "SQLi pBind: $events_QUERY->error"); }
 	if (!($events_QUERY->execute())) { logger(__LINE__, "SQLi execute: $events_QUERY->error"); }
