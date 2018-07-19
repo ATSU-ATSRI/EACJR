@@ -238,6 +238,7 @@ while ($study_QUERY->fetch())
 							$ptperc = round((($race_rvtotal / $race_pttotal) * 100), 0);
 							if ($ptperc < 1) { $ptperc = 0; }
 							$rand_colour = $colour_ARRAY[rand(0, 9)];
+							$rand_colour_last = "plaid";
 							while ($rand_colour == $rand_colour_last)
 								{
 									$rand_colour = $colour_ARRAY[rand(0, 9)];
