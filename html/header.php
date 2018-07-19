@@ -55,7 +55,7 @@ if ($failed == "ALL_IS_PERFECT")
 		";
 		$script = $_SERVER['SCRIPT_FILENAME'];
 		$user_ip = getUserIP();
-		logger("ALERT: Crawler alert on $script === from IP: $user_ip.");
+		logger(__LINE__, "ALERT: Crawler alert on $script === from IP: $user_ip.");
 		include("footer.php"); 
 	}
 

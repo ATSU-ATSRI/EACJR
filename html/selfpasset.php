@@ -38,9 +38,9 @@ if ($captcha_success["success"] == true)
 			$user_id =  isset($_SESSION['user_id']) ? htmlspecialchars($_SESSION['user_id']) : '';
 				
 			if (!($chkuser_QUERY = $dblink->prepare("SELECT user_id, name FROM jury_room.logins WHERE (email = ?);")));
-			if (!($chkuser_QUERY->bind_param('s', $user_id))) { logger("SQLi pBind: $chkuser_QUERY->error"); }
-			if (!($chkuser_QUERY->execute())) { logger("SQLi execute: $chkuser_QUERY->error"); }
-			if (!($chkuser_QUERY->bind_result($new_email, $new_name))) { logger("SQLi rBind: $chkuser_QUERY->error"); }
+			if (!($chkuser_QUERY->bind_param('s', $user_id))) { logger(__LINE__, "SQLi pBind: $chkuser_QUERY->error"); }
+			if (!($chkuser_QUERY->execute())) { logger(__LINE__, "SQLi execute: $chkuser_QUERY->error"); }
+			if (!($chkuser_QUERY->bind_result($new_email, $new_name))) { logger(__LINE__, "SQLi rBind: $chkuser_QUERY->error"); }
 			$chkuser_QUERY->store_result();
 			$chkuser_count = $chkuser_QUERY->num_rows;
 			
@@ -99,9 +99,9 @@ if ($captcha_success["success"] == true)
 								}
 					$bypassdate = "1900-01-01";		// used to set the new user's password as expired for first login.
 					$passerDB = password_hash($passer, PASSWORD_BCRYPT, $options);
-					if (!($adduser_QUERY = $dblink->prepare("UPDATE jury_room.logins SET pass=?, pass_date=? WHERE email = ?"))) { logger("SQLi Prepare: $update_QUERY->error"); }
-					if (!($adduser_QUERY->bind_param('sss', $passerDB, $bypassdate, $user_id))) { logger("SQLi pBind: $adduser_QUERY->error"); }
-					if (!($adduser_QUERY->execute())) { logger("SQLi execute: $adduser_QUERY->error"); }
+					if (!($adduser_QUERY = $dblink->prepare("UPDATE jury_room.logins SET pass=?, pass_date=? WHERE email = ?"))) { logger(__LINE__, "SQLi Prepare: $update_QUERY->error"); }
+					if (!($adduser_QUERY->bind_param('sss', $passerDB, $bypassdate, $user_id))) { logger(__LINE__, "SQLi pBind: $adduser_QUERY->error"); }
+					if (!($adduser_QUERY->execute())) { logger(__LINE__, "SQLi execute: $adduser_QUERY->error"); }
 					$adduser_QUERY->close();
 					
 					//send email
@@ -136,7 +136,7 @@ if ($captcha_success["success"] == true)
 					if (!$mail->Send())
 						{
 							$mailerror = $mail->ErrorInfo;
-							logger("PHPMailer Error: $mailerror");
+							logger(__LINE__, "PHPMailer Error: $mailerror");
 						}
 						else
 						{
@@ -145,7 +145,7 @@ if ($captcha_success["success"] == true)
 						}
 
 				}
-			logger("---Password reset requested for $new_name - $user_id from " . $user_ip . " ---");
+			logger(__LINE__, "---Password reset requested for $new_name - $user_id from " . $user_ip . " ---");
 			$user_QUERY->close();
 			$dblink->close();
 		}
@@ -153,7 +153,7 @@ if ($captcha_success["success"] == true)
 		{
 			  echo "<meta http-equiv=\"Refresh\" content=\"5; url=index.php\">";
 			  $_SESSION["failed"] = "reCAPTCHA Failure.";
-			  logger("---reCAPTCHA FAILURE from " . $user_ip . " ---");
+			  logger(__LINE__, "---reCAPTCHA FAILURE from " . $user_ip . " ---");
         }
 
 

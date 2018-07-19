@@ -105,7 +105,7 @@ if ($failed == "ALL_IS_PERFECT")
 
 	
 		if (!($study_QUERY = $dblink->prepare("SELECT name, location, date_start, date_end, pi_name, pi_email, quorum FROM `jury_room`.`studys` WHERE (study_id = ?);"))) {logger(__LINE__, "SQLi Prepare: ".$dblink->error ." ");}
-		if (!($study_QUERY->bind_param('s', $study_id))) {logger("SQLi pBind: $study_QUERY->error");}
+		if (!($study_QUERY->bind_param('s', $study_id))) {logger(__LINE__, "SQLi pBind: $study_QUERY->error");}
 		if (!($study_QUERY->execute())) { logger(__LINE__, "SQLi execute: $study_QUERY->error"); }
 		if (!($study_QUERY->bind_result($study_name, $study_location, $date_start, $date_end, $pi_name, $pi_email, $quorum))) {logger(__LINE__, "SQLi rBind: $study_QUERY->error");}
 		$study_QUERY->store_result();

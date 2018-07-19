@@ -67,6 +67,10 @@ function logger($logline, $msg)
 			if (!$mail->Send())
 				{
 					$mailerror = $mail->ErrorInfo;
+					openlog("EACJR", LOG_PID | LOG_PERROR, LOG_LOCAL0);
+					syslog(LOG_INFO, $_SERVER['PHP_SELF'] . "[$logline] $msg");
+					syslog(LOG_WARNING, $_SERVER['PHP_SELF'] . " $mailerror");
+					closelog();
 				}
 					else
 				{

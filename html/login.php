@@ -45,9 +45,9 @@ if ($captcha_success["success"] == true)
 								$_SESSION["study"] = $study;
 								$_SESSION["failed"] = "ALL_IS_PERFECT";
 																
-								if (!($login_QUERY = $dblink->prepare("INSERT INTO login_history (id, login) VALUES (?, NOW())"))) {logger("SQLi Prepare: $login_QUERY->error");}
-								if (!($login_QUERY->bind_param('s', $id))) {logger("SQLi Bind Error: $login_QUERY->error");}
-								if (!($login_QUERY->execute())) {logger("SQLi execute: $login_QUERY->error");}
+								if (!($login_QUERY = $dblink->prepare("INSERT INTO login_history (id, login) VALUES (?, NOW())"))) {logger(__LINE__, "SQLi Prepare: $dblink->error");}
+								if (!($login_QUERY->bind_param('s', $id))) {logger(__LINE__, "SQLi Bind Error: $login_QUERY->error");}
+								if (!($login_QUERY->execute())) {logger(__LINE__, "SQLi execute: $login_QUERY->error");}
 								$login_QUERY->close();
 								$dblink->close();
 							
@@ -58,18 +58,18 @@ if ($captcha_success["success"] == true)
 									{
 										echo "<meta http-equiv=\"Refresh\" content=\"5; url=profile.php\">";
 										$_SESSION['pass_fail'] = "Password Expired";
-										logger("--- DB LOOKUP GOOD - Password Expired : " . $user_id . " from " . $user_ip . " ---");
+										logger(__LINE__, "--- DB LOOKUP GOOD - Password Expired : " . $user_id . " from " . $user_ip . " ---");
 									}
 									else
 									{
 										echo "<meta http-equiv=\"Refresh\" content=\"5; url=main.php\">";
-										logger("--- DB LOOKUP GOOD - PASSWORD GOOD : " . $user_id . " from " . $user_ip . " ---");
+										logger(__LINE__, "--- DB LOOKUP GOOD - PASSWORD GOOD : " . $user_id . " from " . $user_ip . " ---");
 									}
 							}
 						else
 							{
 								echo "<meta http-equiv=\"Refresh\" content=\"5; url=index.php\">";
-								logger("---DB LOOKUP FAILURE : " . $user_id . " from " . $user_ip . "  ---");
+								logger(__LINE__, "---DB LOOKUP FAILURE : " . $user_id . " from " . $user_ip . "  ---");
 								session_unset();
 								$_SESSION["failed"] = "User ID or Password Failure.";
 							}
@@ -80,7 +80,7 @@ if ($captcha_success["success"] == true)
 		  echo "<meta http-equiv=\"Refresh\" content=\"5; url=index.php\">";
 		  session_unset();
 		  $_SESSION["failed"] = "reCAPTCHA Failure.";
-		  logger("---reCAPTCHA FAILURE from " . $user_ip . " ---");
+		  logger(__LINE__, "---reCAPTCHA FAILURE from " . $user_ip . " ---");
         }
 
 unset($_SESSION['user_id']);

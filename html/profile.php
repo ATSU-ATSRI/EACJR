@@ -125,9 +125,9 @@ if ($failed == "ALL_IS_PERFECT")
 						if (($set == 1) && (strlen($pass_fail < 2)))
 							{
 								$passerDB = password_hash($pass, PASSWORD_BCRYPT, $options);
-								if (!($update_QUERY = $dblink->prepare("UPDATE jury_room.logins SET email=?, pass=?, pass_date=?, name=?, initials=? WHERE user_id=?"))) {logger("SQLi Prepare: $update_QUERY->error");}
-								if (!($update_QUERY->bind_param('ssssss', $email, $passerDB, $pass_date, $name, $initials, $id))) { logger("SQLi Bind Error: $update_QUERY->error"); }
-								if (!($update_QUERY->execute())) { logger("SQLi execute: $update_QUERY->error"); }
+								if (!($update_QUERY = $dblink->prepare("UPDATE jury_room.logins SET email=?, pass=?, pass_date=?, name=?, initials=? WHERE user_id=?"))) {logger(__LINE__, "SQLi Prepare: $update_QUERY->error");}
+								if (!($update_QUERY->bind_param('ssssss', $email, $passerDB, $pass_date, $name, $initials, $id))) { logger(__LINE__, "SQLi Bind Error: $update_QUERY->error"); }
+								if (!($update_QUERY->execute())) { logger(__LINE__, "SQLi execute: $update_QUERY->error"); }
 								$update_QUERY->close();
 								$dblink->close();
 								$_SESSION['pass_fail'] = "Your settings have been changed.";
@@ -144,7 +144,7 @@ if ($failed == "ALL_IS_PERFECT")
 			else
 			{
 				echo "<meta http-equiv=\"Refresh\" content=\"5; url=index.php\">";
-				logger("---DB LOOKUP FAILURE : " . $id . " ---");
+				logger(__LINE__, "---DB LOOKUP FAILURE : " . $id . " ---");
 				session_unset();
 				$_SESSION["failed"] = "User ID or Password Failure.";
 			}
