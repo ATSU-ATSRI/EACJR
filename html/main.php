@@ -219,7 +219,7 @@ while ($study_QUERY->fetch())
 			if (!($race_QUERY->bind_result($race_id, $race_pttotal, $race_rvtotal))) { logger(__LINE__, "SQLi rBind: $race_QUERY->error()"); }
 			$race_QUERY->store_result();
 			
-			if ((($race_QUERY->num_rows) > 0) && ($_SESSION["id"] == "1"))
+			if (($race_QUERY->num_rows) > 0)
 				{
 					echo "<div class=\"study-right\" style=\"border-style: none dashed none none;\">Race to the finish!<br /><br />";
 					$colour_ARRAY = array(	"background-color:red;color:white", 
