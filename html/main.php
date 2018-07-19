@@ -3,6 +3,16 @@ include("header.php");
 if ($failed == "ALL_IS_PERFECT")
 {
 	include('menu_item.php');
+	
+	echo "
+		<div class=\"main\">
+		";
+		
+		if (isset($_SESSION['pass_fail']))
+			{
+				echo "<div class=\"alert\">". $_SESSION['pass_fail'] ." </div>";
+				unset($_SESSION['pass_fail']);
+			}
 
 if (!($study_QUERY = $dblink->prepare("SELECT `logins`.`name` AS \"User_name\", `studys`.`study_id`, `studys`.`name` AS \"Study_name\" FROM `studys` INNER JOIN `logins` ON FIND_IN_SET(`studys`.`study_id`, `logins`.`study`) != 0 WHERE (CURDATE() BETWEEN `date_start` AND `date_end`) AND (`logins`.`user_id` = ?)"))) { logger(__LINE__, "SQLi Prepare: $study_QUERY->error"); }
 if (!($study_QUERY->bind_param('s', $_SESSION["id"]))) { logger(__LINE__, "SQLi pBind: $study_QUERY->error"); }
@@ -195,26 +205,68 @@ while ($study_QUERY->fetch())
 	if (!($events_QUERY->bind_result($study_number, $patient_id, $code, $phase))) { logger(__LINE__, "SQLi rBind: $events_QUERY->error"); }
 	$events_QUERY->store_result();
 	
-	
-	echo "
-		<div class=\"main\">";
-		
-		if (isset($_SESSION['pass_fail']))
-			{
-				echo "<div class=\"alert\">". $_SESSION['pass_fail'] ." </div>";
-				unset($_SESSION['pass_fail']);
-			}
-			
-	echo "
-		<table name=\"events\">
-		<thead>";
-	
 	if ($events_QUERY->num_rows > 0)
 		{
+
+			echo "<div class=\"study-box\">
+			<div class=\"study-left\">$study_name</div>
+				";
+			
+			//$study_id_this
+			if (!($race_QUERY = $dblink->prepare("SELECT `logins`.`user_id` AS `kid`, (SELECT COUNT(*) FROM `patient` WHERE (`patient`.`study_id` = ?) AND (`patient`.`phase` > '0')) AS `pttotal`, (SELECT COUNT(DISTINCT `patient`.`code`) FROM `patient` INNER JOIN `symptom` ON `patient`.`code`=`symptom`.`code` INNER JOIN `review` ON `symptom`.`event_id`=`review`.`event_id` WHERE (`patient`.`study_id` = ?) AND (`patient`.`phase` > '0') AND (`review`.`user_id` = kid)) AS `rvtotal` FROM `logins` WHERE FIND_IN_SET(?,`logins`.`study`) GROUP BY `logins`.`user_id`;"))) { logger(__LINE__, "SQLi Prepare: $dblink->error()"); }
+			if (!($race_QUERY->bind_param('sss', $study_id_this, $study_id_this, $study_id_this))) { logger(__LINE__, "SQLi pBind: $race_QUERY->error()"); }
+			if (!($race_QUERY->execute())) { logger(__LINE__, "SQLi Execute->error()"); }
+			if (!($race_QUERY->bind_result($race_id, $race_pttotal, $race_rvtotal))) { logger(__LINE__, "SQLi rBind: $race_QUERY->error()"); }
+			$race_QUERY->store_result();
+			
+			if ((($race_QUERY->num_rows) > 0) && ($_SESSION["id"] == "1"))
+				{
+					echo "<div class=\"study-right\" style=\"border-style: none dashed none none;\">Race to the finish!<br /><br />";
+					$colour_ARRAY = array(	"background-color:red;color:white", 
+											"background-color:orange;color:black", 
+											"background-color:yellow;color:black", 
+											"background-color:green;color:white", 
+											"background-color:blue;color:white", 
+											"background-color:purple;color:white", 
+											"background-color:cyan;color:black", 
+											"background-color:pink;color:black", 
+											"background-color:black;color:white", 
+											"background-color:grey;color:white");
+					
+					while ($race_QUERY->fetch())
+						{
+							$ptperc = round((($race_rvtotal / $race_pttotal) * 100), 0);
+							if ($ptperc < 1) { $ptperc = 0; }
+							$rand_colour = $colour_ARRAY[rand(0, 9)];
+							while ($rand_colour == $rand_colour_last)
+								{
+									$rand_colour = $colour_ARRAY[rand(0, 9)];
+								}
+							
+							echo "
+									<div class=\"race-left\">";
+							if ($race_id == $_SESSION["id"])
+								{
+									echo "You >>> ";
+								}
+								else
+								{
+									echo " # $race_id ";
+								}
+							echo "</div>
+									<div class=\"race-right\" style=\"$rand_colour;width:$ptperc%;\">";
+									if ($ptperc > 0) {echo "$ptperc %"; }  
+									echo "</div>";
+							$rand_colour_last = $rand_colour;
+						}		
+							
+					echo "	</div>";
+				}
+			
 			echo "
-				<tr>
-					<th colspan=\"4\"><center> $study_name </center></th>
-				</tr>
+				<div class=\"study-table\">
+				<table name=\"events\">
+				<thead>
 				<tr>
 					<th width=\"25%\">Participant record ID</th>
 					<th width=\"25%\">Participant record ID</th>
@@ -239,7 +291,7 @@ while ($study_QUERY->fetch())
 						{
 							echo "
 								<tr>
-									<td colspan=\"4\" width=\"100%\" style=\"background-color:cornsilk; text-align:center; vertical-align:middle;\"><br /> ---> Phase $phase <--- <br /></td>
+									<td colspan=\"4\" width=\"100%\" style=\"background-color:cornsilk;text-align:center;vertical-align:middle;\"><br /> ---> Phase $phase <--- <br /></td>
 								</tr>";
 							$phase_last = $phase;
 						}
@@ -276,30 +328,35 @@ while ($study_QUERY->fetch())
 					
 					$colcount++;
 				}
+			echo "</tbody>
+			</table>
+			</div>
+			";
 		}
 		else
 		{
-			echo "
-				<tr>
-					<td colspan=\"4\" width=\"100%\"><center>No records availiable to review.</center></td>
-				</tr>";
-			
+			echo "	<div class=\"study-box\">
+						<div class=\"study-left\"> $study_name </div>
+						<div class=\"study-right\"> <center>No records availiable to review.</center></div>
+					</div>
+					";			
 		}
 	}
 	$events_QUERY->close();
+}
+else
+	{
+		echo "	<div class=\"study-box\">
+					<div class=\"study-left\"></div>
+					<div class=\"study-right\"> <center>No study availiable to review.</center> </div>
+				</div>
+				";
 	}
-	else
-		{
-			echo "
-				<tr>
-					<td colspan=\"4\" width=\"100%\"><center>No study availiable to review.</center></td>
-				</tr>";
-		}
-	echo "	</tbody>
-			</table>
-			</div>";
-	$dblink->close();
-	include("footer.php");
+echo "
+		</div>
+	</div>";
+$dblink->close();
+include("footer.php");
 	
 }
 

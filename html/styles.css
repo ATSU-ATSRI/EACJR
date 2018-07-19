@@ -262,6 +262,56 @@ span.centre-box {
 	padding: 0.3em;
 	}
 	
+div.study-box {
+	float: left;
+	width: 95%;
+	border-style: none;
+	color: black;
+	background-color: white;
+	clear: both;
+	overflow:auto;
+	}
+	
+div.study-left {
+	float: left;
+	width: 10%;
+	border-style: none;
+	color: black;
+	background-color: cornsilk
+	}
+
+div.study-right {
+	float: left;
+	width: 85%;
+	padding: 1%;
+	border-style: none;
+	background-color: white;
+	color: black;
+	position: realtive;
+	}
+
+div.race-left {
+	float: left;
+	width: 10%;
+	border-style: none;
+	background-color: white;
+	color: black;
+	clear: left;
+	}
+
+div.race-right {
+	float: left;
+	border-style: none;
+	}
+	
+div.study-table {
+	float: none;
+	width: 99%;
+	border: none;
+	clear: both;
+	float:left;
+	}
+	
 .tooltip {
 	border-bottom: 1px dotted Lime;
 	color: LimeGreen;
