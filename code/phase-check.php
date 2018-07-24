@@ -35,6 +35,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 	if (!($studys_QUERY = $dblink->prepare("SELECT 
 												studys.study_id, 
 												studys.quorum,
+												studys.consensus,
 												(
 													SELECT 
 														count(*)
@@ -47,7 +48,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 											WHERE
 												(CURDATE() BETWEEN `date_start` AND `date_end`);"))) { logger(__LINE__, "SQLi Prepare: $studys_QUERY->error"); }
 	if (!($studys_QUERY->execute())) { logger(__LINE__, "SQLi execute: $studys_QUERY->error"); }
-	if (!($studys_QUERY->bind_result($study_id, $quorum, $members))) { logger(__LINE__, "SQLi rBind: $studys_QUERY->error"); }
+	if (!($studys_QUERY->bind_result($study_id, $quorum, $consensus, $members))) { logger(__LINE__, "SQLi rBind: $studys_QUERY->error"); }
 	$studys_QUERY->store_result();
 	while ($studys_QUERY->fetch())
 		{			
@@ -231,8 +232,8 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 								// $e_id => event_id
 								// count($phase_array[$e_id]) => number of votes recorded
 								// count(array_unique($votes)) => number of votes that DON'T match the others.
-								// if >50% votes equal set patient.phase = 0 else set patient.phase++
-								if 	((count(array_unique($votes)) / count($phase_array[$e_id])) < 0.8)
+								// if >$consensus % votes equal set patient.phase = 0 else set patient.phase++
+								if 	((count(array_unique($votes)) / count($phase_array[$e_id])) < ($consensus * .01))
 									{
 										$new_phase = 0;
 									}

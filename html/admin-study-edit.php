@@ -31,7 +31,7 @@ if ($failed == "ALL_IS_PERFECT")
 					$rm_user_study = "NULL";
 				}
 			
-			if (!($rm_user_QUERY = $dblink->prepare("UPDATE `logins` SET `study`=? WHERE `user_id`=?;"))) { logger(__LINE__, "SQLi Prepare Error: ". $dblink->error ." "); }
+			if (!($rm_user_QUERY = $dblink->prepare("UPDATE `logins` SET `study`=? WHERE `user_id`=?;"))) { logger(__LINE__, "SQLi Prepare Error: $dblink->error"); }
 			if (!($rm_user_QUERY->bind_param('ss', $rm_user_study, $rm_user_id))) { logger(__LINE__, "SQLi pBind error: $rm_user_QUERY->error"); }
 			if (!($rm_user_QUERY->execute())) { logger(__LINE__, "SQLi execute error: $rm_user_QUERY->error"); }
 			$rm_user_QUERY->close();
@@ -76,18 +76,19 @@ if ($failed == "ALL_IS_PERFECT")
 
 	if (isset($_POST['update']))
 		{
-			if (isset($_POST['study_name']) && isset($_POST['study_location']) && isset($_POST['date_start']) && isset($_POST['date_end']) && isset($_POST['quorum']) && isset($_POST['pi_name']) && isset($_POST['pi_email']))
+			if (isset($_POST['study_name']) && isset($_POST['study_location']) && isset($_POST['date_start']) && isset($_POST['date_end']) && isset($_POST['quorum']) && isset($_POST['consensus']) && isset($_POST['pi_name']) && isset($_POST['pi_email']))
 				{
 					$study_name = $_POST['study_name'];
 					$study_location = $_POST['study_location'];
 					$date_start = $_POST['date_start'];
 					$date_end = $_POST['date_end'];
 					$quorum = $_POST['quorum'];
+					$consensus = $_POST['consensus'];
 					$pi_name = $_POST['pi_name'];
 					$pi_email = $_POST['pi_email'];
 					
-					if (!($update_QUERY = $dblink->prepare("UPDATE `studys` SET `name`=?,`date_start`=?,`date_end`=?,`pi_name`=?,`pi_email`=?,`location`=?,`quorum`=? WHERE (`study_id`=?);"))) { logger(__LINE__, "SQLi Prepare: $update_QUERY->error"); }
-					if (!($update_QUERY->bind_param('ssssssss', $study_name, $date_start, $date_end, $pi_name, $pi_email, $study_location, $quorum, $study_id))) { logger(__LINE__, "SQLi Bind Error: $update_QUERY->error"); }
+					if (!($update_QUERY = $dblink->prepare("UPDATE `studys` SET `name`=?,`date_start`=?,`date_end`=?,`pi_name`=?,`pi_email`=?,`location`=?,`quorum`=?, `consensus`=? WHERE (`study_id`=?);"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
+					if (!($update_QUERY->bind_param('sssssssss', $study_name, $date_start, $date_end, $pi_name, $pi_email, $study_location, $quorum, $consensus, $study_id))) { logger(__LINE__, "SQLi Bind Error: $update_QUERY->error"); }
 					if (!($update_QUERY->execute())) { logger(__LINE__, "SQLi execute: $update_QUERY->error"); }
 					$update_QUERY->close();
 					$dblink->close();
@@ -104,10 +105,10 @@ if ($failed == "ALL_IS_PERFECT")
 		}
 
 	
-		if (!($study_QUERY = $dblink->prepare("SELECT name, location, date_start, date_end, pi_name, pi_email, quorum FROM `jury_room`.`studys` WHERE (study_id = ?);"))) {logger(__LINE__, "SQLi Prepare: ".$dblink->error ." ");}
+		if (!($study_QUERY = $dblink->prepare("SELECT name, location, date_start, date_end, pi_name, pi_email, quorum, consensus FROM `jury_room`.`studys` WHERE (study_id = ?);"))) {logger(__LINE__, "SQLi Prepare: ".$dblink->error ." ");}
 		if (!($study_QUERY->bind_param('s', $study_id))) {logger(__LINE__, "SQLi pBind: $study_QUERY->error");}
 		if (!($study_QUERY->execute())) { logger(__LINE__, "SQLi execute: $study_QUERY->error"); }
-		if (!($study_QUERY->bind_result($study_name, $study_location, $date_start, $date_end, $pi_name, $pi_email, $quorum))) {logger(__LINE__, "SQLi rBind: $study_QUERY->error");}
+		if (!($study_QUERY->bind_result($study_name, $study_location, $date_start, $date_end, $pi_name, $pi_email, $quorum, $consensus))) {logger(__LINE__, "SQLi rBind: $study_QUERY->error");}
 		$study_QUERY->store_result();
 		$study_QUERY->fetch();
 	
@@ -128,7 +129,7 @@ if ($failed == "ALL_IS_PERFECT")
 			<br />
 			<a href=\"admin.php\"><button type=\"button\">View user list</button></a><br />
 			<br />
-			<a href=\"admin-message.php\"><button type=\"button\">View Admin Messages</button></a><br />
+			<a href=\"admin-message.php\"><button type=\"button\">View admin messages</button></a><br />
 			<br />
 			<a href=\"admin-study.php\"><button type=\"button\">View study information</button></a><br /?
 			<br />
@@ -148,8 +149,10 @@ if ($failed == "ALL_IS_PERFECT")
 					<div><input type=\"text\" size=\"10\" name=\"date_start\" value=\"$date_start\"></div>
 					<div>Date to end voting? &nbsp; &nbsp; &nbsp; &nbsp; Format: YYYY-MM-DD</div>
 					<div><input type=\"text\" size=\"10\" name=\"date_end\" value=\"$date_end\"></div>
-					<div>Percentage of users voting to reach Quorum?</div>
+					<div>Percentage of users voting to reach a quorum?</div>
 					<div><input type=\"text\" size=\"45\" name=\"quorum\" value=\"$quorum\"> %</div>
+					<div>Percentage of users voting to reach consensus?</div>
+					<div><input type=\"text\" size=\"45\" name=\"consensus\" value=\"$consensus\"> %</div>
 					<div>PI's name?</div>
 					<div><input type=\"text\" size=\"45\" name=\"pi_name\" value=\"$pi_name\"></div>
 					<div>PI's email address?</div>
@@ -164,7 +167,7 @@ if ($failed == "ALL_IS_PERFECT")
 				<div class=\"ft-head\"> Users in this study </div>
 				<div class=\"ft\">";
 			
-	if (!($logins_QUERY = $dblink->prepare("SELECT user_id, name, study FROM `logins` where FIND_IN_SET(?,study);"))) { logger(__LINE__, "SQLi Prepare: $logins_QUERY->error"); }
+	if (!($logins_QUERY = $dblink->prepare("SELECT user_id, name, study FROM `logins` where FIND_IN_SET(?,study);"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 	if (!($logins_QUERY->bind_param('s', $study_id))) { logger(__LINE__, "SQLi rBind error: $logins_QUERY->error"); }
 	if (!($logins_QUERY->execute())) { logger(__LINE__, "SQLi execute error: $logins_QUERY->error"); }	
 	if (!($logins_QUERY->bind_result($logins_user_id, $logins_name, $logins_study))) { logger(__LINE__, "SQLi rBind error: $logins_QUERY->error"); }
@@ -195,7 +198,7 @@ if ($failed == "ALL_IS_PERFECT")
 			<div class=\"ft-head\"> Users not in this study </div>
 			<div class=\"ft\">";
 	
-	if (!($logouts_QUERY = $dblink->prepare("SELECT user_id, name, study FROM `logins` where ((NOT FIND_IN_SET(?,study)) OR (study IS NULL)) AND (`logins`.`rank` > 0);"))) { logger(__LINE__, "SQLi Prepare: $logouts_QUERY->error"); }
+	if (!($logouts_QUERY = $dblink->prepare("SELECT user_id, name, study FROM `logins` where ((NOT FIND_IN_SET(?,study)) OR (study IS NULL)) AND (`logins`.`rank` > 0);"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 	if (!($logouts_QUERY->bind_param('s', $study_id))) { logger(__LINE__, "SQLi rBind error: $logouts_QUERY->error"); }
 	if (!($logouts_QUERY->execute())) { logger(__LINE__, "SQLi execute error: $logouts_QUERY->error"); }	
 	if (!($logouts_QUERY->bind_result($logouts_user_id, $logouts_name, $logouts_study))) { logger(__LINE__, "SQLi rBind error: $logouts_QUERY->error"); }

@@ -6,10 +6,10 @@ if ($failed == "ALL_IS_PERFECT")
 	include("menu_item.php");
 	$study_id = $_REQUEST['act'];
 	
-		if (!($study_QUERY = $dblink->prepare("SELECT name, location, date_start, date_end, pi_name, pi_email, quorum FROM `jury_room`.`studys` WHERE (study_id = ?);"))) {logger(__LINE__, "SQLi Prepare: $dblink->error");}
+		if (!($study_QUERY = $dblink->prepare("SELECT name, location, date_start, date_end, pi_name, pi_email, quorum, consensus FROM `jury_room`.`studys` WHERE (study_id = ?);"))) {logger(__LINE__, "SQLi Prepare: $dblink->error");}
 		if (!($study_QUERY->bind_param('s', $study_id))) {logger(__LINE__, "SQLi pBind: $study_QUERY->error");}
 		if (!($study_QUERY->execute())) { logger(__LINE__, "SQLi execute: $study_QUERY->error"); }
-		if (!($study_QUERY->bind_result($study_name, $study_location, $date_start, $date_end, $pi_name, $pi_email, $quorum))) {logger(__LINE__, "SQLi rBind: $study_QUERY->error");}
+		if (!($study_QUERY->bind_result($study_name, $study_location, $date_start, $date_end, $pi_name, $pi_email, $quorum, $consensus))) {logger(__LINE__, "SQLi rBind: $study_QUERY->error");}
 		$study_QUERY->store_result();
 		$study_QUERY->fetch();
 	
@@ -30,7 +30,7 @@ if ($failed == "ALL_IS_PERFECT")
 			<br />
 			<a href=\"admin.php\"><button type=\"button\">View user list</button></a><br />
 			<br />
-			<a href=\"admin-message.php\"><button type=\"button\">View Admin Messages</button></a><br />
+			<a href=\"admin-message.php\"><button type=\"button\">View admin messages</button></a><br />
 			<br />
 			<a href=\"admin-study.php\"><button type=\"button\">View study information</button></a><br /?
 			<br />
@@ -51,6 +51,8 @@ if ($failed == "ALL_IS_PERFECT")
 					<div>$date_end</div>
 					<div>Percentage of users voting to reach Quorum?</div>
 					<div>$quorum %</div>
+					<div>Percentage of users voting to reach Consensus?</div>
+					<div>$consensus %</div>
 					<div>PI's name?</div>
 					<div>$pi_name</div>
 					<div>PI's email address?</div>
@@ -70,7 +72,7 @@ if ($failed == "ALL_IS_PERFECT")
 						<div class=\"mt-body\">
 						";
 			
-	if (!($phase_QUERY = $dblink->prepare("SELECT COUNT(*), `phase` FROM `patient` WHERE (`study_id` = ?) GROUP BY `phase`;"))) { logger(__LINE__, "SQLi Prepare: ". $phase_QUERY->error ." "); }
+	if (!($phase_QUERY = $dblink->prepare("SELECT COUNT(*), `phase` FROM `patient` WHERE (`study_id` = ?) GROUP BY `phase`;"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 	if (!($phase_QUERY->bind_param('s', $study_id))) { logger(__LINE__, "SQLi rBind error: $phase_QUERY->error"); }
 	if (!($phase_QUERY->execute())) { logger(__LINE__, "SQLi execute error: $phase_QUERY->error"); }	
 	if (!($phase_QUERY->bind_result($phase_count, $phase_phaseno))) { logger(__LINE__, "SQLi rBind error: $phase_QUERY->error"); }
@@ -111,7 +113,7 @@ if ($failed == "ALL_IS_PERFECT")
 				<div class=\"mt-body\">
 				";
 	
-	if (!($active_QUERY = $dblink->prepare("SELECT `review`.`user_id` AS 'kid', `logins`.`name`, MAX(`login_history`.`login`) AS 'last_seen', (SELECT COUNT(DISTINCT `patient`.`code`) FROM `review` INNER JOIN `symptom` ON `review`.`event_id` = `symptom`.`event_id` INNER JOIN `patient` ON `symptom`.`code` = `patient`.`code` WHERE (`patient`.`study_id` = ?) AND (`review`.`user_id` = kid)) AS 'pt_reviewed', (SELECT COUNT(DISTINCT `review`.`event_id`) FROM `review` INNER JOIN `symptom` ON `review`.`event_id` = `symptom`.`event_id` INNER JOIN `patient` ON `symptom`.`code` = `patient`.`code` WHERE (`patient`.`study_id` = ?) AND (`review`.`user_id` = kid)) AS 'events_reviewed', (SELECT COUNT(`login_history`.`id`) FROM `login_history` WHERE (`login_history`.`id` = kid)) AS 'number of logins', AVG(q.review_time) AS avg_review_time FROM `review` INNER JOIN `symptom` ON `review`.`event_id` = `symptom`.`event_id` INNER JOIN `logins` ON `review`.`user_id` = `logins`.`user_id` INNER JOIN `login_history` ON `logins`.`user_id` = `login_history`.`id` LEFT JOIN ( SELECT `review`.`user_id`, (TIMESTAMPDIFF(SECOND, MIN(TIME(`review`.`action_date`)), MAX(TIME(`review`.`action_date`))) / (COUNT(DISTINCT(`review`.`action_date`)) -1)) AS review_time FROM `review` GROUP BY `review`.`user_id`, DATE(`review`.`action_date`)) AS `q` ON `review`.`user_id` = `q`.`user_id` WHERE (`symptom`.`study_id` = ?) GROUP BY kid ORDER BY `logins`.`name`;"))) { logger(__LINE__, "SQLi Prepare: $active_QUERY->error"); }
+	if (!($active_QUERY = $dblink->prepare("SELECT `review`.`user_id` AS 'kid', `logins`.`name`, MAX(`login_history`.`login`) AS 'last_seen', (SELECT COUNT(DISTINCT `patient`.`code`) FROM `review` INNER JOIN `symptom` ON `review`.`event_id` = `symptom`.`event_id` INNER JOIN `patient` ON `symptom`.`code` = `patient`.`code` WHERE (`patient`.`study_id` = ?) AND (`review`.`user_id` = kid)) AS 'pt_reviewed', (SELECT COUNT(DISTINCT `review`.`event_id`) FROM `review` INNER JOIN `symptom` ON `review`.`event_id` = `symptom`.`event_id` INNER JOIN `patient` ON `symptom`.`code` = `patient`.`code` WHERE (`patient`.`study_id` = ?) AND (`review`.`user_id` = kid)) AS 'events_reviewed', (SELECT COUNT(`login_history`.`id`) FROM `login_history` WHERE (`login_history`.`id` = kid)) AS 'number of logins', AVG(q.review_time) AS avg_review_time FROM `review` INNER JOIN `symptom` ON `review`.`event_id` = `symptom`.`event_id` INNER JOIN `logins` ON `review`.`user_id` = `logins`.`user_id` INNER JOIN `login_history` ON `logins`.`user_id` = `login_history`.`id` LEFT JOIN ( SELECT `review`.`user_id`, (TIMESTAMPDIFF(SECOND, MIN(TIME(`review`.`action_date`)), MAX(TIME(`review`.`action_date`))) / (COUNT(DISTINCT(`review`.`action_date`)) -1)) AS review_time FROM `review` GROUP BY `review`.`user_id`, DATE(`review`.`action_date`)) AS `q` ON `review`.`user_id` = `q`.`user_id` WHERE (`symptom`.`study_id` = ?) GROUP BY kid ORDER BY `logins`.`name`;"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 	if (!($active_QUERY->bind_param('sss', $study_id, $study_id, $study_id))) { logger(__LINE__, "SQLi rBind error: $active_QUERY->error"); }
 	if (!($active_QUERY->execute())) { logger(__LINE__, "SQLi execute error: $active_QUERY->error"); }	
 	if (!($active_QUERY->bind_result($active_user_id, $active_name, $active_last, $active_previewed, $active_ereviewed, $active_logins, $active_reivew_time))) { logger(__LINE__, "SQLi rBind error: $active_QUERY->error"); }
@@ -153,7 +155,7 @@ if ($failed == "ALL_IS_PERFECT")
 				</div>
 				<div class=\"mt-body\">
 				";
-	if (!($nonactive_QUERY = $dblink->prepare("SELECT `logins`.`user_id`, `logins`.`name`, MAX(`login_history`.`login`), `logins`.`email`  AS 'last_seen' FROM `logins` RIGHT OUTER JOIN `login_history` ON `logins`.`user_id`=`login_history`.`id` WHERE FIND_IN_SET(?,`logins`.`study`) AND (NOT EXISTS (SELECT `review`.`user_id` FROM `review` WHERE `review`.`user_id` = `logins`.`user_id`)) GROUP BY `logins`.`user_id` ORDER BY `logins`.`name`;"))) { logger(__LINE__, "SQLi Prepare: $nonactive_QUERY->error"); }
+	if (!($nonactive_QUERY = $dblink->prepare("SELECT `logins`.`user_id`, `logins`.`name`, MAX(`login_history`.`login`), `logins`.`email`  AS 'last_seen' FROM `logins` RIGHT OUTER JOIN `login_history` ON `logins`.`user_id`=`login_history`.`id` WHERE FIND_IN_SET(?,`logins`.`study`) AND (NOT EXISTS (SELECT `review`.`user_id` FROM `review` WHERE `review`.`user_id` = `logins`.`user_id`)) GROUP BY `logins`.`user_id` ORDER BY `logins`.`name`;"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 	if (!($nonactive_QUERY->bind_param('s', $study_id))) { logger(__LINE__, "SQLi rBind error: $nonactive_QUERY->error"); }
 	if (!($nonactive_QUERY->execute())) { logger(__LINE__, "SQLi execute error: $nonactive_QUERY->error"); }	
 	if (!($nonactive_QUERY->bind_result($nonactive_userid, $nonactive_name, $nonactive_last, $nonactive_email))) { logger(__LINE__, "SQLi rBind error: $nonactive_QUERY->error"); }

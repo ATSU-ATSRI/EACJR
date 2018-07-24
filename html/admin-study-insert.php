@@ -22,7 +22,7 @@ if ($failed == "ALL_IS_PERFECT")
 			<br />
 			<a href=\"admin-history.php\"><button type=\"button\">View user history</button></a><br />		
 			<br />
-			<a href=\"admin-message.php\"><button type=\"button\">View Admin messages</button></a><br />
+			<a href=\"admin-message.php\"><button type=\"button\">View admin messages</button></a><br />
 			<br />
 			
 		</span>
@@ -52,8 +52,12 @@ if ($failed == "ALL_IS_PERFECT")
 					<TD width=\"70%\"><input type=\"text\" size=\"10\" name=\"date_end\" value=\"\"></TD>
 				</TR>
 				<TR>
-					<TH width=\"30%\">Percentage of users voting to reach Quorum?</TH>
+					<TH width=\"30%\">Percentage of users voting to reach a quorum?</TH>
 					<TD width=\"70%\"><input type=\"text\" size=\"45\" name=\"quorum\" value=\"\"> %</TD>
+				</TR>
+				<TR>
+					<TH width=\"30%\">Percentage of users voting to reach consensus?</TH>
+					<TD width=\"70%\"><input type=\"text\" size=\"45\" name=\"consensus\" value=\"\"> %</TD>
 				</TR>
 				<TR>
 					<TH width=\"30%\">PI's name?</TH>
@@ -71,18 +75,19 @@ if ($failed == "ALL_IS_PERFECT")
 	
 	if (isset($_POST['submit']))
 		{
-			if (isset($_POST['study_name']) && isset($_POST['study_location']) && isset($_POST['date_start']) && isset($_POST['date_end']) && isset($_POST['quorum']) && isset($_POST['pi_name']) && isset($_POST['pi_email']))
+			if (isset($_POST['study_name']) && isset($_POST['study_location']) && isset($_POST['date_start']) && isset($_POST['date_end']) && isset($_POST['quorum']) && isset($_POST['consensus']) && isset($_POST['pi_name']) && isset($_POST['pi_email']))
 				{
 					$study_name = $_POST['study_name'];
 					$study_location = $_POST['study_location'];
 					$date_start = $_POST['date_start'];
 					$date_end = $_POST['date_end'];
 					$quorum = $_POST['quorum'];
+					$consensus = $_POST['consensus'];
 					$pi_name = $_POST['pi_name'];
 					$pi_email = $_POST['pi_email'];
 					
-					if (!($insert_QUERY = $dblink->prepare("INSERT INTO jury_room.studys (name, location, date_start, date_end, quorum, pi_name, pi_email) VALUES(?, ?, ?, ?, ?, ?, ?);"))) {logger(__LINE__, "SQLi Prepare: $insert_QUERY->error");}
-					if (!($insert_QUERY->bind_param('sssssss', $study_name, $study_location, $date_start, $date_end, $quorum, $pi_name, $pi_email))) { logger(__LINE__, "SQLi Bind Error: $insert_QUERY->error"); }
+					if (!($insert_QUERY = $dblink->prepare("INSERT INTO jury_room.studys (name, location, date_start, date_end, quorum, consensus, pi_name, pi_email) VALUES(?, ?, ?, ?, ?, ?, ?, ?);"))) {logger(__LINE__, "SQLi Prepare: $dblink->error");}
+					if (!($insert_QUERY->bind_param('ssssssss', $study_name, $study_location, $date_start, $date_end, $quorum, $consensus, $pi_name, $pi_email))) { logger(__LINE__, "SQLi Bind Error: $insert_QUERY->error"); }
 					if (!($insert_QUERY->execute())) { logger(__LINE__, "SQLi execute: $insert_QUERY->error"); }
 					$insert_QUERY->close();
 					$dblink->close();
