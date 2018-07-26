@@ -97,6 +97,7 @@ if ($failed == "ALL_IS_PERFECT")
 										<li>Mild</li>
 										<li>Not Present (i.e., did not have)</li>
 										<li>No Response or blank (i.e., did not respond)</li>
+										<li>Not applicable (N/A)</li>
 									</ul>
 									</span></a> </TH>
 								<TH width=\"11%\"> <a class=\"tooltip\" href=\"#\">24 hr Severity <span class=\"tooltip-data\">
