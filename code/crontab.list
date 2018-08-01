@@ -1,0 +1,4 @@
+# m h  dom mon dow   command
+0 13 * * fri sudo php /usr/share/eacjr/phaser/phase-check.php
+0 14 * * fri sudo php /usr/share/eacjr/code/email-check.php
+*/5 * * * * sudo php /usr/share/eacjr/code/racetrack_update.php
