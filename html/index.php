@@ -35,6 +35,8 @@ echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://
 <center>
 <div class=\"main\">";
 
+require('datacon.php');
+
 $failed = isset($_SESSION['failed']) ? $_SESSION['failed'] : '';
 if (($failed !== "ALL_IS_PERFECT") && (strlen($failed) > 1))
 	{
@@ -51,7 +53,7 @@ echo "
 					<div>Password</div>
 					<div><INPUT type=\"password\" name=\"password\" id=\"password\" size=\"30\"></div>
 					<div>Please complete the reCAPTCHA</div>
-					<div><span class=\"g-recaptcha\" data-sitekey=\"DATA SITE KEY GOES HERE\" data-callback=\"enableBtn\" data-expired-callback=\"disableBtn\"></span></div>
+					<div><span class=\"g-recaptcha\" data-sitekey=\"". $sitekey ."\" data-callback=\"enableBtn\" data-expired-callback=\"disableBtn\"></span></div>
 				</div>
 				<div class=\"ft-head\"><INPUT type=\"submit\" name=\"submitMe\" id=\"submitMe\" value=\"Login\" disabled=\"true\"></div>
 			</form>

@@ -35,6 +35,8 @@ echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://
 <center>
 <div class=\"main\">";
 
+require('datacon.php');
+
 echo "
 		<span class=\"left-box\">
 			<form name=\"userlogin\" action=\"\" method=\"POST\">
@@ -42,7 +44,7 @@ echo "
 					<div>Enter your email address</div>
 					<div><INPUT type=\"text\" name=\"user_id\" id=\"user_id\" size=\"30\" autofocus></div>
 					<div>Complete the reCAPTICHA</div>
-					<div><span class=\"g-recaptcha\" data-sitekey=\"DATA SITE KEY GOES HERE\" data-callback=\"enableBtn\" data-expired-callback=\"disableBtn\"></span></div>
+					<div><span class=\"g-recaptcha\" data-sitekey=\"". $sitekey ."\" data-callback=\"enableBtn\" data-expired-callback=\"disableBtn\"></span></div>
 				</div>
 				<div class=\"ft-head\"><INPUT type=\"submit\" name=\"submitMe\" id=\"submitMe\" value=\"Request Password Reset\" disabled=\"true\"></div>
 			</form>

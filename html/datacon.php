@@ -18,4 +18,5 @@ $mail_host = "MAIL HOST GOES HERE";
 $host_url = "URL FOR PORTAL GOES HERE";
 $options = [ 'cost' => NUMBER GOES HERE ]; // used for hashing on PHP < 7.0
 $secret = "reCAPTCHA SECRET CODE GOES HERE";
+$sitekey = "reCAPTCHA SITE KEY GOES HERE";
 ?>
