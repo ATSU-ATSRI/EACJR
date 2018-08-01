@@ -7,9 +7,14 @@ $user_ip = getUserIP();
 echo "<title>DO-Touch.NET - EAC</title>
 			<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">
 			<meta http-equiv=\"PRAGMA\" content=\"NO-CACHE\">
-			<meta http-equiv=\"Expires\" content=\"-1\">
+			<meta http-equiv=\"Expires\" content=\"Tue, 01 Jan 2000 00:00:00 GMT\">
+			<meta http-equiv=\"Last-Modified\" content=\" " . gmdate("D, d M Y H:i:s") . " GMT\">
 			<meta http-equiv=\"CACHE-CONTROL\" content=\"NO-CACHE\">
 			<meta http-equiv=\"CACHE-CONTROL\" content=\"NO-STORE\">
+			<meta http-equiv=\"CACHE-CONTROL\" content=\"MUST-REVALIDATE\">
+			<meta http-equiv=\"CACHE-CONTROL\" content=\"MAX-AGE=0\">
+			<meta http-equiv=\"CACHE-CONTROL\" content=\"POST-CHECK=0\">
+			<meta http-equiv=\"CACHE-CONTROL\" content=\"PRE-CHECK=0\">
 			<link rel=\"shortcut icon\ href=\"favicon.ico\">
 			<link rel=\"stylesheet\" href=\"styles.css\">
 		</head>

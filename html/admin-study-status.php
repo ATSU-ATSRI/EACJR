@@ -94,9 +94,59 @@ if ($failed == "ALL_IS_PERFECT")
 			echo "   <div class=\"mt-row\"> No records to display </div>";
 		}
 		
-	echo "		</div>
-			</div>
-			</span>";
+	if (!($race_QUERY = $dblink->prepare("SELECT `user_id`, `pttotal`, `rvtotal` FROM `studys_stats` WHERE `study_id` = ?;"))) { logger(__LINE__, "SQLi Prepare: $dblink->error()"); }
+			if (!($race_QUERY->bind_param('s', $study_id))) { logger(__LINE__, "SQLi pBind: $race_QUERY->error()"); }
+			if (!($race_QUERY->execute())) { logger(__LINE__, "SQLi Execute->error()"); }
+			if (!($race_QUERY->bind_result($race_id, $race_pttotal, $race_rvtotal))) { logger(__LINE__, "SQLi rBind: $race_QUERY->error()"); }
+			$race_QUERY->store_result();
+			
+			if (($race_QUERY->num_rows) > 0)
+				{
+					echo "</div></div><div class=\"study-right\" style=\"width:100%;border-style:none dashed none none;text-align:left;\">Race to the finish!<br /><br />";
+					$colour_ARRAY = array(	"border-color:red", 
+											"border-color:orange", 
+											"border-color:yellow", 
+											"border-color:green", 
+											"border-color:blue", 
+											"border-color:purple", 
+											"border-color:cyan", 
+											"border-color:pink", 
+											"border-color:black", 
+											"border-color:grey");
+					
+					$rand_colour_last = "plaid";
+					$rand_icon_last = 51;
+					while ($race_QUERY->fetch())
+						{
+							$ptperc = round((($race_rvtotal / $race_pttotal) * 100), 0);
+							if ($ptperc < 1) { $ptperc = 0; }
+							$rand_colour = $colour_ARRAY[rand(0, 9)];
+							while ($rand_colour == $rand_colour_last)
+								{
+									$rand_colour = $colour_ARRAY[rand(0, 9)];
+								}
+							$rand_icon = rand(0, 50);
+							while ($rand_icon == $rand_icon_last)
+								{
+									$rand_icon = rand(0, 50);
+								}
+							
+							echo "	<div class=\"race-right\" style=\"$rand_colour;width:$ptperc%;border-style:none none solid none;border-width:none none medium none;\">";
+
+								if ($ptperc > 0) {echo " # $race_id >>> $ptperc %"; }  
+								
+								echo "<img src=\"\\images\\racetrack\\" . $rand_icon . ".png\" height=\"16px\" />";
+								
+								echo "</div>";
+								
+							$rand_colour_last = $rand_colour;
+							$rand_icon_last = $rand_icon;
+						}		
+							
+					echo "	</div>";
+				}
+		
+	echo "</span>";
 	mysqli_stmt_close($phase_QUERY);
 
 	echo "	<span class=\"right-box\">

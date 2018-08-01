@@ -1,17 +1,5 @@
 @charset "iso-8859-1";
 
-/* a:link {
-	color: blue;
-	}
-	
-a:visited {
-	color: blue;
-	}
-	
-a:hover {
-	color: red;
-	} */
-
 table { 
 	display: flex; 
 	flex-direction: column;
@@ -301,7 +289,11 @@ div.race-left {
 
 div.race-right {
 	float: left;
+	text-align: right;
 	border-style: none;
+	clear: left;
+	overflow: hidden;
+	white-space: nowrap;
 	}
 	
 div.study-table {

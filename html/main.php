@@ -213,8 +213,9 @@ while ($study_QUERY->fetch())
 				";
 			
 			//$study_id_this
-			if (!($race_QUERY = $dblink->prepare("SELECT `logins`.`user_id` AS `kid`, (SELECT COUNT(*) FROM `patient` WHERE (`patient`.`study_id` = ?) AND (`patient`.`phase` > '0')) AS `pttotal`, (SELECT COUNT(DISTINCT `patient`.`code`) FROM `patient` INNER JOIN `symptom` ON `patient`.`code`=`symptom`.`code` INNER JOIN `review` ON `symptom`.`event_id`=`review`.`event_id` WHERE (`patient`.`study_id` = ?) AND (`patient`.`phase` > '0') AND (`review`.`user_id` = kid)) AS `rvtotal` FROM `logins` WHERE FIND_IN_SET(?,`logins`.`study`) GROUP BY `logins`.`user_id`;"))) { logger(__LINE__, "SQLi Prepare: $dblink->error()"); }
-			if (!($race_QUERY->bind_param('sss', $study_id_this, $study_id_this, $study_id_this))) { logger(__LINE__, "SQLi pBind: $race_QUERY->error()"); }
+			
+			if (!($race_QUERY = $dblink->prepare("SELECT `user_id`, `pttotal`, `rvtotal` FROM `studys_stats` WHERE `study_id` = ?;"))) { logger(__LINE__, "SQLi Prepare: $dblink->error()"); }
+			if (!($race_QUERY->bind_param('s', $study_id_this))) { logger(__LINE__, "SQLi pBind: $race_QUERY->error()"); }
 			if (!($race_QUERY->execute())) { logger(__LINE__, "SQLi Execute->error()"); }
 			if (!($race_QUERY->bind_result($race_id, $race_pttotal, $race_rvtotal))) { logger(__LINE__, "SQLi rBind: $race_QUERY->error()"); }
 			$race_QUERY->store_result();
@@ -222,43 +223,53 @@ while ($study_QUERY->fetch())
 			if (($race_QUERY->num_rows) > 0)
 				{
 					echo "<div class=\"study-right\" style=\"border-style: none dashed none none;\">Race to the finish!<br /><br />";
-					$colour_ARRAY = array(	"background-color:red;color:white", 
-											"background-color:orange;color:black", 
-											"background-color:yellow;color:black", 
-											"background-color:green;color:white", 
-											"background-color:blue;color:white", 
-											"background-color:purple;color:white", 
-											"background-color:cyan;color:black", 
-											"background-color:pink;color:black", 
-											"background-color:black;color:white", 
-											"background-color:grey;color:white");
+					$colour_ARRAY = array(	"border-color:red", 
+											"border-color:orange", 
+											"border-color:yellow", 
+											"border-color:green", 
+											"border-color:blue", 
+											"border-color:purple", 
+											"border-color:cyan", 
+											"border-color:pink", 
+											"border-color:black", 
+											"border-color:grey");
 					
+					$rand_colour_last = "plaid";
+					$rand_icon_last = 51;
 					while ($race_QUERY->fetch())
 						{
 							$ptperc = round((($race_rvtotal / $race_pttotal) * 100), 0);
 							if ($ptperc < 1) { $ptperc = 0; }
 							$rand_colour = $colour_ARRAY[rand(0, 9)];
-							$rand_colour_last = "plaid";
 							while ($rand_colour == $rand_colour_last)
 								{
 									$rand_colour = $colour_ARRAY[rand(0, 9)];
 								}
+							$rand_icon = rand(0, 50);
+							while ($rand_icon == $rand_icon_last)
+								{
+									$rand_icon = rand(0, 50);
+								}
 							
-							echo "
-									<div class=\"race-left\">";
-							if ($race_id == $_SESSION["id"])
-								{
-									echo "You >>> ";
-								}
-								else
-								{
-									echo " # $race_id ";
-								}
-							echo "</div>
-									<div class=\"race-right\" style=\"$rand_colour;width:$ptperc%;\">";
-									if ($ptperc > 0) {echo "$ptperc %"; }  
-									echo "</div>";
+							echo "	<div class=\"race-right\" style=\"$rand_colour;width:$ptperc%;border-style:none none solid none;border-width:none none medium none;\">";
+															
+								if ($race_id == $_SESSION["id"])
+									{
+										echo "You >>> ";
+									}
+									else
+									{
+										echo " # $race_id >>> ";
+									}
+								
+								if ($ptperc > 0) {echo "$ptperc %"; }  
+								
+								echo "<img src=\"\\images\\racetrack\\" . $rand_icon . ".png\" height=\"16px\" />";
+								
+								echo "</div>";
+								
 							$rand_colour_last = $rand_colour;
+							$rand_icon_last = $rand_icon;
 						}		
 							
 					echo "	</div>";
@@ -331,6 +342,7 @@ while ($study_QUERY->fetch())
 				}
 			echo "</tbody>
 			</table>
+			</div>
 			</div>
 			";
 		}
