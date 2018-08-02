@@ -13,7 +13,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 		set_error_handler("recordError");
 		$start_memory = memory_get_usage();
 		logger(__LINE__, "===== Start of Log. =====");
-		logger(__LINE__, "My timezone is: " . date_default_timezone_get());
+		//logger(__LINE__, "My timezone is: " . date_default_timezone_get());
 		// end logger start
 	
 	// Database 
@@ -37,12 +37,24 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 															`logins`.`user_id` AS `kid`, 
 															(
 																(
-																	SELECT
-																		COUNT(`patient`.`code`)
-																	FROM
-																		`patient`
-																	WHERE
-																		`patient`.`study_id` = ?
+																	(
+																		SELECT
+																			COUNT(`patient`.`code`)
+																		FROM
+																			`patient`
+																		WHERE
+																			`patient`.`study_id` = ?
+																	)
+																	+
+																	(
+																		SELECT 
+																			COUNT(`patient`.`code`)
+																		FROM
+																			`patient`
+																		WHERE
+																			(`patient`.`study_id` = ?)
+																			AND (`patient`.`phase` > '1')
+																	)
 																)
 																-
 																(
@@ -85,7 +97,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 															FIND_IN_SET(?,`logins`.`study`) 
 														GROUP BY 
 															`logins`.`user_id`;")))  { logger(__LINE__, "SQLi Prepare error: $dblink->error"); }
-					if (!($race_QUERY->bind_param('sssss', $study_id, $study_id, $study_id, $study_id, $study_id))) { logger(__LINE__, "SQLi pBind error: $race_QUERY->error"); }
+					if (!($race_QUERY->bind_param('ssssss', $study_id, $study_id, $study_id, $study_id, $study_id, $study_id))) { logger(__LINE__, "SQLi pBind error: $race_QUERY->error"); }
 					if (!($race_QUERY->execute())) { logger(__LINE__, "SQLi execute error: $race_QUERY->error"); }
 					if (!($race_QUERY->bind_result($race_user_id, $race_pttotal, $race_rvtotal))) { logger(__LINE__, "SQLi rBind error: $race_QUERY->error"); }
 					$race_QUERY->store_result();
@@ -116,14 +128,14 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 									if (!($update_QUERY->bind_param('ssssssss', $race_user_id, $study_id, $race_pttotal, $race_rvtotal, $race_user_id, $study_id, $race_pttotal, $race_rvtotal))) { logger(__LINE__, "SQLi pBind error: $update_QUERY->error"); }
 									if (!($update_QUERY->execute())) { logger(__LINE__, "SQLi execute error: $update_QUERY->error"); }
 									$update_QUERY->free_result();
-									logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
+									//logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
 								}
 						}
 					$race_QUERY->free_result();
-					logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
+					//logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
 				}
 		}
 		$studys_QUERY->free_result();
-		logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
+		//logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
 		logger(__LINE__, "===== End of Log. =====");
 ?>
