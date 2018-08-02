@@ -102,7 +102,11 @@ if ($failed == "ALL_IS_PERFECT")
 			
 			if (($race_QUERY->num_rows) > 0)
 				{
-					echo "</div></div><div class=\"study-right\" style=\"width:100%;border-style:none dashed none none;text-align:left;\">Race to the finish!<br /><br />";
+					echo "</div>
+						</div>
+						<br />
+							<div class=\"ft-head\">Racetrack Display</div>
+							<div class=\"study-right\" style=\"width:100%;border-style:none dashed none none;text-align:left;\">Race to the finish!<br /><br />";
 					$colour_ARRAY = array(	"border-color:red", 
 											"border-color:orange", 
 											"border-color:yellow", 
