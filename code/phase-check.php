@@ -32,21 +32,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 	$severity_time_array = array("Not present", "baseline", "24hr", "72hr", "1_wk");
 	
 	// pull list of studies
-	if (!($studys_QUERY = $dblink->prepare("SELECT 
-												studys.study_id, 
-												studys.quorum,
-												studys.consensus,
-												(
-													SELECT 
-														count(*)
-													FROM
-														jury_room.logins
-													WHERE
-														logins.study = study_id) AS members
-											FROM
-												studys
-											WHERE
-												(CURDATE() BETWEEN `date_start` AND `date_end`);"))) { logger(__LINE__, "SQLi Prepare: $studys_QUERY->error"); }
+	if (!($studys_QUERY = $dblink->prepare("SELECT `studys`.`study_id` as sid, `studys`.`quorum`, `studys`.`consensus`, (SELECT count(*) FROM `logins` WHERE FIND_IN_SET(sid, study)) AS members FROM `studys` WHERE (CURDATE() BETWEEN `date_start` AND `date_end`);"))) { logger(__LINE__, "SQLi Prepare: $studys_QUERY->error"); }
 	if (!($studys_QUERY->execute())) { logger(__LINE__, "SQLi execute: $studys_QUERY->error"); }
 	if (!($studys_QUERY->bind_result($study_id, $quorum, $consensus, $members))) { logger(__LINE__, "SQLi rBind: $studys_QUERY->error"); }
 	$studys_QUERY->store_result();
@@ -54,31 +40,11 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 		{			
 		// Start of main loop
 			// Scan for patients without no phase (new pt. or new study)
+			logger(__LINE__, "======>>>>>> Now working on Study # $study_id. <<<<<<=======");
 			logger(__LINE__, "Phase Zero scan started.");
 			logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
 			
-			if (!($scan_QUERY = $dblink->prepare("SELECT 
-													patient_id,
-													patient.code,
-													symptom.event_id,
-													symptom.pt_baseline,
-													symptom.pt_baseline_severity,
-													symptom.pt_24hr,
-													symptom.pt_24hr_severity,
-													symptom.pt_72hr,
-													symptom.pt_72hr_severity,
-													symptom.pt_1wk,
-													symptom.followup_clinic,
-													symptom.followup_uc,
-													symptom.followup_er,
-													symptom.followup_hosp
-												FROM
-													patient
-														RIGHT JOIN
-													symptom ON patient.code = symptom.code
-												WHERE
-													(patient.study_id = ?)
-														AND (symptom.phase IS NULL);"))) { logger(__LINE__, "SQLi Prepare: $scan_QUERY->error"); }
+			if (!($scan_QUERY = $dblink->prepare("SELECT `patient`.`patient_id`, `patient`.`code`, `symptom`.`event_id`, `symptom`.`pt_baseline`, `symptom`.`pt_baseline_severity`, `symptom`.`pt_24hr`, `symptom`.`pt_24hr_severity`, `symptom`.`pt_72hr`, `symptom`.`pt_72hr_severity`, `symptom`.`pt_1wk`, `symptom`.`followup_clinic`, `symptom`.`followup_uc`, `symptom`.`followup_er`, `symptom`.`followup_hosp` FROM `patient` RIGHT JOIN `symptom` ON `patient`.`code` = `symptom`.`code` WHERE (`patient`.`study_id` = ?) AND (`symptom`.`phase` IS NULL);"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 			if (!($scan_QUERY->bind_param('s', $study_id))) { logger(__LINE__, "SQLi pBind: $scan_QUERY->error"); }
 			if (!($scan_QUERY->execute())) { logger(__LINE__, "SQLi execute: $scan_QUERY->error"); }
 			if (!($scan_QUERY->bind_result($patient_id, $code, $event_id, $pt_baseline, $pt_baseline_severity, $pt_24hr, $pt_24hr_severity, $pt_72hr, $pt_72hr_severity, $pt_1wk, $followup_clinic, $followup_uc, $followup_er, $followup_hosp))) { logger(__LINE__, "SQL rBind: $scan_QUERY->error"); }
@@ -119,27 +85,23 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 						// move symptom to new phase
 							logger(__LINE__, "  >> Moving $event_id to Phase $new_phase.");
 						
-							if (!($move_QUERY = $dblink->prepare("UPDATE symptom 
-																	SET 
-																		phase = ?
-																	WHERE
-																		(event_id = ?)"))) { logger(__LINE__, "SQLi Prepare: $move_QUERY->error"); }
+							if (!($move_QUERY = $dblink->prepare("UPDATE `symptom` SET `phase` = ? WHERE (`event_id` = ?)"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 							if (!($move_QUERY->bind_param('ss', $new_phase, $event_id))) { logger(__LINE__, "SQLi pBind: $move_QUERY->error"); }
 							if (!($move_QUERY->execute())) { logger(__LINE__, "SQLi execute: $move_QUERY->error"); }
 							
 						// clean up this event_id.
 							$move_QUERY->free_result();
-							unset($change_array);
-							unset($followup_clinic);
-							unset($followup_uc);
-							unset($followup_er);
-							unset($followup_hosp);
-							unset($new_phase);
+							if (isset($change_array)) { unset($change_array); }
+							if (isset($followup_clinic)) { unset($followup_clinic); }
+							if (isset($followup_uc)) { unset($followup_uc); }
+							if (isset($followup_er)) {unset($followup_er); }
+							if (isset($followup_hosp)) { unset($followup_hosp); }
+							if (isset($new_phase)) { unset($new_phase); }
 					}
 			// done with phase 0's.
 			logger(__LINE__, "Phase Zero scan completed, cleaning up.");
 			$scan_QUERY->free_result();
-					
+			
 		// Scan for symptoms with quorum and phase > 0
 			logger(__LINE__, "Phase quorum scan started.");
 			logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
@@ -166,7 +128,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 																			`review`
 																			RIGHT JOIN `symptom` ON `review`.`event_id`=`symptom`.`event_id` 
 																		WHERE 
-																			(symptom.phase > 0) 
+																			(`symptom`.`phase` > 0) 
 																			AND (`symptom`.`study_id` = ?)
 																			AND (`review`.`event_id` = evi)
 																			AND (`review`.`phase` = pze)
@@ -176,7 +138,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 																		SELECT 
 																			COUNT(*)
 																		FROM
-																			`jury_room`.`logins`
+																			`logins`
 																		WHERE
 																			FIND_IN_SET(?,study)
 																	)
@@ -205,7 +167,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													(`patient`.`study_id` = ?)
 													AND (`symptom`.`phase` > '0')
 												ORDER BY 
-													`review`.`event_id`;"))) { logger(__LINE__, "SQLi Prepare: $scan_QUERY->error"); }
+													`review`.`event_id`;"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 			if (!($scan_QUERY->bind_param('ssss', $study_id, $study_id, $study_id, $study_id))) { logger(__LINE__, "SQLi pBind: $scan_QUERY->error"); }
 			if (!($scan_QUERY->execute())) { logger(__LINE__, "SQLi execute: $scan_QUERY->error"); }
 			if (!($scan_QUERY->bind_result($patient_id, $study_id, $event_id, $phase, $user_id, $p24hr_adverse_event, $p72hr_adverse_event, $p1wk_adverse_event, $ae_severity, $omt_related, $has_quroum))) { logger(__LINE__, "SQL rBind: $scan_QUERY->error"); }
@@ -226,72 +188,58 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 			if (count($phase_array) > 0)
 					{
 						// compare each user_id against others in the array
-						
-						foreach ($phase_array as $e_id => $votes)
+						foreach (array_keys($phase_array) as $e_id)
 							{
-								// $e_id => event_id
-								// count($phase_array[$e_id]) => number of votes recorded
-								// count(array_unique($votes)) => number of votes that DON'T match the others.
-								// if >$consensus % votes equal set patient.phase = 0 else set patient.phase++
-								if 	((count(array_unique($votes)) / count($phase_array[$e_id])) < ($consensus * .01))
+								$last_e_id = "AAA";
+								foreach (array_keys($phase_array[$e_id]) as $votes)
 									{
-										$new_phase = 0;
+										if ($e_id !== $last_e_id)
+											{
+												if (count(array_unique(array_column($phase_array[$e_id], $votes))) == 1)
+													{
+														$new_phase = 0;
+													}
+													else
+													{
+														$f = array_count_values(array_column($phase_array[$e_id], $votes));
+														arsort($f);
+														if (($f[0] / count($phase_array[$e_id])) > ($consensus * .01))
+															{
+																$new_phase = 0;
+															}
+															else
+															{
+																if (!($new_phase_QUERY = $dblink->prepare("SELECT `phase` FROM `symptom` WHERE (`symptom`.`event_id` = ?);"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
+																if (!($new_phase_QUERY->bind_param('s', $e_id))) { logger(__LINE__, "SQLi pBind: $new_phase_QUERY->error"); }
+																if (!($new_phase_QUERY->execute())) { logger(__LINE__, "SQLi execute: $new_phase_QUERY->error"); }
+																if (!($new_phase_QUERY->bind_result($new_phase))) { logger(__LINE__, "SQL rBind: $new_phase_QUERY->error"); }
+																$new_phase_QUERY->store_result();
+																$new_phase_QUERY->fetch();
+																$new_phase++;
+																$new_phase_QUERY->free_result();
+															}
+														unset($f);
+													}
+												logger(__LINE__, "  >> Moving $event_id to Phase $new_phase.");						
+												if (!($move_QUERY = $dblink->prepare("UPDATE `symptom` SET `phase` = ? WHERE (`event_id` = ?)"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
+												if (!($move_QUERY->bind_param('ss', $new_phase, $e_id))) { logger(__LINE__, "SQLi pBind: $move_QUERY->error"); }
+												if (!($move_QUERY->execute())) { logger(__LINE__, "SQLi execute: $move_QUERY->error"); }
+												if (isset($new_phase)) { unset($new_phase); }
+												$move_QUERY->free_result();
+											}
+										$last_e_id = $e_id;
 									}
-									else
-									{
-										if (!($new_phase_QUERY = $dblink->prepare("SELECT 
-																				phase
-																			FROM
-																				symptom
-																			WHERE
-																				(symptom.event_id = ?);"))) { logger(__LINE__, "SQLi Prepare: $new_phase_QUERY->error"); }
-										if (!($new_phase_QUERY->bind_param('s', $e_id))) { logger(__LINE__, "SQLi pBind: $new_phase_QUERY->error"); }
-										if (!($new_phase_QUERY->execute())) { logger(__LINE__, "SQLi execute: $new_phase_QUERY->error"); }
-										if (!($new_phase_QUERY->bind_result($new_phase))) { logger(__LINE__, "SQL rBind: $new_phase_QUERY->error"); }
-										$new_phase_QUERY->store_result();
-										$new_phase_QUERY->fetch();
-										$new_phase++;
-										$new_phase_QUERY->free_result();
-									}
-								logger(__LINE__, "  >> Moving $event_id to Phase $new_phase.");						
-								if (!($move_QUERY = $dblink->prepare("UPDATE symptom 
-																	SET 
-																		phase = ?
-																	WHERE
-																		(event_id = ?)"))) { logger(__LINE__, "SQLi Prepare: $move_QUERY->error"); }
-								if (!($move_QUERY->bind_param('ss', $new_phase, $e_id))) { logger(__LINE__, "SQLi pBind: $move_QUERY->error"); }
-								if (!($move_QUERY->execute())) { logger(__LINE__, "SQLi execute: $move_QUERY->error"); }
 							}
 					}
 				logger(__LINE__, "Phase quorum scan completed, cleaning up.");
 				$scan_QUERY->free_result();	
+				if (isset($phase_array)) { unset($phase_array); }
 				
 				
 		// move pt. to max(symptom.phase)
 			logger(__LINE__, "Updating pt. phase to match max(symptom.phase)");
 			logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
-			if (!($getphase_QUERY = $dblink->prepare("SELECT
-														`patient`.`patient_id`,
-															(
-																SELECT
-																	MAX(`symptom`.`phase`)
-																FROM
-																	`symptom`
-																WHERE
-																	`symptom`.`code` = `patient`.`code`
-															) AS re_phase
-													FROM
-														`patient`
-													WHERE
-														(`patient`.`phase` > 0) AND 
-														(`patient`.`phase` < (
-																SELECT
-																	MAX(`symptom`.`phase`)
-																FROM
-																	`symptom`
-																WHERE
-																	`symptom`.`code` = `patient`.`code`
-															) );")))  { logger(__LINE__, "SQLi Prepare: $getphase_QUERY->error"); }
+			if (!($getphase_QUERY = $dblink->prepare("SELECT `patient`.`patient_id`, ( SELECT MAX(`symptom`.`phase`) FROM `symptom` WHERE`symptom`.`code` = `patient`.`code`) AS re_phase FROM `patient` WHERE (`patient`.`phase` > 0) AND (`patient`.`phase` < ( SELECT MAX(`symptom`.`phase`) FROM `symptom` WHERE `symptom`.`code` = `patient`.`code`) );")))  { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 			if (!($getphase_QUERY->execute())) { logger(__LINE__, "SQLi execute: $getphase_QUERY->error"); }
 			if (!($getphase_QUERY->bind_result($patient_id, $re_phase))) {logger(__LINE__, "SQLi rBind: $getphase_QUERY->error"); }
 			$getphase_QUERY->store_result();
@@ -300,16 +248,12 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 					while ($getphase_QUERY->fetch())
 						{
 							logger(__LINE__, "  >> Moving $patient_id to Phase $re_phase.");
-							if (!($move_QUERY = $dblink->prepare("UPDATE patient 
-																SET 
-																	phase = ?
-																WHERE
-																	(patient_id = ?)"))) { logger(__LINE__, "SQLi Prepare: $move_QUERY->error"); }
+							if (!($move_QUERY = $dblink->prepare("UPDATE `patient` SET `phase` = ? WHERE (`patient_id` = ?)"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 							if (!($move_QUERY->bind_param('ss', $re_phase, $patient_id))) { logger(__LINE__, "SQLi pBind: $move_QUERY->error"); }
 							if (!($move_QUERY->execute())) { logger(__LINE__, "SQLi execute: $move_QUERY->error"); }
+							$move_QUERY->free_result();
 						}
 					logger(__LINE__, "Rephase move completed, cleaning up.");
-					$move_QUERY->free_result();
 					if (isset($re_phase)) { unset($re_phase); }
 					if (isset($patient_id)) { unset($patient_id); }
 				}
@@ -320,28 +264,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 		 	logger(__LINE__, "Phase completed scan started.");
 			logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
 			
-			if (!($completed_QUERY = $dblink->prepare("SELECT DISTINCT
-														patient.patient_id
-													FROM
-														patient
-															RIGHT JOIN
-														symptom ON patient.code = symptom.code
-													WHERE
-														((SELECT 
-																COUNT(*)
-															FROM
-																symptom
-															WHERE
-																(phase = '0')
-																	AND (symptom.code = patient.code)
-																	AND (symptom.symptom IS NOT NULL)) = (SELECT 
-																			COUNT(*)
-																		FROM
-																			symptom
-																		WHERE
-																			(symptom.code = patient.code)
-																				AND (symptom.symptom IS NOT NULL)))
-														AND (patient.phase <> 0);"))) { logger(__LINE__, "SQLi Prepare: $completed_QUERY->error"); }
+			if (!($completed_QUERY = $dblink->prepare("SELECT DISTINCT `patient`.`patient_id` FROM `patient` RIGHT JOIN `symptom` ON `patient`.`code` = `symptom`.`code` WHERE ((SELECT COUNT(*) FROM `symptom` WHERE (`phase` = '0') AND (`symptom`.`code` = `patient`.`code`) AND (`symptom`.`symptom` IS NOT NULL)) = (SELECT COUNT(*) FROM `symptom` WHERE (`symptom`.`code` = `patient`.`code`) AND (`symptom`.`symptom` IS NOT NULL))) AND (`patient`.`phase` <> '0');"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 			if (!($completed_QUERY->execute())) { logger(__LINE__, "SQLi execute: $completed_QUERY->error"); }
 			if (!($completed_QUERY->bind_result($patient_id))) { logger(__LINE__, "SQL rBind: $completed_QUERY->error"); }
 			$completed_QUERY->store_result();
@@ -350,34 +273,20 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 					while ($completed_QUERY->fetch())
 						{
 							logger(__LINE__, "  >> Moving $patient_id to Phase 0.");
-							if (!($move_QUERY = $dblink->prepare("UPDATE patient 
-																SET 
-																	phase = 0
-																WHERE
-																	(patient_id = ?)"))) { logger(__LINE__, "SQLi Prepare: $move_QUERY->error"); }
+							if (!($move_QUERY = $dblink->prepare("UPDATE `patient` SET `phase` = '0' WHERE (`patient_id` = ?)"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 							if (!($move_QUERY->bind_param('s', $patient_id))) { logger(__LINE__, "SQLi pBind: $move_QUERY->error"); }
 							if (!($move_QUERY->execute())) { logger(__LINE__, "SQLi execute: $move_QUERY->error"); }
+							$move_QUERY->free_result();
 						}
 				}
 			logger(__LINE__, "Phase completed scan completed, cleaning up.");
 			$completed_QUERY->free_result();
-		
+					
 		// Update and find lost patients match to max(symptom.phase)
 			logger(__LINE__, "Phase lost patient scan started.");
 			logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
 			
-			if (!($completed_QUERY = $dblink->prepare("SELECT
-														patient.patient_id,
-															(SELECT
-																MAX(symptom.phase)
-															FROM
-																symptom
-															WHERE
-																symptom.code = patient.code) AS re_phase
-													FROM
-														patient
-													WHERE
-														(patient.phase IS NULL);"))) { logger(__LINE__, "SQLi Prepare: $completed_QUERY->error"); }
+			if (!($completed_QUERY = $dblink->prepare("SELECT `patient`.`patient_id`, (SELECT MAX(`symptom`.`phase`) FROM `symptom` WHERE `symptom`.`code` = `patient`.`code`) AS re_phase FROM `patient` WHERE (`patient`.`phase` IS NULL);"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 			if (!($completed_QUERY->execute())) { logger(__LINE__, "SQLi execute: $completed_QUERY->error"); }
 			if (!($completed_QUERY->bind_result($patient_id, $new_phase))) { logger(__LINE__, "SQL rBind: $completed_QUERY->error"); }
 			$completed_QUERY->store_result();
@@ -386,19 +295,15 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 					while ($completed_QUERY->fetch())
 						{
 							logger(__LINE__, "  >> Moving $patient_id to Phase $new_phase.");
-							if (!($move_QUERY = $dblink->prepare("UPDATE patient 
-																SET 
-																	phase = ?
-																WHERE
-																	(patient_id = ?)"))) { logger(__LINE__, "SQLi Prepare: $move_QUERY->error"); }
+							if (!($move_QUERY = $dblink->prepare("UPDATE `patient` SET `phase` = ? WHERE (`patient_id` = ?)"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 							if (!($move_QUERY->bind_param('ss', $new_phase, $patient_id))) { logger(__LINE__, "SQLi pBind: $move_QUERY->error"); }
 							if (!($move_QUERY->execute())) { logger(__LINE__, "SQLi execute: $move_QUERY->error"); }
+							$move_QUERY->free_result();
 						}
 				}
 			logger(__LINE__, "Phase lost patient scan completed, cleaning up.");
 			$completed_QUERY->free_result();
-
-		
+					
 		// End of loop
 			logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
 		}
