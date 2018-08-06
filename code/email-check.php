@@ -39,17 +39,18 @@ if ($study_QUERY->num_rows > 0)
 						if (!($phase_QUERY->bind_result($phase_count, $phase_number))) { logger(__LINE__, "SQLi rBind: $phase_QUERY->error"); }
 						$phase_QUERY->store_result();
 						
-						if (!($userdone_QUERY = $dblink->prepare("SELECT 
-																	COUNT(DISTINCT `patient`.`code`), `patient`.`phase` 
-																FROM 
-																   `patient`
-																   INNER JOIN `symptom` ON `patient`.`code`=`symptom`.`code`
-																   LEFT JOIN `review` ON `symptom`.`event_id`=`review`.`event_id`
-																WHERE 
-																	 (`patient`.`study_id` = ?)
-																	 AND (`review`.`user_id` = ?)
-																GROUP BY 
-																	`patient`.`phase`;"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
+						if (!($userdone_QUERY = $dblink->prepare("SELECT
+																	COUNT(DISTINCT `patient`.`code`),
+																	`review`.`phase`
+																FROM
+																	`review`
+																	RIGHT OUTER JOIN `symptom` ON `review`.`event_id`=`symptom`.`event_id`
+																	LEFT OUTER JOIN `patient` ON `symptom`.`code`=`patient`.`code`
+																WHERE
+																	(`patient`.`study_id` = ?)
+																	AND (`review`.`user_id` = ?)
+																GROUP BY
+																	`review`.`phase`;"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 						if (!($userdone_QUERY->bind_param('ss',$study_id, $user_id))) { logger(__LINE__, "SQLi pBind: $userdone_QUERY->error"); }
 						if (!($userdone_QUERY->execute())) { logger(__LINE__, "SQLi execute: $userdone_QUERY->error"); }
 						if (!($userdone_QUERY->bind_result($userdone_count, $userdone_phase))) { logger(__LINE__, "SQLi rBind: $userdone_QUERY->error"); }
@@ -75,35 +76,56 @@ if ($study_QUERY->num_rows > 0)
 						// build the counts to go by phase
 						if (isset($review_togo)) { unset($review_togo); }
 						$review_togo = "Currently; ";
-						foreach($phase_array AS $p => $c)
+						if (count($user_array) > 0)
 							{
-								if (@$user_array[$p] > 0)
+								foreach($phase_array AS $p => $c)
 									{
-										$x = $phase_array[$p] - $user_array[$p];
-									}
-									else
-									{
-										$x = $phase_array[$p];
-									}
-								
-								if ($p > 0)
-									{
-										$review_togo .= "You have $x records in phase $p to review. ";
-									}
-									else
-									{
-										$review_togo .= "There are ";
-										if ($phase_array[0] > 0)
+										$x = "A";
+										if (isset($user_array[$p]))
 											{
-												$review_togo .= "$c";
-											} 
-											else 
-											{ 
-												$review_togo .= "no";
-											} 
-										$review_togo .= " records resolved. ";
-									} 
+												if ($user_array[$p] > 0)
+													{
+														$x = $phase_array[$p] - $user_array[$p];
+														if ($x < 0)
+															{
+																$x = 0;
+															}
+													}
+													else
+													{
+														$x = $phase_array[$p];
+													}
+											}
+											else
+											{
+												$x = $phase_array[$p];
+											}
+										
+										if ($p > 0)
+											{
+												$review_togo .= "You have $x records in phase $p to review. ";
+											}
+											else
+											{
+												$review_togo .= "There are ";
+												if ($phase_array[0] > 0)
+													{
+														$review_togo .= "$c";
+													} 
+													else 
+													{ 
+														$review_togo .= "no";
+													} 
+												$review_togo .= " records resolved. ";
+											}
+										if (isset($x)) { unset($x); }
+									}
 							}
+							else
+							{
+								$review_togo = "You have not reviewed any records.";
+							}
+							
 						$review_togo .= "<br /><br />Don't forget the portal's URL is $host_url.<br />";
 						if (isset($phase_array)) { unset($phase_array); }
 						if (isset($user_array)) { unset($user_array); }
@@ -111,7 +133,8 @@ if ($study_QUERY->num_rows > 0)
 						if (isset($p)) { unset($p); }
 						if (isset($x)) { unset($x); }
 						
-						//Check number of items reviewed
+						
+						//Check times items reviewed
 						if (!($events_QUERY = $dblink->prepare("
 															SELECT
 																`review`.`user_id` AS 'kid',
@@ -183,13 +206,44 @@ if ($study_QUERY->num_rows > 0)
 								$events_QUERY->store_result();
 								$events_num = $events_QUERY->num_rows;
 								
-																
 								if ($events_num > 0)
 									{
 										$phase_QUERY->fetch();
 										$events_QUERY->fetch();
-										$avg_time = sprintf("%02d", floor($avg_time / 3600)) . ":" . sprintf("%02d", floor(($avg_time / 60) % 60)) . "." . sprintf("%02d", $avg_time % 60) ." (H:m.s)";
-										$events_msg = "You have reviewed $symptom_count events across $review_count records with an average review time per record of $avg_time.";
+									}
+									else
+									{
+										if (isset($kid)) { unset($kid); }
+										if (isset($name)) { unset($name); }
+										if (isset($review_count)) { unset($review_count); }
+										if (isset($symptom_count)) { unset($symptom_count); }
+										if (isset($avg_time)) { unset($avg_time); }
+										if (isset($last_seen)) { unset($last_seen); }
+										if (isset($login_count)) { unset($login_count); }
+									}
+								
+								if ($login_count > 0)
+									{
+										$logins_msg = "Our records show that you have logged in $login_count times, and were last online, $last_seen (UTC).<br />";
+										if ($events_num > 0)
+											{
+												$avg_time = sprintf("%02d", floor($avg_time / 3600)) . ":" . sprintf("%02d", floor(($avg_time / 60) % 60)) . "." . sprintf("%02d", $avg_time % 60) ." (H:m.s)";
+												$events_msg = "You have reviewed $symptom_count events across $review_count records with an average review time per record of $avg_time.";
+											}
+									}
+									else
+									{
+										$logins_msg = "Our records do not show that you have logged in. If you are experiencing a problem with the portal, please contact $pi_name via $pi_email.<br />";
+									}
+								if (isset($kid)) { unset($kid); }
+								if (isset($name)) { unset($name); }
+								if (isset($review_count)) { unset($review_count); }
+								if (isset($symptom_count)) { unset($symptom_count); }
+								if (isset($avg_time)) { unset($avg_time); }
+								if (isset($last_seen)) { unset($last_seen); }
+								if (isset($login_count)) { unset($login_count); }
+								if (isset($events_num)) { unset($events_num); }
+								$events_QUERY->free_result();
 								
 										//send email
 										$mail = new PHPMailer();
@@ -206,17 +260,20 @@ if ($study_QUERY->num_rows > 0)
 										$mail->FromName = "DO-Touch.NET EAC";
 										$mail->AddReplyTo($mail_username,$mail_username);
 										$mail->AddAddress($user_email,$user_email);
+										$mail->AddAddress($mail_username,$mail_username);
 										$mail->AddBCC($pi_name,$pi_email);
 										$mail->AddBCC($mail_username,$mail_username);
 							
 										$email_body = "
 											Greetings, $user_name.<br />
-											<br />
-											Our records show that you have logged in $login_count times, and were last online, $last_seen (UTC).<br />
-											$phase_response <br />
-											$events_msg<br />
-											$review_togo<br />
-											<br />
+											<br />";
+										
+										if (isset($logins_msg)) { $email_body .= "$logins_msg<br />"; }
+										if (isset($phase_response)) { $email_body .= "$phase_response<br />"; }
+										if (isset($events_msg)) { $email_body .= "$events_msg<br />"; }
+										if (isset($review_togo)) { $email_body .= "$review_togo<br />"; }
+										
+										$email_body .= "<br />
 											Thank you for your participation, we hope you have a nice day,<br />
 											~DO-Touch.NET<br />
 											";
@@ -237,12 +294,24 @@ if ($study_QUERY->num_rows > 0)
 										if (isset($phase)) { unset($phase); }
 										if (isset($symptom_count)) { unset($symptom_count); }
 										if (isset($review_count)) { unset($review_count); }
-									}
+										if (isset($login_count)) { unset($login_count); }
+										if (isset($last_seen)) { unset($last_seen); }
+										if (isset($logins_msg)) { unset($logins_msg); }
+										if (isset($phase_response)) { unset($phase_response); }
+										if (isset($events_msg)) { unset($events_msg); }
+										if (isset($review_togo)) { unset($review_togo); }
+										$userdone_QUERY->free_result();
+										$phase_QUERY->free_result();
+										
 					}
 			}
-			if (isset($user_QUERY)) { unset($user_QUERY); }
 		}
+		$user_QUERY->free_result();
+		$study_QUERY->free_result();
+		if (isset($study_QUERY)) { unset($study_QUERY); }
+		if (isset($study_name)) { unset($study_name); }
+		if (isset($pi_name)) { unset($pi_name); }
+		if (isset($pi_email)) { unset($pi_email); }
 	}
-	if (isset($study_QUERY)) { unset($study_QUERY); }
 	logger(__LINE__, "=====> End of email check. <=====");
 ?>
