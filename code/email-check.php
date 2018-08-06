@@ -260,7 +260,6 @@ if ($study_QUERY->num_rows > 0)
 										$mail->FromName = "DO-Touch.NET EAC";
 										$mail->AddReplyTo($mail_username,$mail_username);
 										$mail->AddAddress($user_email,$user_email);
-										$mail->AddAddress($mail_username,$mail_username);
 										$mail->AddBCC($pi_name,$pi_email);
 										$mail->AddBCC($mail_username,$mail_username);
 							
