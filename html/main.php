@@ -25,30 +25,181 @@ if (($study_QUERY->num_rows) > 0)
 while ($study_QUERY->fetch())
 	{
 		if (!($events_QUERY = $dblink->prepare("
-										SELECT DISTINCT
-											`patient`.`study_id`,
-											`patient`.`patient_id`,
-											`patient`.`code`,
-											`patient`.`phase`
+										SELECT
+											patient.study_id,
+											patient.patient_id,
+											patient.code,
+											patient.phase
 										FROM
-											`patient`
-											RIGHT OUTER JOIN `symptom` ON `patient`.`code`=`symptom`.`code`
+											patient
+										LEFT OUTER JOIN
+											symptom
+										ON
+											patient.code = symptom.code
+										LEFT OUTER JOIN
+											review
+										ON
+											symptom.event_id = review.event_id
 										WHERE
-											(`patient`.`phase` > '0')
-											AND (`patient`.`study_id` = ?)
-											AND (CONCAT(`symptom`.`code`, '-', `symptom`.`phase`) NOT IN(
+											(
+												(patient.study_id = ?) AND(
+													patient.patient_id NOT IN(
 													SELECT
-														CONCAT(`symptom`.`code`, '-', `symptom`.`phase`)
+														patient.patient_id
 													FROM
-														`review`
-														LEFT OUTER JOIN `symptom` ON `review`.`event_id`=`symptom`.`event_id`
+														patient
+													INNER JOIN
+														symptom
+													ON
+														patient.code = symptom.code
+													INNER JOIN
+														review
+													ON
+														symptom.event_id = review.event_id
 													WHERE
-														(`review`.`user_id` = ?)
+														(review.user_id = ?)
+												)
+												) AND(
+													(
+														(symptom.followup_clinic = 'Yes') OR(symptom.followup_er = 'Yes') OR(symptom.followup_hosp = 'Yes') OR(symptom.followup_uc = 'Yes')
+													) OR(
+														(
+															symptom.pt_24hr_severity = 'Very Severe'
+														) OR(
+															symptom.pt_72hr_severity = 'Very Severe'
+														) OR(
+															symptom.pt_baseline_severity = 'Very Severe'
+														)
+													) OR(
+														patient.code IN(
+														SELECT
+															patient.code
+														FROM
+															patient
+														LEFT OUTER JOIN
+															symptom
+														ON
+															patient.code = symptom.code
+														WHERE
+															(
+																(
+																	symptom.pt_baseline_severity = 'Not present'
+																) AND(
+																	symptom.pt_24hr_severity = 'Mild'
+																) OR(
+																	symptom.pt_24hr_severity = 'Moderate'
+																) OR(
+																	symptom.pt_24hr_severity = 'Severe'
+																) OR(
+																	symptom.pt_24hr_severity = 'Very Severe'
+																)
+															) OR(
+																(
+																	symptom.pt_baseline_severity = 'Mild'
+																) AND(
+																	symptom.pt_24hr_severity = 'Moderate'
+																) OR(
+																	symptom.pt_24hr_severity = 'Severe'
+																) OR(
+																	symptom.pt_24hr_severity = 'Very Severe'
+																)
+															) OR(
+																(
+																	symptom.pt_baseline_severity = 'Moderate'
+																) AND(
+																	symptom.pt_24hr_severity = 'Severe'
+																) OR(
+																	symptom.pt_24hr_severity = 'Very Severe'
+																)
+															) OR(
+																(
+																	symptom.pt_baseline_severity = 'Severe'
+																) AND(
+																	symptom.pt_24hr_severity = 'Very Severe'
+																)
+															) OR(
+																(
+																	symptom.pt_baseline_severity = 'Not present'
+																) AND(
+																	symptom.pt_72hr_severity = 'Mild'
+																) OR(
+																	symptom.pt_72hr_severity = 'Moderate'
+																) OR(
+																	symptom.pt_72hr_severity = 'Severe'
+																) OR(
+																	symptom.pt_72hr_severity = 'Very Severe'
+																)
+															) OR(
+																(
+																	symptom.pt_baseline_severity = 'Mild'
+																) AND(
+																	symptom.pt_72hr_severity = 'Moderate'
+																) OR(
+																	symptom.pt_72hr_severity = 'Severe'
+																) OR(
+																	symptom.pt_72hr_severity = 'Very Severe'
+																)
+															) OR(
+																(
+																	symptom.pt_baseline_severity = 'Moderate'
+																) AND(
+																	symptom.pt_72hr_severity = 'Severe'
+																) OR(
+																	symptom.pt_72hr_severity = 'Very Severe'
+																)
+															) OR(
+																(
+																	symptom.pt_baseline_severity = 'Severe'
+																) AND(
+																	symptom.pt_72hr_severity = 'Very Severe'
+																)
+															) OR(
+																(
+																	symptom.pt_24hr_severity = 'Not present'
+																) AND(
+																	symptom.pt_72hr_severity = 'Mild'
+																) OR(
+																	symptom.pt_72hr_severity = 'Moderate'
+																) OR(
+																	symptom.pt_72hr_severity = 'Severe'
+																) OR(
+																	symptom.pt_72hr_severity = 'Very Severe'
+																)
+															) OR(
+																(
+																	symptom.pt_24hr_severity = 'Mild'
+																) AND(
+																	symptom.pt_72hr_severity = 'Moderate'
+																) OR(
+																	symptom.pt_72hr_severity = 'Severe'
+																) OR(
+																	symptom.pt_72hr_severity = 'Very Severe'
+																)
+															) OR(
+																(
+																	symptom.pt_24hr_severity = 'Moderate'
+																) AND(
+																	symptom.pt_72hr_severity = 'Severe'
+																) OR(
+																	symptom.pt_72hr_severity = 'Very Severe'
+																)
+															) OR(
+																(
+																	symptom.pt_24hr_severity = 'Severe'
+																) AND(
+																	symptom.pt_72hr_severity = 'Very Severe'
+																)
+															)
+													) OR(patient.phase > '-1')
 													)
-												 ) 
-										ORDER BY 
-											patient.phase ASC, 
-											patient.patient_id ASC;"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
+												) AND (patient.phase > '0')
+											)
+										GROUP BY
+											patient.patient_id,
+											patient.code
+										ORDER BY
+											patient.phase ASC,
+											patient.patient_id ASC;"))) { logger(__LINE__, "SQLi Prepare: $events_QUERY->error"); }
 	if (!($events_QUERY->bind_param('ss', $study_id_this, $_SESSION["id"]))) { logger(__LINE__, "SQLi pBind: $events_QUERY->error"); }
 	if (!($events_QUERY->execute())) { logger(__LINE__, "SQLi execute: $events_QUERY->error"); }
 	if (!($events_QUERY->bind_result($study_number, $patient_id, $code, $phase))) { logger(__LINE__, "SQLi rBind: $events_QUERY->error"); }
