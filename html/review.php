@@ -549,7 +549,7 @@ if ($failed == "ALL_IS_PERFECT")
 												{
 													$eac_comments .= "<br />----<br />";
 												}
-											$eac_comments .= "<b>$cmt_user_id ($cmt_date):</b> $cmt_comment";
+											$eac_comments .= "<b>$cmt_user_id ($cmt_date):</b> $cmt_comment <br />----<br />";
 										}
 								
 									// display list of comments
