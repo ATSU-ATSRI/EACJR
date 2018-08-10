@@ -63,6 +63,11 @@ function logger($logline, $msg)
 		$email_body = "!! " . date('M d H:i:s') . " $logline - $msg;<br /><br />Have a nice day,<br />~DO-Touch.NET<br />";
 		$mail->Body = $email_body;
 		$mail->AltBody = str_ireplace("<br />","\n",$email_body);
+		
+			//send to local logfile also
+			openlog("EACJR", LOG_PID | LOG_PERROR, LOG_LOCAL0);
+			syslog(LOG_INFO, $_SERVER['PHP_SELF'] . "[$logline] $msg");
+			closelog();
 						
 			if (!$mail->Send())
 				{

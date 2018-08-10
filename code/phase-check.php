@@ -220,7 +220,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 															}
 														unset($f);
 													}
-												logger(__LINE__, "  >> Moving $event_id to Phase $new_phase.");						
+												logger(__LINE__, "  >> Moving $e_id to Phase $new_phase.");						
 												if (!($move_QUERY = $dblink->prepare("UPDATE `symptom` SET `phase` = ? WHERE (`event_id` = ?)"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 												if (!($move_QUERY->bind_param('ss', $new_phase, $e_id))) { logger(__LINE__, "SQLi pBind: $move_QUERY->error"); }
 												if (!($move_QUERY->execute())) { logger(__LINE__, "SQLi execute: $move_QUERY->error"); }
