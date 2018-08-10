@@ -40,17 +40,28 @@ if ($study_QUERY->num_rows > 0)
 						$phase_QUERY->store_result();
 						
 						if (!($userdone_QUERY = $dblink->prepare("SELECT
-																	COUNT(DISTINCT `patient`.`code`),
-																	`review`.`phase`
+																	COUNT(DISTINCT `patient`.`patient_id`),
+																	`patient`.`phase`
 																FROM
-																	`review`
-																	RIGHT OUTER JOIN `symptom` ON `review`.`event_id`=`symptom`.`event_id`
-																	LEFT OUTER JOIN `patient` ON `symptom`.`code`=`patient`.`code`
+																	`patient`
+																	RIGHT JOIN `symptom` ON `patient`.`code`=`symptom`.`code`
+																	RIGHT JOIN `review` ON `symptom`.`event_id`=`review`.`event_id`
 																WHERE
 																	(`patient`.`study_id` = ?)
-																	AND (`review`.`user_id` = ?)
+																	AND (`symptom`.`phase` > '0')
+																	AND (concat(`review`.`event_id`,'-',`review`.`phase`) NOT IN(
+																			SELECT
+																				concat(`symptom`.`event_id`,'-',`symptom`.`phase`)
+																			FROM 
+																				`review`
+																				INNER JOIN `symptom` ON `review`.`event_id`=`symptom`.`event_id`
+																			WHERE
+																				(`symptom`.`phase` > '0')
+																				AND (`review`.`user_id` = ?)
+																			)
+																		 )
 																GROUP BY
-																	`review`.`phase`;"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
+																	`patient`.`phase`;"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 						if (!($userdone_QUERY->bind_param('ss',$study_id, $user_id))) { logger(__LINE__, "SQLi pBind: $userdone_QUERY->error"); }
 						if (!($userdone_QUERY->execute())) { logger(__LINE__, "SQLi execute: $userdone_QUERY->error"); }
 						if (!($userdone_QUERY->bind_result($userdone_count, $userdone_phase))) { logger(__LINE__, "SQLi rBind: $userdone_QUERY->error"); }
@@ -72,38 +83,26 @@ if ($study_QUERY->num_rows > 0)
 							{
 								$user_array[$userdone_phase] = $userdone_count;
 							}
-
+						if (isset($userdone_phase)) { unset($userdone_phase); }
+						if (isset($userdone_count)) { unset($userdone_count); }
+							
 						// build the counts to go by phase
+						if (!($check_QUERY = $dblink->prepare("SELECT COUNT(DISTINCT `patient`.`patient_id`) FROM `patient` RIGHT JOIN `symptom` ON `patient`.`code`=`symptom`.`code` RIGHT JOIN `review` ON `symptom`.`event_id`=`review`.`event_id` WHERE (`patient`.`study_id` = ?) AND (`review`.`user_id` = ?)"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
+						if (!($check_QUERY->bind_param('ss',$study_id, $user_id))) { logger(__LINE__, "SQLi pBind error: $check_QUERY->error"); }
+						if (!($check_QUERY->execute())) { logger(__LINE__, "SQLi execute error: $check_QUERY->error"); }
+						if (!($check_QUERY->bind_result($check_count))) { logger(__LINE__, "SQLi rBind error: $check_QUERY->error"); }
+						$check_QUERY->store_result();
+						$check_QUERY->fetch();
+												
 						if (isset($review_togo)) { unset($review_togo); }
 						$review_togo = "Currently; ";
-						if (count($user_array) > 0)
+						if ($check_count > 0)
 							{
 								foreach($phase_array AS $p => $c)
 									{
-										$x = "A";
-										if (isset($user_array[$p]))
-											{
-												if ($user_array[$p] > 0)
-													{
-														$x = $phase_array[$p] - $user_array[$p];
-														if ($x < 0)
-															{
-																$x = 0;
-															}
-													}
-													else
-													{
-														$x = $phase_array[$p];
-													}
-											}
-											else
-											{
-												$x = $phase_array[$p];
-											}
-										
 										if ($p > 0)
 											{
-												$review_togo .= "You have $x records in phase $p to review. ";
+												$review_togo .= "You have $user_array[$p] records in phase $p to review. ";
 											}
 											else
 											{
@@ -299,6 +298,8 @@ if ($study_QUERY->num_rows > 0)
 										if (isset($phase_response)) { unset($phase_response); }
 										if (isset($events_msg)) { unset($events_msg); }
 										if (isset($review_togo)) { unset($review_togo); }
+										if (isset($check_count)) { unset($check_count); }
+										$check_QUERY->free_result();
 										$userdone_QUERY->free_result();
 										$phase_QUERY->free_result();
 										

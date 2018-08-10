@@ -36,10 +36,10 @@ while ($study_QUERY->fetch())
 											RIGHT JOIN `review` ON `symptom`.`event_id`=`review`.`event_id`
 										WHERE
 											(`patient`.`study_id` = ?)
-											AND (`patient`.`phase` > '0')
+											AND (`symptom`.`phase` > '0')
 											AND (concat(`symptom`.`event_id`,'-',`symptom`.`phase`) NOT IN(
 													SELECT
-														concat(`symptom`.`event_id`,'-',`symptom`.`phase`)
+														concat(`review`.`event_id`,'-',`review`.`phase`)
 													FROM 
 														`review`
 														INNER JOIN `symptom` ON `review`.`event_id`=`symptom`.`event_id`
