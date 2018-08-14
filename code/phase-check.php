@@ -112,6 +112,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													`symptom`.`event_id` AS evi,
 													`symptom`.`phase` AS pze,
 													`review`.`user_id`,
+													`review`.`phase` AS rpze,
 													`review`.`24hr_adverse_event`,
 													`review`.`72hr_adverse_event`,
 													`review`.`1wk_adverse_event`,
@@ -131,7 +132,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 																			(`symptom`.`phase` > 0) 
 																			AND (`symptom`.`study_id` = ?)
 																			AND (`review`.`event_id` = evi)
-																			AND (`review`.`phase` = pze)
+																			AND (rpze = pze)
 																	)
 																/ 
 																	(
@@ -170,7 +171,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													`review`.`event_id`;"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 			if (!($scan_QUERY->bind_param('ssss', $study_id, $study_id, $study_id, $study_id))) { logger(__LINE__, "SQLi pBind: $scan_QUERY->error"); }
 			if (!($scan_QUERY->execute())) { logger(__LINE__, "SQLi execute: $scan_QUERY->error"); }
-			if (!($scan_QUERY->bind_result($patient_id, $study_id, $event_id, $phase, $user_id, $p24hr_adverse_event, $p72hr_adverse_event, $p1wk_adverse_event, $ae_severity, $omt_related, $has_quroum))) { logger(__LINE__, "SQL rBind: $scan_QUERY->error"); }
+			if (!($scan_QUERY->bind_result($patient_id, $study_id, $event_id, $phase, $user_id, $rpze, $p24hr_adverse_event, $p72hr_adverse_event, $p1wk_adverse_event, $ae_severity, $omt_related, $has_quroum))) { logger(__LINE__, "SQL rBind: $scan_QUERY->error"); }
 			$scan_QUERY->store_result();
 			$phase_array = array();
 				while ($scan_QUERY->fetch())
@@ -195,31 +196,38 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 									{
 										if ($e_id !== $last_e_id)
 											{
-												if (count(array_unique(array_column($phase_array[$e_id], $votes))) == 1)
+												$count = 0;
+												$num_consensus = 0;
+												$vs = count($phase_array[$e_id][$votes]);
+												$vrs = count($phase_array[$e_id]);
+												while ($count < $vs)
+													{
+														$yy = array_count_values(array_column($phase_array[$e_id], $count));
+														rsort($yy);
+														reset($yy);
+																																										
+														if ((current($yy) / $vrs) >= ($consensus * .01))
+															{$num_consensus++;} 
+														
+														$count++;
+													}
+												
+												if ($num_consensus == $vs)
 													{
 														$new_phase = 0;
 													}
 													else
 													{
-														$f = array_count_values(array_column($phase_array[$e_id], $votes));
-														arsort($f);
-														if (($f[0] / count($phase_array[$e_id])) > ($consensus * .01))
-															{
-																$new_phase = 0;
-															}
-															else
-															{
-																if (!($new_phase_QUERY = $dblink->prepare("SELECT `phase` FROM `symptom` WHERE (`symptom`.`event_id` = ?);"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
-																if (!($new_phase_QUERY->bind_param('s', $e_id))) { logger(__LINE__, "SQLi pBind: $new_phase_QUERY->error"); }
-																if (!($new_phase_QUERY->execute())) { logger(__LINE__, "SQLi execute: $new_phase_QUERY->error"); }
-																if (!($new_phase_QUERY->bind_result($new_phase))) { logger(__LINE__, "SQL rBind: $new_phase_QUERY->error"); }
-																$new_phase_QUERY->store_result();
-																$new_phase_QUERY->fetch();
-																$new_phase++;
-																$new_phase_QUERY->free_result();
-															}
-														unset($f);
+														if (!($new_phase_QUERY = $dblink->prepare("SELECT `phase` FROM `symptom` WHERE (`symptom`.`event_id` = ?);"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
+														if (!($new_phase_QUERY->bind_param('s', $e_id))) { logger(__LINE__, "SQLi pBind: $new_phase_QUERY->error"); }
+														if (!($new_phase_QUERY->execute())) { logger(__LINE__, "SQLi execute: $new_phase_QUERY->error"); }
+														if (!($new_phase_QUERY->bind_result($new_phase))) { logger(__LINE__, "SQL rBind: $new_phase_QUERY->error"); }
+														$new_phase_QUERY->store_result();
+														$new_phase_QUERY->fetch();
+														$new_phase++;
+														$new_phase_QUERY->free_result();
 													}
+													
 												logger(__LINE__, "  >> Moving $e_id to Phase $new_phase.");						
 												if (!($move_QUERY = $dblink->prepare("UPDATE `symptom` SET `phase` = ? WHERE (`event_id` = ?)"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 												if (!($move_QUERY->bind_param('ss', $new_phase, $e_id))) { logger(__LINE__, "SQLi pBind: $move_QUERY->error"); }
@@ -234,6 +242,13 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 				logger(__LINE__, "Phase quorum scan completed, cleaning up.");
 				$scan_QUERY->free_result();	
 				if (isset($phase_array)) { unset($phase_array); }
+				if (isset($count)) { unset($count); }
+				if (isset($num_consensus)) { unset($num_consensus); }
+				if (isset($vs)) { unset($vs); }
+				if (isset($vrs)) { unset($vrs); }
+				if (isset($last_e_id)) { unset($last_e_id); }
+				if (isset($e_id)) { unset($e_id); }
+				if (isset($new_phase)) { unset($new_phase); }
 				
 				
 		// move pt. to max(symptom.phase)
