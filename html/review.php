@@ -389,6 +389,9 @@ if ($failed == "ALL_IS_PERFECT")
 						}
 						else
 						{
+							echo "
+									<!--- NEW FOLLOWUP OR COMMENT STARTS HERE --->";
+									
 							if (($followup_clinic == "Yes") || (strlen($followup_clinic_related) > 0) || (strlen($followup_clinic_details) > 0))
 								{
 									echo "<TR>
@@ -463,7 +466,12 @@ if ($failed == "ALL_IS_PERFECT")
 								
 							if (((substr($followup_clinic, 0, 3) == "Yes") || (substr($followup_uc, 0, 3) == "Yes") || (substr($followup_er, 0, 3) == "Yes") || (substr($followup_hosp, 0, 3) == "Yes")) && ($followup_vote == 1))
 								{
-										echo "<TD width=\"12%\">
+									$event_id_array[] = $event_id;
+									
+										echo "	<input type=\"hidden\" name=\"$event_id-event_id\" value=\"$event_id\">
+												<input type=\"hidden\" name=\"$event_id-code\" value=\"$code\">
+												
+												<TD width=\"12%\">
 												<INPUT type=\"hidden\" name=\"$event_id-followup_isae\" id=\"$event_id-followup_isae\" value=\"Yes\">
 												<INPUT type=\"radio\" name=\"$event_id-followup_isae\" id=\"$event_id-followup_isae\" value=\"Yes\"> Yes<br />
 												<INPUT type=\"radio\" name=\"$event_id-followup_isae\" id=\"$event_id-followup_isae\" value=\"No\"> No<br />
@@ -555,7 +563,10 @@ if ($failed == "ALL_IS_PERFECT")
 									// display list of comments
 									echo "<TR>
 											<TD width=\"20%\"> EAC Comment(s)</TD>
-											<TD colspan=\"7\"> $eac_comments </TD>
+											<TD colspan=\"7\"> ";
+											if (isset($eac_comments))
+												{ echo "$eac_comments"; }
+									echo "</TD>
 										</TR>";
 								}
 						}
