@@ -45,7 +45,7 @@ if ($study_QUERY->num_rows > 0)
 																FROM
 																	`patient`
 																	RIGHT JOIN `symptom` ON `patient`.`code`=`symptom`.`code`
-																	RIGHT JOIN `review` ON `symptom`.`event_id`=`review`.`event_id`
+																	
 																WHERE
 																	(`patient`.`study_id` = ?)
 																	AND (`symptom`.`phase` > '0')
