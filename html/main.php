@@ -33,7 +33,6 @@ while ($study_QUERY->fetch())
 										FROM
 											`patient`
 											RIGHT JOIN `symptom` ON `patient`.`code`=`symptom`.`code`
-											RIGHT JOIN `review` ON `symptom`.`event_id`=`review`.`event_id`
 										WHERE
 											(`patient`.`study_id` = ?)
 											AND (`symptom`.`phase` > '0')
