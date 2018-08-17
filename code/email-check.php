@@ -45,13 +45,12 @@ if ($study_QUERY->num_rows > 0)
 																FROM
 																	`patient`
 																	RIGHT JOIN `symptom` ON `patient`.`code`=`symptom`.`code`
-																	
 																WHERE
 																	(`patient`.`study_id` = ?)
 																	AND (`symptom`.`phase` > '0')
-																	AND (concat(`review`.`event_id`,'-',`review`.`phase`) NOT IN(
+																	AND (concat(`symptom`.`event_id`,'-',`symptom`.`phase`) NOT IN(
 																			SELECT
-																				concat(`symptom`.`event_id`,'-',`symptom`.`phase`)
+																				concat(`review`.`event_id`,'-',`review`.`phase`)
 																			FROM 
 																				`review`
 																				INNER JOIN `symptom` ON `review`.`event_id`=`symptom`.`event_id`
