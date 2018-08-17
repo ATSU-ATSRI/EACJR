@@ -116,6 +116,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													`review`.`24hr_adverse_event`,
 													`review`.`72hr_adverse_event`,
 													`review`.`1wk_adverse_event`,
+													`review`.`followup_adverse_event`,
 													`review`.`ae_severity`,
 													`review`.`omt_related`,
 													(
@@ -171,7 +172,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													`review`.`event_id`;"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 			if (!($scan_QUERY->bind_param('ssss', $study_id, $study_id, $study_id, $study_id))) { logger(__LINE__, "SQLi pBind: $scan_QUERY->error"); }
 			if (!($scan_QUERY->execute())) { logger(__LINE__, "SQLi execute: $scan_QUERY->error"); }
-			if (!($scan_QUERY->bind_result($patient_id, $study_id, $event_id, $phase, $user_id, $rpze, $p24hr_adverse_event, $p72hr_adverse_event, $p1wk_adverse_event, $ae_severity, $omt_related, $has_quroum))) { logger(__LINE__, "SQL rBind: $scan_QUERY->error"); }
+			if (!($scan_QUERY->bind_result($patient_id, $study_id, $event_id, $phase, $user_id, $rpze, $p24hr_adverse_event, $p72hr_adverse_event, $p1wk_adverse_event, $pfollowup_adverse_event, $ae_severity, $omt_related, $has_quroum))) { logger(__LINE__, "SQL rBind: $scan_QUERY->error"); }
 			$scan_QUERY->store_result();
 			$phase_array = array();
 				while ($scan_QUERY->fetch())
@@ -181,7 +182,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 								if ($has_quroum == 1)
 									{
 										// load each user_id into an array by event_id
-											$phase_array[$event_id][$user_id] = array($p24hr_adverse_event, $p72hr_adverse_event, $p1wk_adverse_event, $ae_severity, $omt_related);
+											$phase_array[$event_id][$user_id] = array($p24hr_adverse_event, $p72hr_adverse_event, $p1wk_adverse_event, $pfollowup_adverse_event, $ae_severity, $omt_related);
 									}
 							}
 					}

@@ -1290,7 +1290,7 @@ if ($failed == "ALL_IS_PERFECT")
 							if (isset($_POST["$e_id-pt_24hr_isae"])) { $p24hr_adverse_event = $_POST["$e_id-pt_24hr_isae"]; } else { $p24hr_adverse_event = NULL; }
 							if (isset($_POST["$e_id-pt_72hr_isae"])) { $p72hr_adverse_event = $_POST["$e_id-pt_72hr_isae"]; } else { $p72hr_adverse_event = NULL; }
 							if (isset($_POST["$e_id-pt_1_wk_isae"])) { $p1wk_adverse_event = $_POST["$e_id-pt_1_wk_isae"]; } else { $p1wk_adverse_event = NULL; }
-							if (isset($_POST["$e_id-pt_followup_isae"])) { $followup_adverse_event = $_POST["$e_id-followup_isae"]; } else { $followup_adverse_event = NULL; }
+							if (isset($_POST["$e_id-followup_isae"])) { $followup_adverse_event = $_POST["$e_id-followup_isae"]; } else { $followup_adverse_event = NULL; }
 							if (isset($_POST["$e_id-ae_severity"])) { $ae_severity = $_POST["$e_id-ae_severity"]; } else { $ae_severity = NULL; }
 							if (isset($_POST["$e_id-omt_related"])) { $omt_related = $_POST["$e_id-omt_related"]; } else { $omt_related = NULL; }
 						
