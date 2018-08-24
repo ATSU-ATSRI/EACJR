@@ -158,6 +158,7 @@ while ($study_QUERY->fetch())
 									<td colspan=\"4\" width=\"100%\" style=\"background-color:cornsilk;text-align:center;vertical-align:middle;\"><br /> ---> Phase $phase <--- <br /></td>
 								</tr>";
 							$phase_last = $phase;
+							$colcount = 0;
 						}
 					
 					if ($colcount > 4)
