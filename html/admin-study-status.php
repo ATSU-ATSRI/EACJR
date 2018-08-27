@@ -2,8 +2,72 @@
 include("header.php");
 if ($failed == "ALL_IS_PERFECT")
 {
+	if (isset($_POST['resolved']))
+		{
+			$report_study_id = $_POST['study_id'];
+			$report_study_name = $_POST['study_name'];
+			
+			$_SESSION['redirect'] = 'admin-study-status.php?act=' . $report_study_id;
+			$_SESSION['report_study'] = $report_study_id;
+			$_SESSION['report_study_name'] = $_POST['study_name'];
+			$_SESSION['report_type'] = "resolved";
+			
+			if (headers_sent()) 
+				{
+					echo "<meta http-equiv=\"Location\" content=\"reporting.php\">";
+				}
+				else
+				{
+					header("Location: reporting.php");
+					exit();
+				}
+		}
+	
+	if (isset($_POST['pending']))
+		{
+			$report_study_id = $_POST['study_id'];
+			$report_study_name = $_POST['study_name'];
+			
+			$_SESSION['redirect'] = 'admin-study-status.php?act=' . $report_study_id;
+			$_SESSION['report_study'] = $report_study_id;
+			$_SESSION['report_study_name'] = $_POST['study_name'];
+			$_SESSION['report_type'] = "pending";
+			
+			if (headers_sent()) 
+				{
+					echo "<meta http-equiv=\"Location\" content=\"reporting.php\">";
+				}
+				else
+				{
+					header("Location: reporting.php");
+					exit();
+				}
+		}
+		
+	if (isset($_POST['unconsensus']))
+		{
+			$report_study_id = $_POST['study_id'];
+			$report_study_name = $_POST['study_name'];
+			
+			$_SESSION['redirect'] = 'admin-study-status.php?act=' . $report_study_id;
+			$_SESSION['report_study'] = $report_study_id;
+			$_SESSION['report_study_name'] = $_POST['study_name'];
+			$_SESSION['report_type'] = "unconsensus";
+			
+			if (headers_sent()) 
+				{
+					echo "<meta http-equiv=\"Location\" content=\"reporting.php\">";
+				}
+				else
+				{
+					header("Location: reporting.php");
+					exit();
+				}
+		}
+		
 	include("datacon.php");
 	include("menu_item.php");
+	
 	$study_id = $_REQUEST['act'];
 	
 		if (!($study_QUERY = $dblink->prepare("SELECT name, location, date_start, date_end, pi_name, pi_email, quorum, consensus FROM `jury_room`.`studys` WHERE (study_id = ?);"))) {logger(__LINE__, "SQLi Prepare: $dblink->error");}
@@ -58,9 +122,33 @@ if ($failed == "ALL_IS_PERFECT")
 					<div>PI's email address?</div>
 					<div>$pi_email</div>
 				</div>
-			<div class=\"ft\"></div>
-		";
+			<div class=\"ft\"> </div>";
 	mysqli_stmt_close($study_QUERY);
+	
+	echo "<br /><br /><div class=\"ft-head\"> Reporting Tools </div>
+					<div class=\"mt-row\">
+							<div class=\"mt-cell\">
+								<form name=\"resolved\" method=\"post\">
+									<input type=\"hidden\" name=\"study_id\" value=\"$study_id\">
+									<input type=\"hidden\" name=\"study_name\" value=\"$study_name\">
+									<input type=\"submit\" name=\"resolved\" value=\"Records Resolved Report\">
+								</form>
+							</div>
+							<div class=\"mt-cell\">
+								<form name=\"pending\" method=\"post\">
+									<input type=\"hidden\" name=\"study_id\" value=\"$study_id\">
+									<input type=\"hidden\" name=\"study_name\" value=\"$study_name\">
+									<input type=\"submit\" name=\"pending\" value=\"Pending Records Report\">
+								</form>
+							</div>
+							<div class=\"mt-cell\">
+								<form name=\"unconsensus\" method=\"post\">
+									<input type=\"hidden\" name=\"study_id\" value=\"$study_id\">
+									<input type=\"hidden\" name=\"study_name\" value=\"$study_name\">
+									<input type=\"submit\" name=\"unconsensus\" value=\"Unconsensus Records Report\">
+								</form>
+							</div>
+					</div><br />";
 	
 	echo "<span class=\"left-box\">
 				<div class=\"ft-head\">Count of patient records by phase</div>
@@ -198,7 +286,17 @@ if ($failed == "ALL_IS_PERFECT")
 				</div>";
 	mysqli_stmt_close($active_QUERY);
 
-	echo "	<br />
+	
+	if (!($nonactive_QUERY = $dblink->prepare("SELECT `logins`.`user_id`, `logins`.`name`, MAX(`login_history`.`login`), `logins`.`email`  AS 'last_seen' FROM `logins` RIGHT OUTER JOIN `login_history` ON `logins`.`user_id`=`login_history`.`id` WHERE FIND_IN_SET(?,`logins`.`study`) AND (NOT EXISTS (SELECT `review`.`user_id` FROM `review` WHERE `review`.`user_id` = `logins`.`user_id`)) GROUP BY `logins`.`user_id` ORDER BY `logins`.`name`;"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
+	if (!($nonactive_QUERY->bind_param('s', $study_id))) { logger(__LINE__, "SQLi rBind error: $nonactive_QUERY->error"); }
+	if (!($nonactive_QUERY->execute())) { logger(__LINE__, "SQLi execute error: $nonactive_QUERY->error"); }	
+	if (!($nonactive_QUERY->bind_result($nonactive_userid, $nonactive_name, $nonactive_last, $nonactive_email))) { logger(__LINE__, "SQLi rBind error: $nonactive_QUERY->error"); }
+	$nonactive_QUERY->store_result();
+	
+	
+	if (($nonactive_QUERY->num_rows) > 0)
+		{
+			echo "	<br />
 			<div class=\"ft-head\"> Users With out votes </div>
 			<div class=\"mt\">
 				<div class=\"mt-header\">
@@ -209,15 +307,7 @@ if ($failed == "ALL_IS_PERFECT")
 				</div>
 				<div class=\"mt-body\">
 				";
-	if (!($nonactive_QUERY = $dblink->prepare("SELECT `logins`.`user_id`, `logins`.`name`, MAX(`login_history`.`login`), `logins`.`email`  AS 'last_seen' FROM `logins` RIGHT OUTER JOIN `login_history` ON `logins`.`user_id`=`login_history`.`id` WHERE FIND_IN_SET(?,`logins`.`study`) AND (NOT EXISTS (SELECT `review`.`user_id` FROM `review` WHERE `review`.`user_id` = `logins`.`user_id`)) GROUP BY `logins`.`user_id` ORDER BY `logins`.`name`;"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
-	if (!($nonactive_QUERY->bind_param('s', $study_id))) { logger(__LINE__, "SQLi rBind error: $nonactive_QUERY->error"); }
-	if (!($nonactive_QUERY->execute())) { logger(__LINE__, "SQLi execute error: $nonactive_QUERY->error"); }	
-	if (!($nonactive_QUERY->bind_result($nonactive_userid, $nonactive_name, $nonactive_last, $nonactive_email))) { logger(__LINE__, "SQLi rBind error: $nonactive_QUERY->error"); }
-	$nonactive_QUERY->store_result();
-	
-	
-	if (($nonactive_QUERY->num_rows) > 0)
-		{
+				
 			while ($nonactive_QUERY->fetch())
 				{
 					echo "	<div class=\"mt-row\">
@@ -228,10 +318,7 @@ if ($failed == "ALL_IS_PERFECT")
 							</div>";
 				}
 		}
-		else
-		{
-			echo "	<div class=\"mt-row\"> No Records to display </div>";
-		}
+
 	echo "			</div>";
 	mysqli_stmt_close($nonactive_QUERY);
 
@@ -239,7 +326,6 @@ if ($failed == "ALL_IS_PERFECT")
 	echo "		</div>
 			</span>
 		</span>";
-
 
 	include("footer.php");
 }
