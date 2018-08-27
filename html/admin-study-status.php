@@ -64,7 +64,27 @@ if ($failed == "ALL_IS_PERFECT")
 					exit();
 				}
 		}
-		
+	
+	if (isset($_POST['worktime']))
+		{
+			$report_study_id = $_POST['study_id'];
+			$report_study_name = $_POST['study_name'];
+			
+			$_SESSION['redirect'] = 'admin-study-status.php?act=' . $report_study_id;
+			$_SESSION['report_study'] = $report_study_id;
+			$_SESSION['report_study_name'] = $_POST['study_name'];
+			$_SESSION['report_type'] = "worktime";
+			
+			if (headers_sent()) 
+				{
+					echo "<meta http-equiv=\"Location\" content=\"reporting.php\">";
+				}
+				else
+				{
+					header("Location: reporting.php");
+					exit();
+				}
+		}
 	include("datacon.php");
 	include("menu_item.php");
 	
@@ -146,6 +166,13 @@ if ($failed == "ALL_IS_PERFECT")
 									<input type=\"hidden\" name=\"study_id\" value=\"$study_id\">
 									<input type=\"hidden\" name=\"study_name\" value=\"$study_name\">
 									<input type=\"submit\" name=\"unconsensus\" value=\"Unconsensus Records Report\">
+								</form>
+							</div>
+							<div class=\"mt-cell\">
+								<form name=\"worktime\" method=\"post\">
+									<input type=\"hidden\" name=\"study_id\" value=\"$study_id\">
+									<input type=\"hidden\" name=\"study_name\" value=\"$study_name\">
+									<input type=\"submit\" name=\"worktime\" value=\"Work-time Records Report\">
 								</form>
 							</div>
 					</div><br />";

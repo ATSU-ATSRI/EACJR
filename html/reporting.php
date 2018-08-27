@@ -28,6 +28,12 @@ if ($redirect != "index.php")
 					$_SESSION['pass_fail'] = "Unconsensus report generating.";
 					$go_flag = 1;
 				}
+				elseif ($report_type === "worktime")
+				{
+					$report_QUERY = "SELECT `logins`.`name` AS name, MIN(`login_history`.`login`) AS first_login, MIN(`review`.`action_date`) AS first_vote, MAX(`review`.`action_date`) AS last_vote, MAX(`login_history`.`login`) AS last_login FROM `review` LEFT OUTER JOIN `login_history` ON `review`.`user_id`=`login_history`.`id` INNER JOIN `logins` ON `login_history`.`id`=`logins`.`user_id` WHERE FIND_IN_SET('$report_study_id',`logins`.`study`) GROUP BY `logins`.`user_id`";
+					$_SESSION['pass_fail'] = "Worktime report generating.";
+					$go_flag = 1;
+				}
 				else
 				{
 					$_SESSION['pass_fail'] = "Report Error.";
