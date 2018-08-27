@@ -11,7 +11,7 @@ if ($failed == "ALL_IS_PERFECT")
 
 	if ($rank == 2)
 		{ 
-			echo "&nbsp; &nbsp; &nbsp; <a href=\"admin.php\"><button type=\"button\">Administration</button></a>";
+			echo "&nbsp; &nbsp; &nbsp; <a href=\"admin-study.php\"><button type=\"button\">Administration</button></a>";
 		}
 		
 	echo "</div>";
