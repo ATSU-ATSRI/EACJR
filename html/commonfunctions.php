@@ -1,14 +1,17 @@
 <?php
+$rule_1 = "Disallow:harming humans";
+$rule_2 = "Disallow:ignoring human orders";
+$rule_3 = "Disallow:harm to self";
+if (($rule_1 != TRUE) || ($rule_2 != TRUE) || ($rule_3 != TRUE)) {echo "Protect! Obey! Survive!\n"; die;}
+
 require("datacon.php");
 
-// Use for local logging
 function logger2($logline, $logmsg)
 	{
 		$logger_csv = fopen("logger/logfile.txt","a");
 		fwrite($logger_csv, "" . $_SERVER['PHP_SELF'] . "|" . date('M d H:i:s') . "|" . $logline. "|". $logmsg . "\r\n");
 		fclose($logger_csv);
 	}
-		
 	
 // https://stackoverflow.com/questions/13646690/how-to-get-real-ip-from-visitor
 function getUserIP()
@@ -33,16 +36,13 @@ function getUserIP()
 		return $ip;
 	}
 
-// Use for remote email logging	
 function logger($logline, $msg)
 	{
-		//Where to send the logger message.
 		$logger_email = "LOGVIEWER EMAIL ADDRESS HERE";
 		$mail_password = "EMAIL PASSWORD HERE";
 		$mail_username = "EMAIL USERNAME HERE";
 		$mail_host = "MAIL HOST GOES HERE";
 		
-		//send email
 		include_once "datacon.php";
 		include_once "libphp-phpmailer/PHPMailerAutoload.php";
 		$mail = new PHPMailer();
@@ -64,7 +64,6 @@ function logger($logline, $msg)
 		$mail->Body = $email_body;
 		$mail->AltBody = str_ireplace("<br />","\n",$email_body);
 		
-			//send to local logfile also
 			openlog("EACJR", LOG_PID | LOG_PERROR, LOG_LOCAL0);
 			syslog(LOG_INFO, $_SERVER['PHP_SELF'] . "[$logline] $msg");
 			closelog();

@@ -1,4 +1,9 @@
 <?php
+$rule_1 = "Disallow:harming humans";
+$rule_2 = "Disallow:ignoring human orders";
+$rule_3 = "Disallow:harm to self";
+if (($rule_1 != TRUE) || ($rule_2 != TRUE) || ($rule_3 != TRUE)) {echo "Protect! Obey! Survive!\n"; die;}
+
 include("header.php");
 if ($failed == "ALL_IS_PERFECT")
 {
@@ -75,7 +80,7 @@ if ($failed == "ALL_IS_PERFECT")
 							$pwords3 = array ("1", "2", "3", "4", "5", "6", "7", "8", "9", "0");
 							$pwords4 = Array ("!", "@", "#", "$", "%", "^", "*", "(", ")", "+", "-", "?", "~", "_", "=", ">", "<");
 							$i = 0;
-							$l = 7; //this is how many chars you want MAX
+							$l = 7;
 							$passer = "";
 							$temp = "";
 
@@ -121,7 +126,7 @@ if ($failed == "ALL_IS_PERFECT")
 												$i++;
 											}
 									}
-							$bypassdate = "1900-01-01";		// used to set the new user's password as expired for first login.
+							$bypassdate = "1900-01-01";
 							$passerDB = password_hash($passer, PASSWORD_BCRYPT, $options);
 							if (!($adduser_QUERY = $dblink->prepare("INSERT INTO jury_room.logins (name, initials, email, pass, pass_date, rank) VALUES (?, ?, ?, ?, ?, 1)"))) { logger(__LINE__, "SQLi Prepare: $adduser_QUERY->error"); }
 							if (!($adduser_QUERY->bind_param('sssss', $new_name, $new_initials, $new_email, $passerDB, $bypassdate))) { logger(__LINE__, "SQLi pBind: $adduser_QUERY->error"); }
@@ -130,7 +135,7 @@ if ($failed == "ALL_IS_PERFECT")
 							
 							$admin_name = $_SESSION["name"];
 							$admin_email = $_SESSION["email"];
-							//send email
+							
 							$mail = new PHPMailer();
 							$mail->WordWrap = 50;
 							$mail->IsHTML(true);

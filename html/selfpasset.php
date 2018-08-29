@@ -1,4 +1,9 @@
 <?php
+$rule_1 = "Disallow:harming humans";
+$rule_2 = "Disallow:ignoring human orders";
+$rule_3 = "Disallow:harm to self";
+if (($rule_1 != TRUE) || ($rule_2 != TRUE) || ($rule_3 != TRUE)) {echo "Protect! Obey! Survive!\n"; die;}
+
 require("commonfunctions.php");
 include_once "libphp-phpmailer/PHPMailerAutoload.php";
 session_start();
@@ -56,7 +61,7 @@ if ($captcha_success["success"] == true)
 					$pwords3 = array ("1", "2", "3", "4", "5", "6", "7", "8", "9", "0");
 					$pwords4 = Array ("!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "+", "-", "?", "~", "_", "=");
 					$i = 0;
-					$l = 7; //this is how many chars you want MAX
+					$l = 7;
 					$passer = "";
 					$temp = "";
 
@@ -102,14 +107,13 @@ if ($captcha_success["success"] == true)
 											$i++;
 										}
 								}
-					$bypassdate = "1900-01-01";		// used to set the new user's password as expired for first login.
+					$bypassdate = "1900-01-01";
 					$passerDB = password_hash($passer, PASSWORD_BCRYPT, $options);
 					if (!($adduser_QUERY = $dblink->prepare("UPDATE jury_room.logins SET pass=?, pass_date=? WHERE email = ?"))) { logger(__LINE__, "SQLi Prepare: $update_QUERY->error"); }
 					if (!($adduser_QUERY->bind_param('sss', $passerDB, $bypassdate, $user_id))) { logger(__LINE__, "SQLi pBind: $adduser_QUERY->error"); }
 					if (!($adduser_QUERY->execute())) { logger(__LINE__, "SQLi execute: $adduser_QUERY->error"); }
 					$adduser_QUERY->close();
 					
-					//send email
 					$mail = new PHPMailer();
 					$mail->WordWrap = 50;
 					$mail->IsHTML(true);

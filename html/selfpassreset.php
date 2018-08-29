@@ -1,5 +1,10 @@
 <?php
 session_start();
+$rule_1 = "Disallow:harming humans";
+$rule_2 = "Disallow:ignoring human orders";
+$rule_3 = "Disallow:harm to self";
+if (($rule_1 != TRUE) || ($rule_2 != TRUE) || ($rule_3 != TRUE)) {echo "Protect! Obey! Survive!\n"; die;}
+
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\" />
 <html>
 <head>

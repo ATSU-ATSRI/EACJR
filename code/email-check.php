@@ -1,4 +1,9 @@
 <?php
+$rule_1 = "Disallow:harming humans";
+$rule_2 = "Disallow:ignoring human orders";
+$rule_3 = "Disallow:harm to self";
+if (($rule_1 != TRUE) || ($rule_2 != TRUE) || ($rule_3 != TRUE)) {echo "Protect! Obey! Survive!\n"; die;}
+
 include("datacon.php");
 include("logger.php");
 require("/usr/share/php/PHPMailer-master/PHPMailerAutoload.php");
@@ -15,7 +20,6 @@ if ($study_QUERY->num_rows > 0)
 	{
 		while ($study_QUERY->fetch())
 		{
-			//Check for active users in this study_id
 			if (!($user_QUERY = $dblink->prepare("SELECT `user_id`, `email`, `name` FROM `logins` WHERE (FIND_IN_SET(?, `study`)) AND (`rank` > 0);"))) { logger(__LINE__, "SQLi prepare: $user_QUERY->error"); }
 			if (!($user_QUERY->bind_param('s', $study_id))) { logger(__LINE__, "SQLi pBind: $user_QUERY->error"); }
 			if (!($user_QUERY->execute())) { logger(__LINE__, "SQLi execute: $user_QUERY->error"); }
@@ -25,7 +29,6 @@ if ($study_QUERY->num_rows > 0)
 			{
 				while ($user_QUERY->fetch())
 					{
-						//grab phase counts
 						if (!($phase_QUERY = $dblink->prepare("SELECT 
 																   COUNT(DISTINCT `patient`.`code`), `patient`.`phase` 
 																FROM 
@@ -85,7 +88,6 @@ if ($study_QUERY->num_rows > 0)
 						if (isset($userdone_phase)) { unset($userdone_phase); }
 						if (isset($userdone_count)) { unset($userdone_count); }
 							
-						// build the counts to go by phase
 						if (!($check_QUERY = $dblink->prepare("SELECT COUNT(DISTINCT `patient`.`patient_id`) FROM `patient` RIGHT JOIN `symptom` ON `patient`.`code`=`symptom`.`code` RIGHT JOIN `review` ON `symptom`.`event_id`=`review`.`event_id` WHERE (`patient`.`study_id` = ?) AND (`review`.`user_id` = ?)"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 						if (!($check_QUERY->bind_param('ss',$study_id, $user_id))) { logger(__LINE__, "SQLi pBind error: $check_QUERY->error"); }
 						if (!($check_QUERY->execute())) { logger(__LINE__, "SQLi execute error: $check_QUERY->error"); }
@@ -131,8 +133,6 @@ if ($study_QUERY->num_rows > 0)
 						if (isset($p)) { unset($p); }
 						if (isset($x)) { unset($x); }
 						
-						
-						//Check times items reviewed
 						if (!($events_QUERY = $dblink->prepare("
 															SELECT
 																`review`.`user_id` AS 'kid',
@@ -243,7 +243,6 @@ if ($study_QUERY->num_rows > 0)
 								if (isset($events_num)) { unset($events_num); }
 								$events_QUERY->free_result();
 								
-										//send email
 										$mail = new PHPMailer();
 										$mail->WordWrap = 50;
 										$mail->IsHTML(true);

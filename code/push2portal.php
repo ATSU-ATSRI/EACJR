@@ -1,34 +1,18 @@
 <?php
-/* This programme is property of and copyright to the A. T. Still Research Institute.
-   Project:           Event Adjudication Committee (EAC) Portal
-   Instrumentation:   Jane Johnson, MA
-   Code by:           Geoffroey-Allen S. Franklin, MBA, BS, AAS, AdeC, MCP
-   Created:           2016-Oct-20
-   Change Log:        2017-Oct-09 - Version 1.0 release.
-*/
-
-//General Rules
 $rule_1 = "Disallow:harming humans";
 $rule_2 = "Disallow:ignoring human orders";
 $rule_3 = "Disallow:harm to self";
 if (($rule_1 != TRUE) || ($rule_2 != TRUE) || ($rule_3 != TRUE)) {echo "Protect! Obey! Survive!\n"; die;}
-date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
+date_default_timezone_set('America/Chicago'); 
 
-
-// load required items
-	// Logger
 	require('logger.php');
 		set_error_handler("recordError");
 		$start_memory = memory_get_usage();
 		logger(__LINE__, "===== Start of Log. =====");
 		logger(__LINE__, "My timezone is: " . date_default_timezone_get());
-		// end logger start
 	
-	// Database 
 	require('datacon.php');
 
-
-	//This is the input list of files from the data generated and import list.
 	$filelist = file('../input_data/filelist.txt',FILE_SKIP_EMPTY_LINES);
 	
 	if ($filelist !== FALSE)
@@ -37,7 +21,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 				{
 					logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
 					logger(__LINE__, "Converting Filename: " . $filename);
-					// $filename = trim(substr($filename, strrpos($filename, "\\") + 1));
 					$filename = trim(substr($filename, strrpos($filename, "/") + 1));
 					$filename = "../input_data/" . $filename;
 					logger(__LINE__, "Processing Filename: " . $filename);
@@ -46,17 +29,14 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 					if (isset($header_array)) {unset($header_array);}
 					while (($input_data = fgetcsv($input_filename)) !== FALSE)
 						{
-							// Header translator
 							if (isset($load_header))
 								{
 									$header_array = array("study_id","record_id","consent_yn","visit_days","coup_how_d1","study_part_yn_d1","cal_yr_comp_d1","code","doctor","age_d1","sex_d1","ethnicity_d1","race_d1___1","race_d1___2","race_d1___3","race_d1___4","race_d1___5","race_d1___6","race_d1___7","other_race_d1","pain_hf_sympt_d1","pain_neck_sympt_d1","pain_up_back_sympt_d1","pain_chest_sympt_d1","pain_low_back_sympt_d1","pain_tail_sympt_d1","pain_hip_sympt_d1","pain_abd_sympt_d1","pain_arm_sympt_d1","pain_leg_sympt_d1","rad_pain_sympt_d1","stiff_sympt_d1","swell_sympt_d1","weak_sympt_d1","numb_sympt_d1","tired_sympt_d1","head_sympt_d1","lt_head_sympt_d1","vis_sympt_d1","sleep_sympt_d1","irrit_sympt_d1","talk_sympt_d1","nausea_sympt_d1","walk_sympt_d1","tinn_sympt_d1","rad_pain_reg_d1","stiff_reg_d1","swell_reg_d1","weak_reg_d1","numb_reg_d1","no_symp_com_d1","worst1_hf_d1","related_hf_d1","recent_hf_d1","worst_hf_d1","worst1_neck_d1","related_neck_d1","recent_neck_d1","worst_neck_d1","worst1_up_back_d1","related_up_back_d1","recent_up_back_d1","worst_up_back_d1","worst1_chest_d1","related_chest_d1","recent_chest_d1","worst_chest_d1","worst1_low_back_d1","related_low_back_d1","recent_low_back_d1","worst_low_back_d1","worst1_tail_d1","related_tail_d1","recent_tail_d1","worst_tail_d1","worst1_hip_d1","related_hip_d1","recent_hip_d1","worst_hip_d1","worst1_abd_d1","related_abd_d1","recent_abd_d1","worst_abd_d1","worst1_arm_d1","related_arm_d1","recent_arm_d1","worst_arm_d1","worst1_leg_d1","related_leg_d1","recent_leg_d1","worst_leg_d1","worst1_rad_pain_d1","related_red_pain_d1","recent_rad_pain_d1","worst_rad_pain_d1","worst1_stiff_d1","related_stiff_d1","recent_stiff_d1","worst_stiff_d1","worst1_swell_d1","related_swell_d1","recent_swell_d1","worst_swell_d1","worst1_weak_d1","related_weak_d1","recent_weak_d1","worst_weak_d1","worst1_numb_d1","related_numb_d1","recent_numb_d1","worst_numb_d1","worst1_tired_d1","related_tired_d1","recent_tired_d1","worst_tired_d1","worst1_head_d1","related_head_d1","recent_head_d1","worst_head_d1","worst1_lt_head_d1","related_lt_head_d1","recent_lt_head_d1","worst_lt_head_d1","worst1_vision_d1","related_vis_d1","recent_vis_d1","worst_sev_d1","worst1_sleep_d1","related_sleep_d1","recent_sleep_d1","worst_sleep_d1","worst1_irrit_d1","related_irrit_d1","recent_irrit_d1","worst_irrit_d1","worst1_talk_d1","related_talk_d1","recent_talk_d1","worst_talk_d1","worst1_nausea_d1","related_naus_d1","recent_naus_d1","worst_naus_d1","worst1_walk_d1","related_walk_d1","recent_walk_d1","worst_walk_d1","worst1_tinn_d1","related_tinn_d1","recent_tinn_d1","worst_tinn_d1","other1_sympt_d1","other1_sympt_name_d1","worst1_other1_d1","related_other1_d1","recent_other1_d1","worst_other1_d1","other2_sympt_d1","other2_sympt_name_d1","worst1_other2_d1","related_other2_d1","recent_other2_d1","worst_other2_d1","details_d1","email_address_d1","omt_adverse_events_study_24hour_survey_complete","pain_head_face_d3","pain_neck_d3","pain_up_back_d3","pain_chest_d3","pain_low_back_d3","pain_tail_d3","pain_hip_d3","pain_abd_d3","pain_arm_d3","pain_leg_d3","rad_pain_d3","stiff_d3","swell_d3","weak_d3","numb_d3","tire_d3","headache_d3","lt_head_d3","vision_d3","sleep_d3","irrit_d3","talk_d3","nausea_d3","walk_d3","tinn_d3","rad_pain_reg_d3","stiff_reg_d3","swell_reg_d3","weak_reg_d3","numb_reg_d3","no_symp_comp_d3","day_severity_head_face_d3","related_head_face_d3","head_face_6week_d3","head_face_worst_d3","day_severity_neck_d3","related_neck_d3","neck_6week_d3","neck_worst_d3","day_severity_up_back_d3","related_up_back_d3","up_back_6week_d3","up_back_worst_d3","day_severity_chest_d3","related_chest_d3","chest_6week_d3","chest_worst_d3","day_low_back_d3","related_low_back_d3","low_back_6week_d3","low_back_worst_d3","day_severity_tail_d3","related_tail_d3","tail_6week_d3","tail_worst_d3","day_severity_hip_d3","related_hip_d3","hip_6week_d3","hip_worst_d3","day_severity_abd_d3","related_abd_d3","abd_6week_d3","abd_worst_d3","day_severity_arm_d3","related_arm_d3","arm_6week_d3","arm_worst_d3","day_severity_leg_d3","related_leg_d3","leg_6week_d3","leg_worst_d3","day_severity_rad_pain_d3","related_rad_pain_d3","rad_pain_6week_d3","rad_pain_worst_d3","day_severity_stiff_d3","related_stiff_d3","stiff_6week_d3","stiff_worst_d3","day_severity_swell_d3","related_swell_d3","swell_6week_d3","swell_worst_d3","day_severity_weak_d3","related_weak_d3","weak_6week_d3","weak_worst_d3","day_severity_numb_d3","related_numb_d3","numb_6week_d3","numb_worst_d3","day_severity_tire_d3","related_tire_d3","tire_6week_d3","tire_worst_d3","day_severity_head_d3","related_head_d3","head_6week_d3","head_worst_d3","day_severity_lt_head_d3","related_lt_head_d3","lt_head_6week_d3","lt_head_worst_d3","day_severity_vision_d3","related_vision_d3","vision_6week_d3","vision_worst_d3","day_severity_sleep_d3","related_sleep_d3","sleep_6week_d3","sleep_worst_d3","day_severity_irrit_d3","related_irrit_d3","irrit_6week_d3","irrit_worst_d3","day_severity_talk_d3","related_talk_d3","talk_6week_d3","talk_worst_d3","day_severity_nausea_d3","related_nausea_d3","nausea_6week_d3","nausea_worst_d3","day_severity_walk_d3","related_walk_d3","walk_6week_d3","walk_worst_d3","day_severity_tinn_d3","related_tinn_d3","tinn_6week_d3","tinn_worst_d3","other_yn_d3","other1_sympt_name_d3","day_severity_other1_d3","related_other1_d3","other1_6week_d3","other1_worst_d3","other2_yn_d3","other2_sympt_name_d3","day_severity_other2_d3","related_other2_d3","other2_6week_d3","other2_worst_d3","details_d3","omt_adverse_events_study_midweek_survey_complete","pain_hf_sympt_d7","pain_neck_sympt_d7","pain_ub_sympt_d7","pain_chest_sympt_d7","pain_low_back_sympt_d7","pain_tail_sympt_d7","pain_hip_sympt_d7","pain_abd_sympt_d7","pain_arm_sympt_d7","pain_leg_sympt_d7","rad_pain_sympt_d7","stiff_sympt_d7","swell_sympt_d7","weak_sympt_d7","numb_sympt_d7","tired_sympt_d7","head_sympt_d7","lt_head_sympt_d7","vis_sympt_d7","sleep_sympt_d7","irrit_sympt_d7","talk_sympt_d7","nausea_sympt_d7","walk_symbp_d7","tinn_sympt_d7","other1_sympt_d7","other2_sympt_d7","follow_clinic_yn_d7","fu_visit_d7","why_clinic_d7","uc_yn_d7","uc_hc_visit_d7","why_uc_d7","er_yn_d7","er_hc_visit_d7","why_er_d7","hosp_yn_d7","hosp_hc_visit_d7","why_hosp_d7","details_d7","further_yn_d7","further_omt_why_d7","future_yn_d7","future_why_d7","omt_adverse_events_study_1week_survey_complete","survey_format","survey_format_complete");
-									unset($load_header); // header array loaded, clear and get pt. info
+									unset($load_header); 
 									
 								}
 								else
 								{
-									
-									// clear vars
 									if (isset($code)) {unset($code);}
 									if (isset($study_id)) {unset($study_id);}
 									if (isset($survey_rec_id)) {unset($survey_rec_id);}
@@ -75,18 +55,15 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 									if (isset($paper)) {unset($paper);}
 									if (isset($complete)) {unset($complete);}
 									
-									// data collection
-									// pt. data
-									$code = $input_data[array_search("code", $header_array, TRUE)];			// the study code that is located on the survey packet
-									$study_id = $input_data[array_search("study_id", $header_array, TRUE)];		// what study is this in? (This # is inseted in the csv!!!)
-									$survey_rec_id = $input_data[array_search("record_id", $header_array, TRUE)];	// what is this pt.'s study id?
+									$code = $input_data[array_search("code", $header_array, TRUE)];
+									$study_id = $input_data[array_search("study_id", $header_array, TRUE)];
+									$survey_rec_id = $input_data[array_search("record_id", $header_array, TRUE)];
 									$consent = $input_data[array_search("consent_yn", $header_array, TRUE)];
 									$visit_days = $input_data[array_search("visit_days", $header_array, TRUE)];
 									$doctor = $input_data[array_search("doctor", $header_array, TRUE)];
 									$age = $input_data[array_search("age_d1", $header_array, TRUE)];
 									$sex = $input_data[array_search("sex_d1", $header_array, TRUE)];
 									$ethnicity = $input_data[array_search("ethnicity_d1", $header_array, TRUE)];
-									// race
 										if ($input_data[array_search("race_d1___1", $header_array, TRUE)] == "1") { $race = "White";}
 										if ($input_data[array_search("race_d1___2", $header_array, TRUE)] == "1") { $race = "Black or African American";}
 										if ($input_data[array_search("race_d1___3", $header_array, TRUE)] == "1") { $race = "Asian";}
@@ -109,9 +86,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 									if (!($insert_SQL->execute())) { logger(__LINE__, "MySQLi execute: $insert_SQL->error"); }
 									unset($insert_SQL);
 									
-									
-									// symptom
-									
 											if (isset($symptom)) {unset($symptom);}
 											if (isset($pt_baseline)) {unset($pt_baseline);}
 											if (isset($pt_baseline_severity)) {unset($pt_baseline_severity);}
@@ -126,7 +100,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 											if (isset($pt_1wk)) {unset($pt_1wk);}
 											if (isset($insert_SQL)) {unset($insert_SQL);}
 									
-										// Pain/Discomfort in Head/Face (including Jaw, not including Headache)						
 											if (strlen($input_data[array_search("pain_hf_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("pain_head_face_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("pain_hf_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													$symptom = "Pain/Discomfort in Head/Face (including Jaw, not including Headache)";
@@ -203,7 +176,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 										
-										// Pain/Discomfort in Neck
 											if (strlen($input_data[array_search("pain_neck_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("pain_neck_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("pain_neck_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -292,7 +264,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 										
-										// Pain/Discomfort in Upper Back
 											if (strlen($input_data[array_search("pain_up_back_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("pain_up_back_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("pain_ub_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -382,7 +353,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 										
-										// Pain/Discomfort in Chest/Ribs
 											if (strlen($input_data[array_search("pain_chest_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("pain_chest_d3", $header_array, TRUE)]) > 0  || strlen($input_data[array_search("pain_chest_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -473,7 +443,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 												
-										// Pain/Discomfort in Lower Back
 											if (strlen($input_data[array_search("pain_low_back_sympt_d1", $header_array, TRUE)]) > 0  || strlen($input_data[array_search("pain_low_back_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("pain_low_back_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -564,7 +533,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 									
-									// Pain/Discomfort in Tailbone/Sacrum
 											if (strlen($input_data[array_search("pain_tail_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("pain_tail_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("pain_tail_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -655,7 +623,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 												
-										// Pain/Discomfort in Hip/Pelvis
 											if (strlen($input_data[array_search("pain_hip_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("pain_hip_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("pain_hip_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -746,7 +713,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 												
-										// Pain/Discomfort in Abdomen
 											if (strlen($input_data[array_search("pain_abd_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("pain_abd_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("pain_abd_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -837,7 +803,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 
-									// Pain/Discomfort in Arm (Shoulder, Upper Arm, Elbow, Forearm, Wrist, or Hand)
 											if (strlen($input_data[array_search("pain_arm_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("pain_arm_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("pain_arm_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -928,7 +893,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 												
-										// Pain/Discomfort in Leg (Thigh, Knee, Calf, Shin, Ankle, or Foot)
 											if (strlen($input_data[array_search("pain_leg_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("pain_leg_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("pain_leg_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -1019,7 +983,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 									
-									// Radiating Pain ([rad_pain_reg_d3])
 											if (strlen($input_data[array_search("rad_pain_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("rad_pain_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("rad_pain_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -1112,7 +1075,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 												
-										// Stiffness
 											if (strlen($input_data[array_search("stiff_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("stiff_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("stiff_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -1205,7 +1167,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 												
-										// Swelling
 											if (strlen($input_data[array_search("swell_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("swell_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("swell_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -1298,7 +1259,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}		
 												
-										// Weakness
 											if (strlen($input_data[array_search("weak_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("weak_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("weak_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -1391,7 +1351,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 												
-										// Numbness/Tingling
 											if (strlen($input_data[array_search("numb_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("numb_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("numb_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -1484,7 +1443,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 
-										// Tiredness/Fatigue
 											if (strlen($input_data[array_search("tired_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("tire_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("tired_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -1575,7 +1533,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 												
-										// Headache
 											if (strlen($input_data[array_search("head_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("headache_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("head_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -1666,7 +1623,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 												
-										// Light Headed (Fainting/Dizziness/Vertigo)
 											if (strlen($input_data[array_search("lt_head_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("lt_head_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("lt_head_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -1757,7 +1713,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 												
-										// Vision Problems
 											if (strlen($input_data[array_search("vis_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("vision_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("vis_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -1848,7 +1803,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 												
-										// Problems Sleeping
 											if (strlen($input_data[array_search("sleep_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("sleep_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("sleep_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -1939,7 +1893,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 												
-										// Irritability/Crying
 											if (strlen($input_data[array_search("irrit_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("irrit_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("irrit_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -2030,7 +1983,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 												
-										// Difficulty Talking
 											if (strlen($input_data[array_search("talk_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("talk_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("talk_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -2120,8 +2072,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 												
-												
-										// Nausea/Vomiting
 											if (strlen($input_data[array_search("nausea_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("nausea_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("nausea_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -2212,7 +2162,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 												
-										// Difficulty Walking
 											if (strlen($input_data[array_search("walk_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("walk_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("walk_symbp_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -2303,7 +2252,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 												
-										// Ringing in Ears (Tinnitus)
 											if (strlen($input_data[array_search("tinn_sympt_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("tinn_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("tinn_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -2394,7 +2342,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}	
 
-									// Other 1
 											if (strlen($input_data[array_search("other1_sympt_name_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("other1_sympt_name_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("other1_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -2487,7 +2434,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 
-										// Other 2
 											if (strlen($input_data[array_search("other2_sympt_name_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("other2_sympt_name_d3", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("other2_sympt_d7", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -2580,7 +2526,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}
 												
-										// I have not had any of the symptoms/complaints listed above since my OMT.
 											if (strlen($input_data[array_search("no_symp_com_d1", $header_array, TRUE)]) > 0 || strlen($input_data[array_search("no_symp_comp_d3", $header_array, TRUE)]) > 0)
 												{
 													if (isset($symptom)) {unset($symptom);}
@@ -2615,7 +2560,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 													unset($insert_SQL);
 												}	
 												
-									// Pt. comments.
 										if (strlen($input_data[array_search("details_d1", $header_array, TRUE)]) > 0)
 											{ 
 												if (isset($pt_24hr_details)) { unset($pt_24hr_details);}
@@ -2776,7 +2720,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 												unset($insert_SQL);
 											}
 											
-									// future/further
 									if (strlen($input_data[array_search("further_yn_d7", $header_array, TRUE)]) > 0)
 											{
 												if (isset($further)) { unset($further);}
@@ -2840,9 +2783,7 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 		if ($dblink->connect_errno)
 			{
 				logger(__LINE__, "---MySQLi Error" . mysqli_connect_error($dblink) ." ---");
-				//die;
 			}
-	//This is the input list of files from the data generated and import list.
 	$petlist = file('../input_data/petlist.txt',FILE_SKIP_EMPTY_LINES);
 	
 	if ($petlist !== FALSE)
@@ -2851,7 +2792,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 				{
 					logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
 					logger(__LINE__, "Converting Filename: " . $filename);
-					// $filename = trim(substr($filename, strrpos($filename, "\\") + 1));
 					$filename = trim(substr($filename, strrpos($filename, "/") + 1));
 					$filename = "../input_data/" . $filename;
 					logger(__LINE__, "Processing Filename: " . $filename);
@@ -2860,17 +2800,13 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 					if (isset($header_array)) {unset($header_array);}
 					while (($input_data = fgetcsv($input_filename)) !== FALSE)
 						{
-							// Header translator
 							if (isset($load_header))
 								{
 									$header_array = array("study_id", "null", "From", "Received Date", "Date of Office Visit", "code", "Physician Name", "HF_ART", "HF_BLT", "HF_CR", "HF_CS", "HF_HVLA", "HF_IND", "HF_Lymph", "HF_ME", "HF_MFR", "HF_PH", "HF_ST", "HF_VIS", "HF_Other", "HF_Specify", "HF_Response", "Neck_ART", "Neck_BLT", "Neck_CR", "Neck_CS", "Neck_HVLA", "Neck_IND", "Neck_Lymph", "Neck_ME", "Neck_MFR", "Neck_PH", "Neck_ST", "Neck_VIS", "Neck_Other", "Neck_Specify", "Neck_Response", "Thor_ART", "Thor_BLT", "Thor_CR", "Thor_CS", "Thor_HVLA", "Thor_IND", "Thor_Lymph", "Thor_ME", "Thor_MFR", "Thor_PH", "Thor_ST", "Thor_VIS", "Thor_Other", "Thor_Specify", "Thor_Response", "Ribs_ART", "Ribs_BLT", "Ribs_CR", "Ribs_CS", "Ribs_HVLA", "Ribs_IND", "Ribs_Lymph", "Ribs_ME", "Ribs_MFR", "Ribs_PH", "Ribs_ST", "Ribs_VIS", "Ribs_Other", "Ribs_Specify", "Rib_Response", "Lumb_ART", "Lumb_BLT", "Lumb_CR", "Lumb_CS", "Lumb_HVLA", "Lumb_IND", "Lumb_Lymph", "Lumb_ME", "Lumb_MFR", "Lumb_PH", "Lumb_ST", "Lumb_VIS", "Lumb_Other", "Lumb_Specify", "Lumb_Response", "Sac_ART", "Sac_BLT", "Sac_CR", "Sac_CS", "Sac_HVLA", "Sac_Ind", "Sac_Lymph", "Sac_ME", "Sac_MFR", "Sac_PH", "Sac_ST", "Sac_VIS", "Sac_Other", "Sac_Specify", "Sac_Response", "Pelvis_ART", "Pelvis_BLT", "Pelvis_CR", "Pelvis_CS", "Pelvis_HVLA", "Pelvis_IND", "Pelvis_Lymph", "Pelvis_ME", "Pelvis_MFR", "Pelvis_PH", "Pelvis_ST", "Pelvis_VIS", "Pelvis_Other", "Pelvis_Specify", "Pelvis_Response", "Abd_ART", "Abd_BLT", "Abd_CR", "Abd_CS", "Abd_HVLA", "Abd_IND", "Abd_Lymph", "Abd_ME", "Abd_MFR", "Abd_PH", "Abd_ST", "Abd_VIS", "Abd_Other", "Abd_Specify", "Abd_Response", "Up_Ex_ART", "Up_Ex_BLT", "Up_Ex_CR", "Up_Ex_CS", "Up_Ex_HVLA", "Up_Ex_IND", "Up_Ex_Lymph", "Up_Ex_ME", "Up_Ex_MFR", "Up_Ex_PH", "Up_Ex_ST", "Up_Ex_VIS", "Up_Ex_Other", "Up_Ex_Specify", "Up_Ex_Response", "Should_ART", "Should_BLT", "Should_CR", "Should_CS", "Should_HVLA", "Should_IND", "Should_Lymph", "Should_ME", "Should_MFR", "Should_PH", "Should_ST", "Should_VIS", "Should_Other", "Should_Specify", "Should_Response", "Elbow_ART", "Elbow_BLT", "Elbow_CR", "Elbow_CS", "Elbow_HVLA", "Elbow_IND", "Elbow_Lymph", "Elbow_ME", "Elbow_MFR", "Elbow_PH", "Elbow_ST", "Elbow_VIS", "Elbow_Other", "Elbow_Specify", "Elbow_Response", "Wrist_ART", "Wrist_BLT", "Wrist_CR", "Wrist_CS", "Wrist_HVLA", "Wrist_IND", "Wrist_Lymph", "Wrist_ME", "Wrist_MFR", "Wrist_PH", "Wrist_ST", "Wrist_VIS", "Wrist_Other", "Wrist_Specify", "Wrist_Response", "Low_Ex_ART", "Low_Ex_BLT", "Low_Ex_CR", "Low_Ex_CS", "Low_Ex_HVLA", "Low_Ex_IND", "Low_Ex_Lymph", "Low_Ex_ME", "Low_Ex_MFR", "Low_Ex_PH", "Low_Ex_ST", "Low_Ex_VIS", "Low_Ex_Other", "Low_Ex_Specify", "Low_Ex_Response", "Thigh_ART", "Thigh_BLT", "Thigh_CR", "Thigh_CS", "Thigh_HVLA", "Thigh_Ind", "Thigh_Lymph", "Thigh_ME", "Thigh_MFR", "Thigh_PH", "Thigh_ST", "Thigh_VIS", "Thigh_Other", "Thigh_Specify", "Thigh_Response", "Knee_ART", "Knee_BLT", "Knee_CR", "Knee_CS", "Knee_HVLA", "Knee_IND", "Knee_Lymph", "Knee_ME", "Knee_MFR", "Knee_PH", "Knee_ST", "Knee_VIS", "Knee_Other", "Knee_Specify", "Knee_Response", "Ankle_ART", "Ankle_BLT", "Ankle_CR", "Ankle_CS", "Ankle_HVLA", "Ankle_IND", "Ankle_Lymph", "Ankle_ME", "Ankle_MFR", "Ankle_PH", "Ankle_ST", "Ankle_VIS", "Ankle_Other", "Ankle_Specify", "Ankle_Response", "739", "739.1", "739.2","739.8", "739.3", "739.4", "739.5", "739.9", "739.7", "739.6", "Written_Diagnosis_1", "Diagnosis_Code_1", "Chief_Related_1", "SD_Related_1", "Written_Diagnosis_2", "Diagnosis_Code_2", "Chief_Related_2", "SD_Related_2", "Written_Diagnosis_3", "Diagnosis_Code_3", "Chief_Related_3", "SD_Related_3", "Written_Diagnosis_4", "Diagnosis_Code_4", "Chief_Related_4", "SD_Related_4", "Written_Diagnosis_5", "Diagnosis_Code_5", "Chief_Related_5", "SD_Related_5", "Written_Diagnosis_6", "Diagnosis_Code_6", "Chief_Related_6", "SD_Related_6", "Written_Diagnosis_7", "Diagnosis_Code_7", "Chief_Related_7", "SD_Related_7", "Procuedures_1", "Procedures_2", "Procedures_3", "Procedures_4", "Procedures_5");
-									unset($load_header); // header array loaded, clear and get pt. info
-									
+									unset($load_header); 									
 								}
 								else
 								{
-									
-									// clear vars
 									if (isset($code)) {unset($code);}
 									if (isset($study_id)) {unset($study_id);}
 									if (isset($HF_ART)) {unset($HF_ART);}
@@ -3157,8 +3093,8 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 									if (isset($Procedures_4)) {unset($Procedures_4);}
 									if (isset($Procedures_5)) {unset($Procedures_5);}
 									
-									$code = $input_data[array_search("code", $header_array, TRUE)];			// the study code that is located on the survey packet
-									$study_id = $input_data[array_search("study_id", $header_array, TRUE)];		// what study is this in? (This # is inseted in the csv!!!)
+									$code = $input_data[array_search("code", $header_array, TRUE)];
+									$study_id = $input_data[array_search("study_id", $header_array, TRUE)];
 									if ($input_data[array_search("HF_ART", $header_array, TRUE)] == 'Yes') { $HF_ART = '1'; } else { $HF_ART = null; }
 									if ($input_data[array_search("HF_BLT", $header_array, TRUE)] == 'Yes') { $HF_BLT = '1'; } else { $HF_BLT = null; }
 									if ($input_data[array_search("HF_CR", $header_array, TRUE)] == 'Yes') { $HF_CR = '1'; } else { $HF_CR = null; }

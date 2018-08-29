@@ -1,45 +1,27 @@
 <?php
-/* This programme is property of and copyright to the A. T. Still Research Institute.
-   Project:           Event Adjudication Committee (EAC) Portal
-   Instrumentation:   Jane Johnson, MA
-   Code by:           Geoffroey-Allen S. Franklin, MBA, BS, AAS, AdeC, MCP
-   Created:           2016-Oct-20
-   Change Log:        2017-Oct-09 - Version 1.0 release.
-*/
-
-//General Rules
 $rule_1 = "Disallow:harming humans";
 $rule_2 = "Disallow:ignoring human orders";
 $rule_3 = "Disallow:harm to self";
 if (($rule_1 != TRUE) || ($rule_2 != TRUE) || ($rule_3 != TRUE)) {echo "Protect! Obey! Survive!\n"; die;}
-date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
+date_default_timezone_set('America/Chicago');
 
-
-// load required items
-	// Logger
 	require('logger.php');
 		set_error_handler("recordError");
 		$start_memory = memory_get_usage();
 		logger(__LINE__, "===== Start of Log. =====");
 		logger(__LINE__, "My timezone is: " . date_default_timezone_get());
-		// end logger start
-	
-	// Database 
+
 	require('datacon.php');
 	
-	// Standard vars
 	$severity_array = array("Not present", "Mild", "Moderate", "Severe", "Very Severe");
 	$severity_time_array = array("Not present", "baseline", "24hr", "72hr", "1_wk");
 	
-	// pull list of studies
 	if (!($studys_QUERY = $dblink->prepare("SELECT `studys`.`study_id` as sid, `studys`.`quorum`, `studys`.`consensus`, (SELECT count(*) FROM `logins` WHERE FIND_IN_SET(sid, study)) AS members FROM `studys` WHERE (CURDATE() BETWEEN `date_start` AND `date_end`);"))) { logger(__LINE__, "SQLi Prepare: $studys_QUERY->error"); }
 	if (!($studys_QUERY->execute())) { logger(__LINE__, "SQLi execute: $studys_QUERY->error"); }
 	if (!($studys_QUERY->bind_result($study_id, $quorum, $consensus, $members))) { logger(__LINE__, "SQLi rBind: $studys_QUERY->error"); }
 	$studys_QUERY->store_result();
 	while ($studys_QUERY->fetch())
 		{			
-		// Start of main loop
-			// Scan for patients without no phase (new pt. or new study)
 			logger(__LINE__, "======>>>>>> Now working on Study # $study_id. <<<<<<=======");
 			logger(__LINE__, "Phase Zero scan started.");
 			logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
@@ -51,7 +33,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 			$scan_QUERY->store_result();
 				while ($scan_QUERY->fetch())
 					{
-						// Am I an AE?
 							$change_array = array();
 							
 							$change_array = array(
@@ -82,14 +63,12 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 									$new_phase = 0;
 								}
 							
-						// move symptom to new phase
 							logger(__LINE__, "  >> Moving $event_id to Phase $new_phase.");
 						
 							if (!($move_QUERY = $dblink->prepare("UPDATE `symptom` SET `phase` = ? WHERE (`event_id` = ?)"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 							if (!($move_QUERY->bind_param('ss', $new_phase, $event_id))) { logger(__LINE__, "SQLi pBind: $move_QUERY->error"); }
 							if (!($move_QUERY->execute())) { logger(__LINE__, "SQLi execute: $move_QUERY->error"); }
 							
-						// clean up this event_id.
 							$move_QUERY->free_result();
 							if (isset($change_array)) { unset($change_array); }
 							if (isset($followup_clinic)) { unset($followup_clinic); }
@@ -98,11 +77,9 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 							if (isset($followup_hosp)) { unset($followup_hosp); }
 							if (isset($new_phase)) { unset($new_phase); }
 					}
-			// done with phase 0's.
 			logger(__LINE__, "Phase Zero scan completed, cleaning up.");
 			$scan_QUERY->free_result();
 			
-		// Scan for symptoms with quorum and phase > 0
 			logger(__LINE__, "Phase quorum scan started.");
 			logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
 			
@@ -181,7 +158,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 							{
 								if ($has_quroum == 1)
 									{
-										// load each user_id into an array by event_id
 											$phase_array[$event_id][$user_id] = array($p24hr_adverse_event, $p72hr_adverse_event, $p1wk_adverse_event, $pfollowup_adverse_event, $ae_severity, $omt_related);
 									}
 							}
@@ -189,7 +165,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 					
 			if (count($phase_array) > 0)
 					{
-						// compare each user_id against others in the array
 						foreach (array_keys($phase_array) as $e_id)
 							{
 								$last_e_id = "AAA";
@@ -251,8 +226,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 				if (isset($e_id)) { unset($e_id); }
 				if (isset($new_phase)) { unset($new_phase); }
 				
-				
-		// move pt. to max(symptom.phase)
 			logger(__LINE__, "Updating pt. phase to match max(symptom.phase)");
 			logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
 			if (!($getphase_QUERY = $dblink->prepare("SELECT `patient`.`patient_id`, ( SELECT MAX(`symptom`.`phase`) FROM `symptom` WHERE`symptom`.`code` = `patient`.`code`) AS re_phase FROM `patient` WHERE (`patient`.`phase` > 0) AND (`patient`.`phase` < ( SELECT MAX(`symptom`.`phase`) FROM `symptom` WHERE `symptom`.`code` = `patient`.`code`) );")))  { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
@@ -276,7 +249,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 			logger(__LINE__, "Get Rephase completed, cleaning up.");
 			$getphase_QUERY->free_result();
 			
-		// set patient.phase = 0 when all symptom.phases = 0
 		 	logger(__LINE__, "Phase completed scan started.");
 			logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
 			
@@ -298,7 +270,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 			logger(__LINE__, "Phase completed scan completed, cleaning up.");
 			$completed_QUERY->free_result();
 					
-		// Update and find lost patients match to max(symptom.phase)
 			logger(__LINE__, "Phase lost patient scan started.");
 			logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
 			
@@ -320,7 +291,6 @@ date_default_timezone_set('America/Chicago'); //hard set for Kirksville.
 			logger(__LINE__, "Phase lost patient scan completed, cleaning up.");
 			$completed_QUERY->free_result();
 					
-		// End of loop
 			logger(__LINE__, number_format((memory_get_usage() - $start_memory)) . " Bytes in use.");
 		}
 	

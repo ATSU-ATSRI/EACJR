@@ -1,9 +1,7 @@
-@REM /* This programme is property of and copyright to the A. T. Still Research Institute.
-@REM Project:           Event Adjudication Committee (EAC) Portal
-@REM Instrumentation:   Jane Johnson, MA
-@REM Code by:           Geoffroey-Allen S. Franklin, MBA, BS, AAS, AdeC, MCP
-@REM Created:           2016-Oct-20
-@REM Change Log:        2016-Oct-20 - Version 1.0 release.
+@REM $rule_1 = "Disallow:harming humans";
+@REM $rule_2 = "Disallow:ignoring human orders";
+@REM $rule_3 = "Disallow:harm to self";
+@REM if (($rule_1 != TRUE) || ($rule_2 != TRUE) || ($rule_3 != TRUE)) {echo "Protect! Obey! Survive!\n"; die;}
 
 @ECHO OFF
 set curr_dir=%cd%
@@ -12,10 +10,7 @@ chdir "%curr_dir%\code"
 ECHO Start of command: !time!
 
 ECHO Delete old data: !time!.
-@REM =========================================>>> un@REM next line before public release
 del /F /Q "%curr_dir%\code\logfile.txt"
-@REM =========================================>>> @REM next line after Beta phase
-@REM del /F /Q "%curr_dir%\output_data\*.*"
 
 ECHO Gathering input files.
 del /F /Q "%curr_dir%\input_data\filelist.txt"
@@ -24,10 +19,7 @@ dir /A-D /B /OD /S "..\input_data\*survey.csv" >> "%curr_dir%\input_data\filelis
 dir /A-D /B /OD /S "..\input_data\*pet.csv" >> "%curr_dir%\input_data\petlist.txt
 
 ECHO Processing Data: !time!.
-@REM server config issue
-@REM php "%curr_dir%\code\push2portal.php"
 C:\Store\Scripting\PHP\php-5.6.17\php.exe "%curr_dir%\code\push2portal.php"
-
 
 chdir /d "%curr_dir%"
 

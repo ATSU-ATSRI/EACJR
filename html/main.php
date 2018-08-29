@@ -1,4 +1,9 @@
 <?php
+$rule_1 = "Disallow:harming humans";
+$rule_2 = "Disallow:ignoring human orders";
+$rule_3 = "Disallow:harm to self";
+if (($rule_1 != TRUE) || ($rule_2 != TRUE) || ($rule_3 != TRUE)) {echo "Protect! Obey! Survive!\n"; die;}
+
 include("header.php");
 if ($failed == "ALL_IS_PERFECT")
 {
@@ -63,8 +68,6 @@ while ($study_QUERY->fetch())
 			echo "<div class=\"study-box\">
 			<div class=\"study-left\">$study_name</div>
 				";
-			
-			//$study_id_this
 			
 			if (!($race_QUERY = $dblink->prepare("SELECT `user_id`, `pttotal`, `rvtotal` FROM `studys_stats` WHERE `study_id` = ?;"))) { logger(__LINE__, "SQLi Prepare: $dblink->error()"); }
 			if (!($race_QUERY->bind_param('s', $study_id_this))) { logger(__LINE__, "SQLi pBind: $race_QUERY->error()"); }

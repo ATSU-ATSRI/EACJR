@@ -1,5 +1,10 @@
 <?php
 ob_start();
+$rule_1 = "Disallow:harming humans";
+$rule_2 = "Disallow:ignoring human orders";
+$rule_3 = "Disallow:harm to self";
+if (($rule_1 != TRUE) || ($rule_2 != TRUE) || ($rule_3 != TRUE)) {echo "Protect! Obey! Survive!\n"; die;}
+
 include("header.php");
 if ($failed == "ALL_IS_PERFECT")
 {
@@ -170,14 +175,12 @@ if ($failed == "ALL_IS_PERFECT")
 									
 							$event_id_array[] = $event_id;
 													
-							// assign key value to severity
 							$change_array = array(
 								"baseline" => array_search("$pt_baseline_severity", $severity_array, TRUE),
 								"24hr" => array_search("$pt_24hr_severity", $severity_array, TRUE),
 								"72hr" => array_search("$pt_72hr_severity", $severity_array, TRUE),
 								"1_wk" => array_search("$pt_1wk", $severity_array, TRUE));	
 								
-							// Set a background colour if NOT an AE
 							if (($change_array['baseline'] < $change_array['24hr']) || ($change_array['24hr'] == 4) ||
 								($change_array['baseline'] < $change_array['72hr']) || ($change_array['72hr'] == 4))
 									{
@@ -299,9 +302,6 @@ if ($failed == "ALL_IS_PERFECT")
 
 									
 							echo "<TD width=\"12%\">";
-								//here for reference.
-								//$severity_array = array("Not present", "Mild", "Moderate", "Severe", "Very Severe");
-								//$severity_time_array = array("Not present", "baseline", "24hr", "72hr", "1_wk");
 
 							if ($isae == 1)
 								{
@@ -316,7 +316,6 @@ if ($failed == "ALL_IS_PERFECT")
 											"72hr" => $ca_72hr,
 											"1_wk" => $ca_1wk);
 										
-										// lowest is -always- the baseline value.
 										$lowest = $change_array["baseline"];
 										$lowest_time = 1;
 										
@@ -325,44 +324,35 @@ if ($failed == "ALL_IS_PERFECT")
 										$highest_time = array_search(key($change_array), $severity_time_array, TRUE);
 										if (isset($ae_severity)) {unset($ae_severity);}
 
-										// added an abs() to these because of using the baseline value as lowest (when it might not be actually LESS).
 											if (abs($highest - $lowest > 2))
 												{
-													//echo "Major";
 													$ae_severity = "Major";
 												} 
 												elseif (abs($highest - $lowest > 1))
 												{
-													//echo "Medium";
 													$ae_severity = "Medium";
 												}
 												elseif (abs($highest - $lowest > 0))
 												{
-													//echo "Minor";
 													$ae_severity = "Minor";
 												}
 												else
 												{
-													//echo "No";
 													$ae_severity = "No";
 												}
 											
 										if ($highest_time > $lowest_time)
 											{
-												//echo " Increase<br />";
 												$ae_severity .= " Increase";
 											}
 											elseif ($highest_time < $lowest_time)
 											{
-												//echo " Decrease<br />";
 												$ae_severity .= " Decrease";
 											}
 											else
 											{
-												//echo " Change<br />";
 												$ae_severity .= " Change";
 											}
-											
 								
 										echo "	<INPUT type=\"radio\" name=\"$event_id-ae_severity\" id=\"$event_id-ae_severity\" value=\"$ae_severity\" checked=\"checked\" />$ae_severity.</INPUT><br />
 												<b>Change to:</b> <br />
@@ -550,7 +540,6 @@ if ($failed == "ALL_IS_PERFECT")
 							if ($cmt_QUERY->num_rows > 0)
 								$eac_comments = "";
 								{
-									// build list of comments
 									while ($cmt_QUERY->fetch())
 										{
 											if (strlen($eac_comments > 1))
@@ -560,7 +549,6 @@ if ($failed == "ALL_IS_PERFECT")
 											$eac_comments .= "<b>$cmt_user_id ($cmt_date):</b> $cmt_comment <br />----<br />";
 										}
 								
-									// display list of comments
 									echo "<TR>
 											<TD width=\"20%\"> EAC Comment(s)</TD>
 											<TD colspan=\"7\"> ";
@@ -593,7 +581,6 @@ if ($failed == "ALL_IS_PERFECT")
 				</TABLE>
 			</form>";
 			
-			// insert PET form.
 			if (!($pet_QUERY = $dblink->prepare("SELECT `study_id`, `code`, `HF_ART`, `HF_BLT`, `HF_CR`, `HF_CS`, `HF_HVLA`, `HF_IND`, `HF_Lymph`, `HF_ME`, `HF_MFR`, `HF_PH`, `HF_ST`, `HF_VIS`, `HF_Other`, `HF_Specify`, `HF_Response`, `Neck_ART`, `Neck_BLT`, `Neck_CR`, `Neck_CS`, `Neck_HVLA`, `Neck_IND`, `Neck_Lymph`, `Neck_ME`, `Neck_MFR`, `Neck_PH`, `Neck_ST`, `Neck_VIS`, `Neck_Other`, `Neck_Specify`, `Neck_Response`, `Thor_ART`, `Thor_BLT`, `Thor_CR`, `Thor_CS`, `Thor_HVLA`, `Thor_IND`, `Thor_Lymph`, `Thor_ME`, `Thor_MFR`, `Thor_PH`, `Thor_ST`, `Thor_VIS`, `Thor_Other`, `Thor_Specify`, `Thor_Response`, `Ribs_ART`, `Ribs_BLT`, `Ribs_CR`, `Ribs_CS`, `Ribs_HVLA`, `Ribs_IND`, `Ribs_Lymph`, `Ribs_ME`, `Ribs_MFR`, `Ribs_PH`, `Ribs_ST`, `Ribs_VIS`, `Ribs_Other`, `Ribs_Specify`, `Rib_Response`, `Lumb_ART`, `Lumb_BLT`, `Lumb_CR`, `Lumb_CS`, `Lumb_HVLA`, `Lumb_IND`, `Lumb_Lymph`, `Lumb_ME`, `Lumb_MFR`, `Lumb_PH`, `Lumb_ST`, `Lumb_VIS`, `Lumb_Other`, `Lumb_Specify`, `Lumb_Response`, `Sac_ART`, `Sac_BLT`, `Sac_CR`, `Sac_CS`, `Sac_HVLA`, `Sac_Ind`, `Sac_Lymph`, `Sac_ME`, `Sac_MFR`, `Sac_PH`, `Sac_ST`, `Sac_VIS`, `Sac_Other`, `Sac_Specify`, `Sac_Response`, `Pelvis_ART`, `Pelvis_BLT`, `Pelvis_CR`, `Pelvis_CS`, `Pelvis_HVLA`, `Pelvis_IND`, `Pelvis_Lymph`, `Pelvis_ME`, `Pelvis_MFR`, `Pelvis_PH`, `Pelvis_ST`, `Pelvis_VIS`, `Pelvis_Other`, `Pelvis_Specify`, `Pelvis_Response`, `Abd_ART`, `Abd_BLT`, `Abd_CR`, `Abd_CS`, `Abd_HVLA`, `Abd_IND`, `Abd_Lymph`, `Abd_ME`, `Abd_MFR`, `Abd_PH`, `Abd_ST`, `Abd_VIS`, `Abd_Other`, `Abd_Specify`, `Abd_Response`, `Up_Ex_ART`, `Up_Ex_BLT`, `Up_Ex_CR`, `Up_Ex_CS`, `Up_Ex_HVLA`, `Up_Ex_IND`, `Up_Ex_Lymph`, `Up_Ex_ME`, `Up_Ex_MFR`, `Up_Ex_PH`, `Up_Ex_ST`, `Up_Ex_VIS`, `Up_Ex_Other`, `Up_Ex_Specify`, `Up_Ex_Response`, `Should_ART`, `Should_BLT`, `Should_CR`, `Should_CS`, `Should_HVLA`, `Should_IND`, `Should_Lymph`, `Should_ME`, `Should_MFR`, `Should_PH`, `Should_ST`, `Should_VIS`, `Should_Other`, `Should_Specify`, `Should_Response`, `Elbow_ART`, `Elbow_BLT`, `Elbow_CR`, `Elbow_CS`, `Elbow_HVLA`, `Elbow_IND`, `Elbow_Lymph`, `Elbow_ME`, `Elbow_MFR`, `Elbow_PH`, `Elbow_ST`, `Elbow_VIS`, `Elbow_Other`, `Elbow_Specify`, `Elbow_Response`, `Wrist_ART`, `Wrist_BLT`, `Wrist_CR`, `Wrist_CS`, `Wrist_HVLA`, `Wrist_IND`, `Wrist_Lymph`, `Wrist_ME`, `Wrist_MFR`, `Wrist_PH`, `Wrist_ST`, `Wrist_VIS`, `Wrist_Other`, `Wrist_Specify`, `Wrist_Response`, `Low_Ex_ART`, `Low_Ex_BLT`, `Low_Ex_CR`, `Low_Ex_CS`, `Low_Ex_HVLA`, `Low_Ex_IND`, `Low_Ex_Lymph`, `Low_Ex_ME`, `Low_Ex_MFR`, `Low_Ex_PH`, `Low_Ex_ST`, `Low_Ex_VIS`, `Low_Ex_Other`, `Low_Ex_Specify`, `Low_Ex_Response`, `Thigh_ART`, `Thigh_BLT`, `Thigh_CR`, `Thigh_CS`, `Thigh_HVLA`, `Thigh_Ind`, `Thigh_Lymph`, `Thigh_ME`, `Thigh_MFR`, `Thigh_PH`, `Thigh_ST`, `Thigh_VIS`, `Thigh_Other`, `Thigh_Specify`, `Thigh_Response`, `Knee_ART`, `Knee_BLT`, `Knee_CR`, `Knee_CS`, `Knee_HVLA`, `Knee_IND`, `Knee_Lymph`, `Knee_ME`, `Knee_MFR`, `Knee_PH`, `Knee_ST`, `Knee_VIS`, `Knee_Other`, `Knee_Specify`, `Knee_Response`, `Ankle_ART`, `Ankle_BLT`, `Ankle_CR`, `Ankle_CS`, `Ankle_HVLA`, `Ankle_IND`, `Ankle_Lymph`, `Ankle_ME`, `Ankle_MFR`, `Ankle_PH`, `Ankle_ST`, `Ankle_VIS`, `Ankle_Other`, `Ankle_Specify`, `Ankle_Response`, `C739`, `C739_1`, `C739_2`, `C739_8`, `C739_3`, `C739_4`, `C739_5`, `C739_9`, `C739_7`, `C739_6`, `Written_Diagnosis_1`, `Diagnosis_Code_1`, `Chief_Related_1`, `SD_Related_1`, `Written_Diagnosis_2`, `Diagnosis_Code_2`, `Chief_Related_2`, `SD_Related_2`, `Written_Diagnosis_3`, `Diagnosis_Code_3`, `Chief_Related_3`, `SD_Related_3`, `Written_Diagnosis_4`, `Diagnosis_Code_4`, `Chief_Related_4`, `SD_Related_4`, `Written_Diagnosis_5`, `Diagnosis_Code_5`, `Chief_Related_5`, `SD_Related_5`, `Written_Diagnosis_6`, `Diagnosis_Code_6`, `Chief_Related_6`, `SD_Related_6`, `Written_Diagnosis_7`, `Diagnosis_Code_7`, `Chief_Related_7`, `SD_Related_7`, `Procuedures_1`, `Procedures_2`, `Procedures_3`, `Procedures_4`, `Procedures_5` FROM `pet` WHERE (`code` = ?);"))) { logger(__LINE__, "SQLi Prepare: $pet_QUERY->error"); }
 			if (!($pet_QUERY->bind_param('s', $code)))  { logger(__LINE__, "SQLi Prepare: $pet_QUERY->error"); }
 			if (!($pet_QUERY->execute())) { logger(__LINE__, "SQLi execute: $pet_QUERY->error"); }
@@ -1276,7 +1263,6 @@ if ($failed == "ALL_IS_PERFECT")
 				{
 					foreach($event_id_array as $e_id)
 						{	
-							// clean up any old data.
 							if (isset($comment)) { unset($comment); }
 							if (isset($p24hr_adverse_event)) { unset($p24hr_adverse_event); }
 							if (isset($p72hr_adverse_event)) { unset($p72hr_adverse_event); }
@@ -1285,7 +1271,6 @@ if ($failed == "ALL_IS_PERFECT")
 							if (isset($ae_severity)) { unset($ae_severity); }
 							if (isset($omt_related)) { unset($omt_related); }
 							
-							// mock in current event_id values from POST
 							if (isset($_POST["$e_id-comment"])) { $comment = $_POST["$e_id-comment"]; } else { $comment = NULL; }
 							if (isset($_POST["$e_id-pt_24hr_isae"])) { $p24hr_adverse_event = $_POST["$e_id-pt_24hr_isae"]; } else { $p24hr_adverse_event = NULL; }
 							if (isset($_POST["$e_id-pt_72hr_isae"])) { $p72hr_adverse_event = $_POST["$e_id-pt_72hr_isae"]; } else { $p72hr_adverse_event = NULL; }
@@ -1312,7 +1297,6 @@ if ($failed == "ALL_IS_PERFECT")
 							if (!($vote_QUERY->execute())) { logger(__LINE__, "SQLi execute: $vote_QUERY->error"); }
 							$vote_QUERY->close();
 							
-							// clean up any old data.
 							if (isset($comment)) { unset($comment); }
 							if (isset($p24hr_adverse_event)) { unset($p24hr_adverse_event); }
 							if (isset($p72hr_adverse_event)) { unset($p72hr_adverse_event); }

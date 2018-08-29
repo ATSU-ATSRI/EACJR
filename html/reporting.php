@@ -1,4 +1,9 @@
 <?php
+$rule_1 = "Disallow:harming humans";
+$rule_2 = "Disallow:ignoring human orders";
+$rule_3 = "Disallow:harm to self";
+if (($rule_1 != TRUE) || ($rule_2 != TRUE) || ($rule_3 != TRUE)) {echo "Protect! Obey! Survive!\n"; die;}
+
 session_start();
 $redirect = isset($_SESSION['redirect']) ? $_SESSION['redirect'] : 'index.php';
 
@@ -72,7 +77,7 @@ if ($redirect != "index.php")
 						{ 
 							logger(__LINE__, "SQLi error: $dblink->error"); 
 						}
-					mysqli_stmt_close($result);
+					if (isset($result)) { unset($result); }
 					if (isset($report)) { unset($report); }
 					if (isset($row)) { unset($row); }
 					if (isset($download)) { unset($download); }

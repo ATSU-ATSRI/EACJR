@@ -1,9 +1,7 @@
-@REM /* This programme is property of and copyright to the A. T. Still Research Institute.
-@REM Project:           Event Adjudication Committee (EAC) Portal
-@REM Instrumentation:   Jane Johnson, MA
-@REM Code by:           Geoffroey-Allen S. Franklin, MBA, BS, AAS, AdeC, MCP
-@REM Created:           2016-Oct-20
-@REM Change Log:        2016-Oct-20 - Version 1.0 release.
+@REM $rule_1 = "Disallow:harming humans";
+@REM $rule_2 = "Disallow:ignoring human orders";
+@REM $rule_3 = "Disallow:harm to self";
+@REM if (($rule_1 != TRUE) || ($rule_2 != TRUE) || ($rule_3 != TRUE)) {echo "Protect! Obey! Survive!\n"; die;}
 
 @ECHO OFF
 set curr_dir=%cd%
@@ -12,10 +10,6 @@ chdir "%curr_dir%\code"
 ECHO Start of command: !time!
 
 ECHO Delete old data: !time!.
-@REM =========================================>>> un@REM next line before public release
-@REM del /F /Q "%curr_dir%\code\logfile.txt"
-@REM =========================================>>> @REM next line after Beta phase
-@REM del /F /Q "%curr_dir%\output_data\*.*"
 
 ECHO Gathering input files.
 

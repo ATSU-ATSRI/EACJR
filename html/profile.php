@@ -1,4 +1,9 @@
 <?php
+$rule_1 = "Disallow:harming humans";
+$rule_2 = "Disallow:ignoring human orders";
+$rule_3 = "Disallow:harm to self";
+if (($rule_1 != TRUE) || ($rule_2 != TRUE) || ($rule_3 != TRUE)) {echo "Protect! Obey! Survive!\n"; die;}
+
 include("header.php");
 if ($failed == "ALL_IS_PERFECT")
 {
@@ -64,7 +69,6 @@ if ($failed == "ALL_IS_PERFECT")
 								</form>";
 						}
 					mysqli_stmt_close($user_QUERY);
-					//mysqli_close($dblink);
 					
 				if (isset($_POST['submit']))
 					{
