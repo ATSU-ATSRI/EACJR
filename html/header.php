@@ -17,7 +17,7 @@ if ($failed == "ALL_IS_PERFECT")
 		echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\" />
 		<html>
 		<head>
-			<title>DO-Touch.NET - EAC</title>
+			<title>$mail_sig - EAC</title>
 			<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">
 			<meta http-equiv=\"PRAGMA\" content=\"NO-CACHE\">
 			<meta http-equiv=\"Expires\" content=\"Tue, 01 Jan 2000 00:00:00 GMT\">
@@ -42,7 +42,7 @@ if ($failed == "ALL_IS_PERFECT")
 		echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\" />
 		<html>
 		<head>
-			<title>DO-Touch.NET - EAC</title>
+			<title>$mail_sig - EAC</title>
 			<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">
 			<meta http-equiv=\"PRAGMA\" content=\"NO-CACHE\">
 			<meta http-equiv=\"Expires\" content=\"Tue, 01 Jan 2000 00:00:00 GMT\">

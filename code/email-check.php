@@ -252,9 +252,9 @@ if ($study_QUERY->num_rows > 0)
 										$mail->Password = $mail_password;
 										$mail->SMTPAuth = true;
 										$mail->Prority = 1;
-										$mail->Subject = "DO-Touch.NET EAC Portal Activity.";
+										$mail->Subject = "$mail_sig EAC Portal Activity.";
 										$mail->From = $mail_username;
-										$mail->FromName = "DO-Touch.NET EAC";
+										$mail->FromName = "$mail_sig EAC";
 										$mail->AddReplyTo($mail_username,$mail_username);
 										$mail->AddAddress($user_email,$user_email);
 										$mail->AddBCC($pi_name,$pi_email);
@@ -271,7 +271,7 @@ if ($study_QUERY->num_rows > 0)
 										
 										$email_body .= "<br />
 											Thank you for your participation, we hope you have a nice day,<br />
-											~DO-Touch.NET<br />
+											~$mail_sig<br />
 											";
 										$mail->Body = $email_body;
 										$mail->AltBody = str_ireplace("<br />","\n",$email_body);

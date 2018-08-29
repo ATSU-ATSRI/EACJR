@@ -4,11 +4,13 @@ $rule_2 = "Disallow:ignoring human orders";
 $rule_3 = "Disallow:harm to self";
 if (($rule_1 != TRUE) || ($rule_2 != TRUE) || ($rule_3 != TRUE)) {echo "Protect! Obey! Survive!\n"; die;}
 
+require('datacon.php');
+
 session_start();
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\" />
 <html>
 <head>
-	<title>DO-Touch.NET - EAC</title>
+	<title>$mail_sig - EAC</title>
 	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">
 	<meta http-equiv=\"PRAGMA\" content=\"NO-CACHE\">
 	<meta http-equiv=\"Expires\" content=\"Tue, 01 Jan 2000 00:00:00 GMT\">
@@ -40,7 +42,6 @@ echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://
 <center>
 <div class=\"main\">";
 
-require('datacon.php');
 
 $failed = isset($_SESSION['failed']) ? $_SESSION['failed'] : '';
 if (($failed !== "ALL_IS_PERFECT") && (strlen($failed) > 1))
@@ -68,7 +69,7 @@ echo "
 		</span>
 		
 		<span class=\"left-box\">
-				<img src=\"images/DO-Touch-Logo2.jpg\" alt=\"LOGO: DO-Touch.NET A network of Doctors treating with OMM\" width=\"307px\" height=\"141px\">
+				<img src=\"images/logo.jpg\" alt=\"Logo for $mail_sig\" width=\"307px\" height=\"141px\">
 		</span>
 ";
 

@@ -8,7 +8,7 @@ require("commonfunctions.php");
 session_start();
 $user_ip = getUserIP();
 
-echo "<title>DO-Touch.NET - EAC</title>
+echo "<title>$mail_sig - EAC</title>
 			<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">
 			<meta http-equiv=\"PRAGMA\" content=\"NO-CACHE\">
 			<meta http-equiv=\"Expires\" content=\"Tue, 01 Jan 2000 00:00:00 GMT\">

@@ -9,7 +9,7 @@ include_once "libphp-phpmailer/PHPMailerAutoload.php";
 session_start();
 $user_ip = getUserIP();
 
-echo "<title>DO-Touch.NET - EAC</title>
+echo "<title>$mail_sig - EAC</title>
 			<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">
 			<meta http-equiv=\"PRAGMA\" content=\"NO-CACHE\">
 			<meta http-equiv=\"Expires\" content=\"Tue, 01 Jan 2000 00:00:00 GMT\">
@@ -34,7 +34,7 @@ echo "<title>DO-Touch.NET - EAC</title>
 		</center>
 	</span>
 	<span class=\"left-box\">
-		<img src=\"images/DO-Touch-Logo2.jpg\" alt=\"LOGO: DO-Touch.NET A network of Doctors treating with OMM\" width=\"307px\" height=\"141px\">
+		<img src=\"images/logo.jpg\" alt=\"Logo for $mail_sig\" width=\"307px\" height=\"141px\">
 	</span>
 ";
 
@@ -123,9 +123,9 @@ if ($captcha_success["success"] == true)
 					$mail->Password = $mail_password;
 					$mail->SMTPAuth = true;
 					$mail->Prority = 1;
-					$mail->Subject = "DO-Touch.NET EAC Portal User updated.";
+					$mail->Subject = "$mail_sig EAC Portal User updated.";
 					$mail->From = $mail_username;
-					$mail->FromName = "DO-Touch.NET EAC";
+					$mail->FromName = "$mail_sig EAC";
 					$mail->AddReplyTo($mail_username,$mail_username);
 					$mail->AddAddress($user_id,$user_id);
 						$email_body = "
@@ -137,7 +137,7 @@ if ($captcha_success["success"] == true)
 												Single use password: $passer<br />
 												<br />
 												Have a nice day,<br />
-												~DO-Touch.NET<br />
+												~$mail_sig<br />
 												";			
 						$mail->Body = $email_body;
 						$mail->AltBody = str_ireplace("<br />","\n",$email_body);

@@ -16,7 +16,8 @@ if ($dblink->connect_errno)
 	{
 		logger(__LINE__, "---MySQLi Error" . mysqli_connect_error($dblink) ." ---");
 	}
-	
+
+$mail_sig = "PORTAL NAME HERE FOR USE IN MAIL SIG AND SUBJECT LINES";
 $mail_password = "EMAIL PASSWORD HERE";
 $mail_username = "EMAIL@EMAIL";
 $mail_host = "MAIL HOST GOES HERE";

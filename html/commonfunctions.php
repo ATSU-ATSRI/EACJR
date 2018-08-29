@@ -42,6 +42,7 @@ function logger($logline, $msg)
 		$mail_password = "EMAIL PASSWORD HERE";
 		$mail_username = "EMAIL USERNAME HERE";
 		$mail_host = "MAIL HOST GOES HERE";
+		$mail_sig = "PORTAL NAME HERE FOR USE IN MAIL SIG AND SUBJECT LINES";
 		
 		include_once "datacon.php";
 		include_once "libphp-phpmailer/PHPMailerAutoload.php";
@@ -56,11 +57,11 @@ function logger($logline, $msg)
 		$mail->Prority = 1;
 		$mail->Subject = "EACJR Logger Message";
 		$mail->From = $mail_username;
-		$mail->FromName = "DO-Touch.NET EAC";
+		$mail->FromName = "$mail_sig EAC";
 		$mail->AddReplyTo($mail_username,$mail_username);
 			$mail->AddAddress($logger_email,$logger_email);
 			
-		$email_body = "!! " . date('M d H:i:s') . " $logline - $msg;<br /><br />Have a nice day,<br />~DO-Touch.NET<br />";
+		$email_body = "!! " . date('M d H:i:s') . " $logline - $msg;<br /><br />Have a nice day,<br />~$mail_sig<br />";
 		$mail->Body = $email_body;
 		$mail->AltBody = str_ireplace("<br />","\n",$email_body);
 		

@@ -145,9 +145,9 @@ if ($failed == "ALL_IS_PERFECT")
 							$mail->Password = $mail_password;
 							$mail->SMTPAuth = true;
 							$mail->Prority = 1;
-							$mail->Subject = "DO-Touch.NET EAC Portal User created.";
+							$mail->Subject = "$mail_sig EAC Portal User created.";
 							$mail->From = $mail_username;
-							$mail->FromName = "DO-Touch.NET EAC";
+							$mail->FromName = "$mail_sig EAC";
 							$mail->AddReplyTo($mail_username,$mail_username);
 							$mail->AddAddress($new_email,$new_email);
 							$mail->AddBCC($admin_name,$admin_email);
@@ -162,7 +162,7 @@ if ($failed == "ALL_IS_PERFECT")
 								Single use password: $passer<br />
 								<br />
 								Have a nice day,<br />
-								~DO-Touch.NET<br />
+								~$mail_sig<br />
 								";
 							$mail->Body = $email_body;
 							$mail->AltBody = str_ireplace("<br />","\n",$email_body);

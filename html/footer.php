@@ -3,7 +3,7 @@ $year = date('Y');
 
 echo "
 	<span class=\"footer\">
-		DO-Touch.NET | A.T. Still Research Institute | Copyright $year.
+		$mail_sig | Still Research Institute at A.T. Still University | Copyright $year.
 	</span>
 
 </div>
@@ -12,6 +12,4 @@ echo "
 </body>
 </html>
 ";
-
-
 ?>
