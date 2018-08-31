@@ -103,7 +103,18 @@ if ($study_QUERY->num_rows > 0)
 									{
 										if ($p > 0)
 											{
-												$review_togo .= "You have $user_array[$p] records in phase $p to review. ";
+												if ($user_array[$p] > 0)
+													{
+														$review_togo .= "You have $user_array[$p] records in phase $p to review. ";
+													}
+													elseif ($user_array[$p] == 0)
+													{
+														$review_togo .= "You have no records in phase $p to review. ";
+													}
+													else
+													{
+														$review_togo .= "You have records in phase $p to review. ";
+													}
 											}
 											else
 											{
