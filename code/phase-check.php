@@ -89,6 +89,7 @@ date_default_timezone_set('America/Chicago');
 													`symptom`.`event_id` AS evi,
 													`symptom`.`phase` AS pze,
 													`review`.`user_id`,
+													`review`.`event_id` AS revi,
 													`review`.`phase` AS rpze,
 													`review`.`24hr_adverse_event`,
 													`review`.`72hr_adverse_event`,
@@ -107,10 +108,9 @@ date_default_timezone_set('America/Chicago');
 																			`review`
 																			RIGHT JOIN `symptom` ON `review`.`event_id`=`symptom`.`event_id` 
 																		WHERE 
-																			(`symptom`.`phase` > 0) 
-																			AND (`symptom`.`study_id` = ?)
-																			AND (`review`.`event_id` = evi)
-																			AND (rpze = pze)
+																			(concat(evi,'-',pze) = concat(revi,'-',rpze))
+																			AND (`review`.`event_id` = revi)
+                                                     						AND (`review`.`phase` = rpze)
 																	)
 																/ 
 																	(
@@ -137,7 +137,7 @@ date_default_timezone_set('America/Chicago');
 																'1'
 																ELSE '0'
 															END
-													) AS has_quroum
+													) AS has_quorum
 												FROM
 													`patient`
 														RIGHT JOIN `symptom` ON `patient`.`code` = `symptom`.`code`
@@ -149,14 +149,14 @@ date_default_timezone_set('America/Chicago');
 													`review`.`event_id`;"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
 			if (!($scan_QUERY->bind_param('ssss', $study_id, $study_id, $study_id, $study_id))) { logger(__LINE__, "SQLi pBind: $scan_QUERY->error"); }
 			if (!($scan_QUERY->execute())) { logger(__LINE__, "SQLi execute: $scan_QUERY->error"); }
-			if (!($scan_QUERY->bind_result($patient_id, $study_id, $event_id, $phase, $user_id, $rpze, $p24hr_adverse_event, $p72hr_adverse_event, $p1wk_adverse_event, $pfollowup_adverse_event, $ae_severity, $omt_related, $has_quroum))) { logger(__LINE__, "SQL rBind: $scan_QUERY->error"); }
+			if (!($scan_QUERY->bind_result($patient_id, $study_id, $event_id, $phase, $user_id, $rpze, $p24hr_adverse_event, $p72hr_adverse_event, $p1wk_adverse_event, $pfollowup_adverse_event, $ae_severity, $omt_related, $has_quorum))) { logger(__LINE__, "SQL rBind: $scan_QUERY->error"); }
 			$scan_QUERY->store_result();
 			$phase_array = array();
 				while ($scan_QUERY->fetch())
 					{
 						if ($scan_QUERY->num_rows > 0)
 							{
-								if ($has_quroum == 1)
+								if ($has_quorum == 1)
 									{
 											$phase_array[$event_id][$user_id] = array($p24hr_adverse_event, $p72hr_adverse_event, $p1wk_adverse_event, $pfollowup_adverse_event, $ae_severity, $omt_related);
 									}
