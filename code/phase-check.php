@@ -121,7 +121,7 @@ date_default_timezone_set('America/Chicago');
 																		WHERE
 																			FIND_IN_SET(?,study)
 																	)
-																> 
+																>=
 																	(
 																		SELECT 
 																			`quorum`
@@ -147,9 +147,9 @@ date_default_timezone_set('America/Chicago');
 													AND (`symptom`.`phase` > '0')
 												ORDER BY 
 													`review`.`event_id`;"))) { logger(__LINE__, "SQLi Prepare: $dblink->error"); }
-			if (!($scan_QUERY->bind_param('ssss', $study_id, $study_id, $study_id, $study_id))) { logger(__LINE__, "SQLi pBind: $scan_QUERY->error"); }
+			if (!($scan_QUERY->bind_param('sss', $study_id, $study_id, $study_id))) { logger(__LINE__, "SQLi pBind: $scan_QUERY->error"); }
 			if (!($scan_QUERY->execute())) { logger(__LINE__, "SQLi execute: $scan_QUERY->error"); }
-			if (!($scan_QUERY->bind_result($patient_id, $study_id, $event_id, $phase, $user_id, $rpze, $p24hr_adverse_event, $p72hr_adverse_event, $p1wk_adverse_event, $pfollowup_adverse_event, $ae_severity, $omt_related, $has_quorum))) { logger(__LINE__, "SQL rBind: $scan_QUERY->error"); }
+			if (!($scan_QUERY->bind_result($patient_id, $study_id, $event_id, $phase, $user_id, $revi, $rpze, $p24hr_adverse_event, $p72hr_adverse_event, $p1wk_adverse_event, $pfollowup_adverse_event, $ae_severity, $omt_related, $has_quorum))) { logger(__LINE__, "SQL rBind: $scan_QUERY->error"); }
 			$scan_QUERY->store_result();
 			$phase_array = array();
 				while ($scan_QUERY->fetch())
@@ -179,10 +179,10 @@ date_default_timezone_set('America/Chicago');
 												while ($count < $vs)
 													{
 														$yy = array_count_values(array_column($phase_array[$e_id], $count));
-														rsort($yy);
+														arsort($yy);
 														reset($yy);
-																																										
-														if ((current($yy) / $vrs) >= ($consensus * .01))
+														
+														if (((current($yy) / $vrs) >= ($consensus * .01)) || (count($yy) == 0))
 															{$num_consensus++;} 
 														
 														$count++;
