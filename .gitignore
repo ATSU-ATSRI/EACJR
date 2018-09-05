@@ -2,5 +2,6 @@ README.txt
 *.csv
 *.txt
 *.txt
+.ftpconfig
 code/logfile.txt
 server_only
