@@ -10,41 +10,41 @@ if ($failed == "ALL_IS_PERFECT")
 	include("datacon.php");
 	include("menu_item.php");
 	require("libphp-phpmailer/PHPMailerAutoload.php");
-	
+
 	$mod_id = $_REQUEST['ici'];
-	
+
 	if (!($mod_QUERY = $dblink->prepare("SELECT email, `name`, initials, logins.rank, rank.`desc` FROM jury_room.logins INNER JOIN jury_room.rank ON jury_room.logins.rank = jury_room.rank.rank_id WHERE user_id = ?")))  { logger(__LINE__, "SQLi Prepare: $mod_QUERY->error"); }
 	if (!($mod_QUERY->bind_param('i', $mod_id)))  { logger(__LINE__, "SQLi Prepare: $mod_QUERY->error"); }
 	if (!($mod_QUERY->execute())) { logger(__LINE__, "SQLi execute: $check_QUERY->error"); }
 	if (!($mod_QUERY->bind_result($mod_email, $mod_name, $mod_initials, $mod_rank_id, $mod_rank))) { logger(__LINE__, "SQLi rBind: $check_QUERY->error"); }
 	$mod_QUERY->store_result();
 	$mod_QUERY->fetch();
-	
+
 	echo "
 		<div class=\"main\">
-		
+
 		<span class=\"left-col\">
-			
+
 			<a href=\"admin.php\"><button type=\"button\">View user list</button></a><br />
 			<br />
 			<a href=\"admin-new.php\"><button type=\"button\">Add a new user</button></a><br />
 			<br />
-			<a href=\"admin-history.php\"><button type=\"button\">View user history</button></a><br />		
+			<a href=\"admin-history.php\"><button type=\"button\">View user history</button></a><br />
 			<br />
 			<a href=\"admin-message.php\"><button type=\"button\">View Admin messages</button></a><br />
 			<br />
 			<a href=\"admin-study.php\"><button type=\"button\">View study information</button></a><br /?
 			<br />
-			
+
 		</span>
-		
+
 		<span class=\"right-col\">";
-		
+
 		if (isset($_SESSION['pass_fail']))
 			{
 				echo "<span class=\"alert\">". $_SESSION['pass_fail'] ." </span>";
 			}
-		
+
 		echo "
 		<form name=\"mod\" action=\"\" method=\"POST\">
 			<table border=\"0\">
@@ -61,12 +61,12 @@ if ($failed == "ALL_IS_PERFECT")
 					</TR><TR>
 				<TD width=\"40%\">User's access level:</TD>
 					<TD width=\"60%\"><SELECT name=\"rank\">";
-			
+
 			if (!($rank_QUERY = $dblink->prepare("SELECT rank.rank_id, rank.`desc` FROM jury_room.rank"))) { logger(__LINE__, "SQLi Prepare: $rank_QUERY->error"); }
 			if (!($rank_QUERY->execute())) { logger(__LINE__, "SQLi execute: $rank_QUERY->error"); }
 			if (!($rank_QUERY->bind_result($rank_id, $rank_desc))) { logger(__LINE__, "SQLi rBind: $rank_QUERY->error"); }
 			$rank_QUERY->store_result();
-			
+
 			while ($rank_QUERY->fetch())
 				{
 					if ($mod_rank_id == $rank_id)
@@ -79,9 +79,9 @@ if ($failed == "ALL_IS_PERFECT")
 						}
 				}
 			$rank_QUERY->close();
-				
+
 		echo "		</SELECT>
-					</TD></TR>	
+					</TD></TR>
 				<TD width=\"40%\">Reset password?</TD>
 					<TD width=\"60%\"><INPUT type=\"checkbox\" name=\"passreset\" value=\"1\" /></TD>
 					</TR><TR>
@@ -104,7 +104,7 @@ if ($failed == "ALL_IS_PERFECT")
 			$new_rank_id = isset($_POST['rank']) ? $_POST['rank'] : $mod_rank_id;
 			$passreset = isset($_POST['passreset']) ? $_POST['passreset'] : 0;
 			$notifyuser = isset($_POST['notifyuser']) ? $_POST['notifyuser'] : 0;
-			
+
 			if (isset($new_name) && isset($new_initials) && isset($new_email) && isset($new_rank_id))
 				{
 					if ($passreset == 1)
@@ -112,7 +112,7 @@ if ($failed == "ALL_IS_PERFECT")
 							$pwords1 = array ("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z");
 							$pwords2 = array ("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z");
 							$pwords3 = array ("1", "2", "3", "4", "5", "6", "7", "8", "9", "0");
-							$pwords4 = Array ("!", "@", "#", "$", "%", "^", "*", "(", ")", "+", "-", "?", "~", "_", "=");
+							$pwords4 = array ("!", "@", "#", "$", "%", "^", "*", "(", ")", "+", "-", "?", "~", "_", "=");
 							$i = 0;
 							$l = 7;
 							$passer = "";
@@ -120,13 +120,13 @@ if ($failed == "ALL_IS_PERFECT")
 
 								$block = rand(1,2);
 									if ($block == 1)
-										{ 
+										{
 											$temp = array_rand($pwords1, 1);
 											$passer .= $pwords1[$temp];
 											$i++;
 										}
 									else
-										{ 
+										{
 											$temp = array_rand($pwords2, 1);
 											$passer .= $pwords2[$temp];
 											$i++;
@@ -136,25 +136,25 @@ if ($failed == "ALL_IS_PERFECT")
 									{
 										$block = rand(1,4);
 										if ($block == 1)
-											{ 
+											{
 												$temp = array_rand($pwords1, 1);
 												$passer .= $pwords1[$temp];
 												$i++;
 											}
 										elseif ($block == 2)
-											{ 
+											{
 												$temp = array_rand($pwords2, 1);
 												$passer .= $pwords2[$temp];
 												$i++;
 											}
 										elseif ($block == 3)
-											{ 
+											{
 												$temp = array_rand($pwords3, 1);
 												$passer .= $pwords3[$temp];
 												$i++;
 											}
 										else
-											{ 
+											{
 												$temp = array_rand($pwords4, 1);
 												$passer .= $pwords4[$temp];
 												$i++;
@@ -163,12 +163,12 @@ if ($failed == "ALL_IS_PERFECT")
 							$bypassdate = "1900-01-01";
 							$passerDB = password_hash($passer, PASSWORD_BCRYPT, $options);
 						}
-											
+
 					if ($notifyuser == 1)
-						{	
+						{
 							$admin_name = $_SESSION["name"];
 							$admin_email = $_SESSION["email"];
-							
+
 							$mail = new PHPMailer();
 							$mail->WordWrap = 50;
 							$mail->IsHTML(true);
@@ -184,7 +184,7 @@ if ($failed == "ALL_IS_PERFECT")
 							$mail->AddReplyTo($mail_username,$mail_username);
 							$mail->AddAddress($new_email,$new_email);
 							$mail->AddBCC($admin_name,$admin_email);
-							
+
 							if ($passreset == 1)
 								{
 									$email_body = "
@@ -216,7 +216,7 @@ if ($failed == "ALL_IS_PERFECT")
 								}
 							$mail->Body = $email_body;
 							$mail->AltBody = str_ireplace("<br />","\n",$email_body);
-							
+
 							if (!$mail->Send())
 								{
 									$mailerror = $mail->ErrorInfo;
@@ -228,7 +228,7 @@ if ($failed == "ALL_IS_PERFECT")
 									$mail->ClearReplyTos();
 								}
 						}
-											
+
 					if ($passreset == 1)
 						{
 							$bypassdate = "1900-01-01";
@@ -241,7 +241,7 @@ if ($failed == "ALL_IS_PERFECT")
 							if (!($adduser_QUERY->bind_param('sssii', $new_name, $new_initials, $new_email, $new_rank_id, $mod_id))) { logger(__LINE__, "SQLi pBind: $adduser_QUERY->error"); }
 						}
 					if (!($adduser_QUERY->execute())) { logger(__LINE__, "SQLi execute: $adduser_QUERY->error"); }
-					$adduser_QUERY->close();	
+					$adduser_QUERY->close();
 
 					$mod_QUERY->close();
 					$dblink->close();

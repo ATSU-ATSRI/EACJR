@@ -20,19 +20,19 @@ if ($failed == "ALL_IS_PERFECT")
 						{
 							$name = isset($name) ? $name : '';
 							$initials = isset($initials) ? $initials : '';
-							
+
 							echo "
 							<div class=\"main\">";
-							
+
 							if (isset($_SESSION['pass_fail']))
 								{
 									echo "<div class=\"alert\">". $_SESSION['pass_fail'] ." </div>";
 									unset($_SESSION['pass_fail']);
 								}
-																
+
 								echo "<form name=\"profile\" action=\"\" method=\"POST\">
 									<span class=\"left-box\">
-										
+
 										<div class=\"ft-head\"><br />Current Profile Settings<br /><br /></div>
 										<div class=\"ft\">
 											<div>Your name:</div>
@@ -43,11 +43,11 @@ if ($failed == "ALL_IS_PERFECT")
 											<div><INPUT type=\"text\" name=\"email\" value=\"$email\" size=\"30\"></div>
 										</div>
 										<div class=\"ft-head\"><br /><INPUT type=\"submit\" name=\"submit\" value=\"Change profile\"><br /><br /></div>
-										
+
 									</span>
-									
+
 									<span class=\"left-box\">";
-									
+
 									echo "<div class=\"ft-head\"><br />Do you want to change your password?<br /><br /></div>
 											<div class=\"ft\">
 												<div> Pasword rules: </div>
@@ -55,7 +55,7 @@ if ($failed == "ALL_IS_PERFECT")
 														Password must contain at least one capital letter.<br />
 														Password must contain at least one lowercase letter.<br />
 														Password must contain at least one number.<br />
-														Password must contain at least one of the following: !, @, #, $, %, ^, &, *, (, ), +, -, ?, ~, _, =.<br />
+														Password must contain at least one of the following: !, @, #, $, %, ^, *, (, ), +, -, ?, ~, _, =.<br />
 												</div>
 												<div>Enter current Password</div>
 												<div><INPUT type=\"password\" name=\"curr_pass\" size=\"30\"></div>
@@ -69,10 +69,10 @@ if ($failed == "ALL_IS_PERFECT")
 								</form>";
 						}
 					mysqli_stmt_close($user_QUERY);
-					
+
 				if (isset($_POST['submit']))
 					{
-						if ($_POST['name'] !== $name) 
+						if ($_POST['name'] !== $name)
 							{
 								$name = $_POST['name'];
 								$set = 1;
@@ -87,8 +87,8 @@ if ($failed == "ALL_IS_PERFECT")
 								$email = $_POST['email'];
 								$set = 1;
 							}
-						
-						$pass_fail = " ";
+
+					$pass_fail = " ";
 						if (isset($_POST['curr_pass']))
 							{
 								if (password_verify($_POST['curr_pass'], $pass))
@@ -102,11 +102,12 @@ if ($failed == "ALL_IS_PERFECT")
 												else
 												{
 													if (strlen($_POST['new_pass1']) < 6) {$pass_fail .= "Password length must be greater than six digits.<br/ >";}
-													if (strpbrk($_POST['new_pass1'], 'abcdefghijklmnopqrstuvwxyz') == FALSE) {$pass_fail .= "Password must contain at least one lowercase letter.<br />";}
-													if (strpbrk($_POST['new_pass1'], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') == FALSE) {$pass_fail .= "Password must contain at least one capital letter.<br />";}
-													if (strpbrk($_POST['new_pass1'], '1234567890') == FALSE) {$pass_fail .= "Password must contain at least one number.<br />";}
-													if (strpbrk($_POST['new_pass1'], '!@#$%^*()+-?~_=') == FALSE) {$pass_fail .= "Password must contain at least one of the following: !, @, #, $, %, ^, &, *, (, ), +, -, ?, ~, _, =.<br />";}
-											
+													if (strpbrk($_POST['new_pass1'], 'abcdefghijklmnopqrstuvwxyz') === FALSE) {$pass_fail .= "Password must contain at least one lowercase letter.<br />";}
+													if (strpbrk($_POST['new_pass1'], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') === FALSE) {$pass_fail .= "Password must contain at least one capital letter.<br />";}
+													if (strpbrk($_POST['new_pass1'], '1234567890') === FALSE) {$pass_fail .= "Password must contain at least one number.<br />";}
+													if (strpbrk($_POST['new_pass1'], '!\'\^\$%\*\(\)@#\~?=\_+-') === FALSE) {$pass_fail .= "Password must contain at least one of the following: \"!\", \"@\", \"#\", \"$\", \"%\", \"^\", \"*\", \"(\", \")\", \"+\", \"-\", \"?\", \"~\", \"_\", \"=\".<br />";}
+													if (!(strpbrk($_POST['new_pass1'], '`\{\[\}\]:;"<,>.\/\"&\\') === FALSE)) {$pass_fail .= "Password can not contain ` { [ } ] : ; \" <, >. \/ & \\.<br />";}
+
 													if (strlen($pass_fail) < 2)
 														{
 															$pass = $_POST['new_pass1'];
@@ -125,7 +126,7 @@ if ($failed == "ALL_IS_PERFECT")
 										$pass_fail = "Current password is incorrect.";
 									}
 							}
-						
+
 						if (($set == 1) && (strlen($pass_fail < 2)))
 							{
 								$passerDB = password_hash($pass, PASSWORD_BCRYPT, $options);
@@ -152,7 +153,7 @@ if ($failed == "ALL_IS_PERFECT")
 				session_unset();
 				$_SESSION["failed"] = "User ID or Password Failure.";
 			}
-			
+
 	include("footer.php");
 }
 ?>
