@@ -43,17 +43,17 @@ $reCAPTCHA = "https://www.google.com/recaptcha/api/siteverify?secret=" . $secret
 $verify = file_get_contents($reCAPTCHA);
 $captcha_success = json_decode($verify, true);
 
-if ($captcha_success["success"] == true) 
+if ($captcha_success["success"] == true)
 		{
 			$user_id =  isset($_SESSION['user_id']) ? htmlspecialchars($_SESSION['user_id']) : '';
-				
-			if (!($chkuser_QUERY = $dblink->prepare("SELECT user_id, name FROM jury_room.logins WHERE (email = ?);")));
+
+			if (!($chkuser_QUERY = $dblink->prepare("SELECT `user_id`, `name` FROM `jury_room`.`logins` WHERE (`logins`.`email` = ?) AND (`logins`.`rank` > '0');")));
 			if (!($chkuser_QUERY->bind_param('s', $user_id))) { logger(__LINE__, "SQLi pBind: $chkuser_QUERY->error"); }
 			if (!($chkuser_QUERY->execute())) { logger(__LINE__, "SQLi execute: $chkuser_QUERY->error"); }
 			if (!($chkuser_QUERY->bind_result($new_email, $new_name))) { logger(__LINE__, "SQLi rBind: $chkuser_QUERY->error"); }
 			$chkuser_QUERY->store_result();
 			$chkuser_count = $chkuser_QUERY->num_rows;
-			
+
 			if ($chkuser_count > 0)
 				{
 					$pwords1 = array ("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z");
@@ -67,13 +67,13 @@ if ($captcha_success["success"] == true)
 
 						$block = rand(1,2);
 							if ($block == 1)
-								{ 
+								{
 									$temp = array_rand($pwords1, 1);
 									$passer .= $pwords1[$temp];
 									$i++;
 								}
 							else
-								{ 
+								{
 									$temp = array_rand($pwords2, 1);
 									$passer .= $pwords2[$temp];
 									$i++;
@@ -83,25 +83,25 @@ if ($captcha_success["success"] == true)
 								{
 									$block = rand(1,4);
 									if ($block == 1)
-										{ 
+										{
 											$temp = array_rand($pwords1, 1);
 											$passer .= $pwords1[$temp];
 											$i++;
 										}
 									elseif ($block == 2)
-										{ 
+										{
 											$temp = array_rand($pwords2, 1);
 											$passer .= $pwords2[$temp];
 											$i++;
 										}
 									elseif ($block == 3)
-										{ 
+										{
 											$temp = array_rand($pwords3, 1);
 											$passer .= $pwords3[$temp];
 											$i++;
 										}
 									else
-										{ 
+										{
 											$temp = array_rand($pwords4, 1);
 											$passer .= $pwords4[$temp];
 											$i++;
@@ -113,7 +113,7 @@ if ($captcha_success["success"] == true)
 					if (!($adduser_QUERY->bind_param('sss', $passerDB, $bypassdate, $user_id))) { logger(__LINE__, "SQLi pBind: $adduser_QUERY->error"); }
 					if (!($adduser_QUERY->execute())) { logger(__LINE__, "SQLi execute: $adduser_QUERY->error"); }
 					$adduser_QUERY->close();
-					
+
 					$mail = new PHPMailer();
 					$mail->WordWrap = 50;
 					$mail->IsHTML(true);
@@ -138,10 +138,10 @@ if ($captcha_success["success"] == true)
 												<br />
 												Have a nice day,<br />
 												~$mail_sig<br />
-												";			
+												";
 						$mail->Body = $email_body;
 						$mail->AltBody = str_ireplace("<br />","\n",$email_body);
-									
+
 					if (!$mail->Send())
 						{
 							$mailerror = $mail->ErrorInfo;
@@ -166,7 +166,7 @@ if ($captcha_success["success"] == true)
         }
 
 
-unset($_SESSION['user_id']);	
-session_unset();	
-include("footer.php"); 
+unset($_SESSION['user_id']);
+session_unset();
+include("footer.php");
 ?>

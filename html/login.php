@@ -33,12 +33,12 @@ $reCAPTCHA = "https://www.google.com/recaptcha/api/siteverify?secret=" . $secret
 $verify = file_get_contents($reCAPTCHA);
 $captcha_success = json_decode($verify, true);
 
-if ($captcha_success["success"] == true) 
+if ($captcha_success["success"] == true)
 		{
 			$user_id =  isset($_SESSION['user_id']) ? htmlspecialchars($_SESSION['user_id']) : '';
 			$password = isset($_SESSION['password']) ? htmlspecialchars($_SESSION['password']) : '';
-			
-			$user_QUERY = mysqli_prepare($dblink, "SELECT user_id, name, pass_date, rank, email, initials, study, pass FROM jury_room.logins WHERE (email = ?);");
+
+			$user_QUERY = mysqli_prepare($dblink, "SELECT `user_id`, `name`, `pass_date`, `rank`, `email`, `initials`, `study`, `pass` FROM `jury_room`.`logins` WHERE (`logins`.`email` = ?) AND (`logins`.`rank` > '0');");
 			mysqli_stmt_bind_param($user_QUERY, 's', $user_id);
 				if (mysqli_stmt_execute($user_QUERY))
 					{
@@ -54,16 +54,16 @@ if ($captcha_success["success"] == true)
 								$_SESSION["initials"] = $initials;
 								$_SESSION["study"] = $study;
 								$_SESSION["failed"] = "ALL_IS_PERFECT";
-																
+
 								if (!($login_QUERY = $dblink->prepare("INSERT INTO login_history (id, login) VALUES (?, NOW())"))) {logger(__LINE__, "SQLi Prepare: $dblink->error");}
 								if (!($login_QUERY->bind_param('s', $id))) {logger(__LINE__, "SQLi Bind Error: $login_QUERY->error");}
 								if (!($login_QUERY->execute())) {logger(__LINE__, "SQLi execute: $login_QUERY->error");}
 								$login_QUERY->close();
 								$dblink->close();
-							
+
 								$password_date = date('Y-m-d', strtotime($pass_date));
 								$interval = date_diff(date_create(date('Y-m-d')), date_create($password_date));
-								
+
 								if ($interval->format('%a') > 90)
 									{
 										echo "<meta http-equiv=\"Refresh\" content=\"5; url=profile.php\">";
@@ -99,7 +99,7 @@ unset($_SESSION['password']);
 echo "
 	<span class=\"left-box\">
 		<center>
-		<img src=\"images/updating.gif\"> 
+		<img src=\"images/updating.gif\">
 		</center>
 	</span>
 	<span class=\"left-box\">
@@ -107,6 +107,6 @@ echo "
 	</span>
 ";
 
-		
-include("footer.php"); 
+
+include("footer.php");
 ?>
