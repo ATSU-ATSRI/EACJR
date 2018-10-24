@@ -39,6 +39,7 @@ Geoffroey-Allen Franklin, & Jane Coe Johnson. (2018, October 24). Event Adjudica
 - 2017-Dec-14 - Version 1.0.beta.
 - 2018-Jun-25 - Version 1.0.
 - 2018-Jun-28 - First use in a study.
+- 2018-Oct-24 - Version 1.0.0 code published.
 
 # Directory structure
 Directory | Purpose
