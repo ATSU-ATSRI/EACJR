@@ -10,11 +10,11 @@ if ($failed == "ALL_IS_PERFECT")
 {
 	include_once("datacon.php");
 	include('menu_item.php');
-	
+
 	$patient_id = $_REQUEST['req'];
-	
+
 	if (!($events_QUERY = $dblink->prepare("
-			SELECT 
+			SELECT
 				symptom.`phase`,
 				patient.`code`,
 				patient.age,
@@ -65,21 +65,21 @@ if ($failed == "ALL_IS_PERFECT")
 	if (!($events_QUERY->execute())) { logger(__LINE__, "SQLi execute: $events_QUERY->error"); }
 	if (!($events_QUERY->bind_result($phase, $code, $age, $sex, $ethnicity, $race, $race_other, $event_id, $symptom, $pt_baseline, $pt_baseline_severity, $pt_24hr, $pt_24hr_severity, $pt_24hr_related, $pt_24hr_details, $pt_72hr, $pt_72hr_severity, $pt_72hr_related, $pt_72hr_details, $pt_1wk, $pt_1wk_details, $followup_clinic, $followup_clinic_related, $followup_clinic_details, $followup_uc, $followup_uc_related, $followup_uc_details, $followup_er, $followup_er_related, $followup_er_details, $followup_hosp, $followup_hosp_related, $followup_hosp_details, $further, $further_why, $future, $future_why))) { logger(__LINE__, "SQLi rBind: $events_QUERY->error"); }
 	$events_QUERY->store_result();
-	
+
 	$followup_vote = 0;
 	$severity_array = array("Not present", "Mild", "Moderate", "Severe", "Very Severe");
 	$severity_time_array = array("Not present", "baseline", "24hr", "72hr", "1_wk");
-	
-	
+
+
 	$event_id_array = array();
-	
+
 		echo "
 		<div class=\"main\">
 		<center>
 		<span class=\"centre-box\">
 			<form name=\"review_pt\" action=\"\" method=\"POST\">
 				<TABLE>";
-					
+
 				$pg_len = 0;
 				$pt_comment_text = "";
 				$allow_comment = 0;
@@ -167,20 +167,20 @@ if ($failed == "ALL_IS_PERFECT")
 							<tbody>";
 							$pg_len = 1;
 						}
-										
+
 					if (strlen($symptom) > 0)
 						{
 							echo "
 									<!--- NEW SYMPTOM STARTS HERE --->";
-									
+
 							$event_id_array[] = $event_id;
-													
+
 							$change_array = array(
 								"baseline" => array_search("$pt_baseline_severity", $severity_array, TRUE),
 								"24hr" => array_search("$pt_24hr_severity", $severity_array, TRUE),
 								"72hr" => array_search("$pt_72hr_severity", $severity_array, TRUE),
-								"1_wk" => array_search("$pt_1wk", $severity_array, TRUE));	
-								
+								"1_wk" => array_search("$pt_1wk", $severity_array, TRUE));
+
 							if (($change_array['baseline'] < $change_array['24hr']) || ($change_array['24hr'] == 4) ||
 								($change_array['baseline'] < $change_array['72hr']) || ($change_array['72hr'] == 4))
 									{
@@ -192,14 +192,14 @@ if ($failed == "ALL_IS_PERFECT")
 										echo "
 										<TR style=\"background-color: WhiteSmoke\">";
 									}
-							
+
 							echo "
 									<TD width=\"20%\"> $symptom </TD>
 									<input type=\"hidden\" name=\"$event_id-event_id\" value=\"$event_id\">
 									<input type=\"hidden\" name=\"$event_id-code\" value=\"$code\">
 									<TD width=\"11%\">";
-								
-									
+
+
 							if (strlen($pt_baseline_severity) > 0)
 								{
 									 echo "$pt_baseline_severity";
@@ -211,32 +211,32 @@ if ($failed == "ALL_IS_PERFECT")
 
 							echo "</TD>
 									<TD width=\"11%\"> $pt_24hr_severity <br /><br />";
-											
-											if (strlen($pt_24hr_severity) > 0 ) 
+
+											if (strlen($pt_24hr_severity) > 0 )
 												{
 													echo "
 													<b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp; ";
-													
+
 													if (strlen($pt_24hr_related) > 0)
 														{
 															echo " $pt_24hr_related <br /><br />
 																<INPUT type=\"hidden\" name=\"$event_id-pt_24hr_related\" id=\"$event_id-pt_24hr_related\" value=\"$pt_24hr_related\">";
 														}
 														else
-														{	
+														{
 															echo " No Response.";
 														}
 												}
 											echo "</TD>
 									<TD width=\"11%\"> $pt_72hr_severity <br /><br />";
-																							
+
 											if (strlen($pt_72hr_severity) > 0)
 												{
 													echo "
 													<b>Pt. Report OMT Related? </b> &nbsp; &nbsp; &nbsp;";
-											
+
 													if (strlen($pt_72hr_related) > 0)
-														{ 
+														{
 															echo " $pt_72hr_related <br /><br />
 															<INPUT type=\"hidden\" name=\"$event_id-pt_72hr_related\" id=\"$event_id-pt_72hr_related\" value=\"$pt_72hr_related\">";
 														}
@@ -248,7 +248,7 @@ if ($failed == "ALL_IS_PERFECT")
 											echo "
 											</TD>
 									<TD width=\"11%\"> $pt_1wk </TD>";
-							
+
 							echo "
 								<TD width=\"12%\">";
 									$isae = 0;
@@ -266,7 +266,7 @@ if ($failed == "ALL_IS_PERFECT")
 											echo "No.<br />
 													<INPUT type=\"hidden\" name=\"$event_id-pt_24hr_isae\" id=\"$event_id-pt_24hr_isae\" value=\"No\" />";
 										}
-										
+
 									echo "<b>72 hr?</b> ";
 									if (($change_array['baseline'] < $change_array['72hr']) || ($change_array['72hr'] == 4))
 										{
@@ -275,11 +275,11 @@ if ($failed == "ALL_IS_PERFECT")
 													<INPUT type=\"radio\" name=\"$event_id-pt_72hr_isae\" id=\"$event_id-pt_72hr_isae\" value=\"No\">No</INPUT><br />
 													<INPUT type=\"radio\" name=\"$event_id-pt_72hr_isae\" id=\"$event_id-pt_72hr_isae\" value=\"Inconclusive\">Inconclusive</INPUT><br />";
 											$isae = 1;
-											
+
 										}
 										else
 										{
-											echo "No.<br /> 
+											echo "No.<br />
 													<INPUT type=\"hidden\" name=\"$event_id-pt_72hr_isae\" id=\"$event_id-pt_72hr_isae\" value=\"No\" />";
 										}
 
@@ -294,13 +294,13 @@ if ($failed == "ALL_IS_PERFECT")
 										}
 										else
 										{
-											echo "No.<br /> 
+											echo "No.<br />
 													<INPUT type=\"hidden\" name=\"$event_id-pt_1_wk_isae\" id=\"$event_id-pt_1_wk_isae\" value=\"No\">";
-										} 
+										}
 
 										echo "</TD>";
 
-									
+
 							echo "<TD width=\"12%\">";
 
 							if ($isae == 1)
@@ -309,16 +309,16 @@ if ($failed == "ALL_IS_PERFECT")
 									if (array_search("$pt_24hr_severity", $severity_array, TRUE)) { $ca_24hr = array_search("$pt_24hr_severity", $severity_array, TRUE); } else { $ca_24hr = 0; }
 									if (array_search("$pt_72hr_severity", $severity_array, TRUE)) { $ca_72hr = array_search("$pt_72hr_severity", $severity_array, TRUE); } else { $ca_72hr = 0; }
 									if (array_search("$pt_1wk", $severity_array, TRUE)) { $ca_1wk = array_search("$pt_1wk", $severity_array, TRUE); } else { $ca_1wk = 0; }
-									
+
 									$change_array = array(
 											"baseline" => $ca_base,
 											"24hr" => $ca_24hr,
 											"72hr" => $ca_72hr,
 											"1_wk" => $ca_1wk);
-										
+
 										$lowest = $change_array["baseline"];
 										$lowest_time = 1;
-										
+
 										asort($change_array);
 										$highest = end($change_array);
 										$highest_time = array_search(key($change_array), $severity_time_array, TRUE);
@@ -327,7 +327,7 @@ if ($failed == "ALL_IS_PERFECT")
 											if (abs($highest - $lowest > 2))
 												{
 													$ae_severity = "Major";
-												} 
+												}
 												elseif (abs($highest - $lowest > 1))
 												{
 													$ae_severity = "Medium";
@@ -340,7 +340,7 @@ if ($failed == "ALL_IS_PERFECT")
 												{
 													$ae_severity = "No";
 												}
-											
+
 										if ($highest_time > $lowest_time)
 											{
 												$ae_severity .= " Increase";
@@ -353,14 +353,14 @@ if ($failed == "ALL_IS_PERFECT")
 											{
 												$ae_severity .= " Change";
 											}
-								
+
 										echo "	<INPUT type=\"radio\" name=\"$event_id-ae_severity\" id=\"$event_id-ae_severity\" value=\"$ae_severity\" checked=\"checked\" />$ae_severity.</INPUT><br />
 												<b>Change to:</b> <br />
 												<INPUT type=\"radio\" name=\"$event_id-ae_severity\" id=\"$event_id-ae_severity\" value=\"Minor\"> Minor<br />
 												<INPUT type=\"radio\" name=\"$event_id-ae_severity\" id=\"$event_id-ae_severity\" value=\"Medium\"> Medium<br />
 												<INPUT type=\"radio\" name=\"$event_id-ae_severity\" id=\"$event_id-ae_severity\" value=\"Major\"> Major<br />
 												</TD>";
-										
+
 										echo "<TD width=\"12%\">
 												<INPUT type=\"hidden\" name=\"$event_id-omt_related\" id=\"$event_id-omt_related\" value=\"NA\">
 												<INPUT type=\"radio\" name=\"$event_id-omt_related\" id=\"$event_id-omt_related\" value=\"Definitely\"> Definitely<br />
@@ -381,7 +381,7 @@ if ($failed == "ALL_IS_PERFECT")
 						{
 							echo "
 									<!--- NEW FOLLOWUP OR COMMENT STARTS HERE --->";
-									
+
 							if (($followup_clinic == "Yes") || (strlen($followup_clinic_related) > 0) || (strlen($followup_clinic_details) > 0))
 								{
 									echo "<TR>
@@ -399,7 +399,7 @@ if ($failed == "ALL_IS_PERFECT")
 									$followup_vote = 1;
 									$allow_comment = 1;
 								}
-							
+
 							if (($followup_uc == "Yes") || (strlen($followup_uc_related) > 0) || (strlen($followup_uc_details) > 0))
 								{
 									echo "<TR>
@@ -417,7 +417,7 @@ if ($failed == "ALL_IS_PERFECT")
 									$followup_vote = 1;
 									$allow_comment = 1;
 								}
-							
+
 							if (($followup_er == "Yes") || (strlen($followup_er_related) > 0) || (strlen($followup_er_details) > 0))
 								{
 									echo "<TR>
@@ -435,7 +435,7 @@ if ($failed == "ALL_IS_PERFECT")
 									$followup_vote = 1;
 									$allow_comment = 1;
 								}
-								
+
 							if (($followup_hosp == "Yes") || (strlen($followup_hosp_related) > 0) || (strlen($followup_hosp_details) > 0))
 								{
 									echo "<TR>
@@ -453,29 +453,29 @@ if ($failed == "ALL_IS_PERFECT")
 									$followup_vote = 1;
 									$allow_comment = 1;
 								}
-								
+
 							if (((substr($followup_clinic, 0, 3) == "Yes") || (substr($followup_uc, 0, 3) == "Yes") || (substr($followup_er, 0, 3) == "Yes") || (substr($followup_hosp, 0, 3) == "Yes")) && ($followup_vote == 1))
 								{
 									$event_id_array[] = $event_id;
-									
+
 										echo "	<input type=\"hidden\" name=\"$event_id-event_id\" value=\"$event_id\">
 												<input type=\"hidden\" name=\"$event_id-code\" value=\"$code\">
-												
+
 												<TD width=\"12%\">
 												<INPUT type=\"hidden\" name=\"$event_id-followup_isae\" id=\"$event_id-followup_isae\" value=\"Yes\">
 												<INPUT type=\"radio\" name=\"$event_id-followup_isae\" id=\"$event_id-followup_isae\" value=\"Yes\"> Yes<br />
 												<INPUT type=\"radio\" name=\"$event_id-followup_isae\" id=\"$event_id-followup_isae\" value=\"No\"> No<br />
 												<INPUT type=\"radio\" name=\"$event_id-followup_isae\" id=\"$event_id-followup_isae\" value=\"Inconclusive\"> Inconclusive<br />
-												
+
 												</TD>";
-									
+
 										echo "<TD width=\"12%\">
 												<INPUT type=\"hidden\" name=\"$event_id-ae_severity\" id=\"$event_id-ae_severity\" value=\"NA\">
 												<INPUT type=\"radio\" name=\"$event_id-ae_severity\" id=\"$event_id-ae_severity\" value=\"Mild\"> Mild<br/>
 												<INPUT type=\"radio\" name=\"$event_id-ae_severity\" id=\"$event_id-ae_severity\" value=\"Moderate\"> Moderate<br/>
 												<INPUT type=\"radio\" name=\"$event_id-ae_severity\" id=\"$event_id-ae_severity\" value=\"Severe\"> Severe<br/>
 												</TD>";
-										
+
 										echo "<TD width=\"12%\">
 												<INPUT type=\"hidden\" name=\"$event_id-omt_related\" id=\"$event_id-omt_related\" value=\"NA\">
 												<INPUT type=\"radio\" name=\"$event_id-omt_related\" id=\"$event_id-omt_related\" value=\"Definitely\"> Definitely<br />
@@ -485,29 +485,29 @@ if ($failed == "ALL_IS_PERFECT")
 												<INPUT type=\"radio\" name=\"$event_id-omt_related\" id=\"$event_id-omt_related\" value=\"No\"> No<br />
 												</TD>
 											</TR>";
-											
+
 									$followup_vote = 0;
 								}
-								
+
 							if ((strlen($pt_24hr_details) > 0) || (strlen($pt_72hr_details) > 0) || (strlen($pt_1wk_details) > 0))
 								{
 									echo "<TR style=\"background-color: orange\">
 											<TD width=\"20%\"> <b> Pt. Comments </b> </TD>";
-										
+
 									if (strlen($pt_24hr_details) > 0)
 										{
 											echo " 	<TD width=\"11%\"> 24 hr </TD>
 													<TD colspan=\"6\" width=\"69%\"> $pt_24hr_details </TD>";
 											$pt_comment_text .= "<b> 24 hr:</b> $pt_24hr_details <br /><br />";
 										}
-										
+
 									if (strlen($pt_72hr_details) > 0)
 										{
 											echo "	<TD width=\"11%\"> 72 hr </TD>
 													<TD colspan=\"6\" width=\"69%\"> $pt_72hr_details </TD>";
 											$pt_comment_text .= "<b> 72 hr:</b> $pt_72hr_details <br /><br />";
 										}
-										
+
 									if (strlen($pt_1wk_details) > 0)
 										{
 											echo "	<TD width=\"11%\"> 1 wk </TD>
@@ -519,10 +519,10 @@ if ($failed == "ALL_IS_PERFECT")
 								}
 
 						}
-						
+
 					if ($phase > "1")
 						{
-							if (!($cmt_QUERY = $dblink->prepare("SELECT 
+							if (!($cmt_QUERY = $dblink->prepare("SELECT
 																	user_id,
 																	action_date,
 																	comment
@@ -548,7 +548,7 @@ if ($failed == "ALL_IS_PERFECT")
 												}
 											$eac_comments .= "<b>$cmt_user_id ($cmt_date):</b> $cmt_comment <br />----<br />";
 										}
-								
+
 									echo "<TR>
 											<TD width=\"20%\"> EAC Comment(s)</TD>
 											<TD colspan=\"7\"> ";
@@ -558,29 +558,29 @@ if ($failed == "ALL_IS_PERFECT")
 										</TR>";
 								}
 						}
-					
+
 					if ($allow_comment == 1)
 						{
 							echo "<TR>
 								<TD width=\"20%\"> Your Comments: </TD>
 								<TD colspan=\"7\"> <textarea name=\"$event_id-comment\" id=\"$event_id-comment\" cols=\"80\" rows=\"2\" maxlength=\"7900\" wrap=\"physical\"></textarea></TD>
 							</TR>";
-							
+
 							$allow_comment = 0;
 						}
-						
+
 					$pg_len++;
 				}
-				
+
 					echo "
 					<TR>
 						<TD colspan=\"8\">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <INPUT type=\"reset\" name=\"reset\" value=\"Reset Form\">
-						&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+						&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 						<INPUT type=\"submit\" name=\"submit\" value=\"Submit Vote\"></TD>
 					</TR></tbody>
 				</TABLE>
 			</form>";
-			
+
 			if (!($pet_QUERY = $dblink->prepare("SELECT `study_id`, `code`, `HF_ART`, `HF_BLT`, `HF_CR`, `HF_CS`, `HF_HVLA`, `HF_IND`, `HF_Lymph`, `HF_ME`, `HF_MFR`, `HF_PH`, `HF_ST`, `HF_VIS`, `HF_Other`, `HF_Specify`, `HF_Response`, `Neck_ART`, `Neck_BLT`, `Neck_CR`, `Neck_CS`, `Neck_HVLA`, `Neck_IND`, `Neck_Lymph`, `Neck_ME`, `Neck_MFR`, `Neck_PH`, `Neck_ST`, `Neck_VIS`, `Neck_Other`, `Neck_Specify`, `Neck_Response`, `Thor_ART`, `Thor_BLT`, `Thor_CR`, `Thor_CS`, `Thor_HVLA`, `Thor_IND`, `Thor_Lymph`, `Thor_ME`, `Thor_MFR`, `Thor_PH`, `Thor_ST`, `Thor_VIS`, `Thor_Other`, `Thor_Specify`, `Thor_Response`, `Ribs_ART`, `Ribs_BLT`, `Ribs_CR`, `Ribs_CS`, `Ribs_HVLA`, `Ribs_IND`, `Ribs_Lymph`, `Ribs_ME`, `Ribs_MFR`, `Ribs_PH`, `Ribs_ST`, `Ribs_VIS`, `Ribs_Other`, `Ribs_Specify`, `Rib_Response`, `Lumb_ART`, `Lumb_BLT`, `Lumb_CR`, `Lumb_CS`, `Lumb_HVLA`, `Lumb_IND`, `Lumb_Lymph`, `Lumb_ME`, `Lumb_MFR`, `Lumb_PH`, `Lumb_ST`, `Lumb_VIS`, `Lumb_Other`, `Lumb_Specify`, `Lumb_Response`, `Sac_ART`, `Sac_BLT`, `Sac_CR`, `Sac_CS`, `Sac_HVLA`, `Sac_Ind`, `Sac_Lymph`, `Sac_ME`, `Sac_MFR`, `Sac_PH`, `Sac_ST`, `Sac_VIS`, `Sac_Other`, `Sac_Specify`, `Sac_Response`, `Pelvis_ART`, `Pelvis_BLT`, `Pelvis_CR`, `Pelvis_CS`, `Pelvis_HVLA`, `Pelvis_IND`, `Pelvis_Lymph`, `Pelvis_ME`, `Pelvis_MFR`, `Pelvis_PH`, `Pelvis_ST`, `Pelvis_VIS`, `Pelvis_Other`, `Pelvis_Specify`, `Pelvis_Response`, `Abd_ART`, `Abd_BLT`, `Abd_CR`, `Abd_CS`, `Abd_HVLA`, `Abd_IND`, `Abd_Lymph`, `Abd_ME`, `Abd_MFR`, `Abd_PH`, `Abd_ST`, `Abd_VIS`, `Abd_Other`, `Abd_Specify`, `Abd_Response`, `Up_Ex_ART`, `Up_Ex_BLT`, `Up_Ex_CR`, `Up_Ex_CS`, `Up_Ex_HVLA`, `Up_Ex_IND`, `Up_Ex_Lymph`, `Up_Ex_ME`, `Up_Ex_MFR`, `Up_Ex_PH`, `Up_Ex_ST`, `Up_Ex_VIS`, `Up_Ex_Other`, `Up_Ex_Specify`, `Up_Ex_Response`, `Should_ART`, `Should_BLT`, `Should_CR`, `Should_CS`, `Should_HVLA`, `Should_IND`, `Should_Lymph`, `Should_ME`, `Should_MFR`, `Should_PH`, `Should_ST`, `Should_VIS`, `Should_Other`, `Should_Specify`, `Should_Response`, `Elbow_ART`, `Elbow_BLT`, `Elbow_CR`, `Elbow_CS`, `Elbow_HVLA`, `Elbow_IND`, `Elbow_Lymph`, `Elbow_ME`, `Elbow_MFR`, `Elbow_PH`, `Elbow_ST`, `Elbow_VIS`, `Elbow_Other`, `Elbow_Specify`, `Elbow_Response`, `Wrist_ART`, `Wrist_BLT`, `Wrist_CR`, `Wrist_CS`, `Wrist_HVLA`, `Wrist_IND`, `Wrist_Lymph`, `Wrist_ME`, `Wrist_MFR`, `Wrist_PH`, `Wrist_ST`, `Wrist_VIS`, `Wrist_Other`, `Wrist_Specify`, `Wrist_Response`, `Low_Ex_ART`, `Low_Ex_BLT`, `Low_Ex_CR`, `Low_Ex_CS`, `Low_Ex_HVLA`, `Low_Ex_IND`, `Low_Ex_Lymph`, `Low_Ex_ME`, `Low_Ex_MFR`, `Low_Ex_PH`, `Low_Ex_ST`, `Low_Ex_VIS`, `Low_Ex_Other`, `Low_Ex_Specify`, `Low_Ex_Response`, `Thigh_ART`, `Thigh_BLT`, `Thigh_CR`, `Thigh_CS`, `Thigh_HVLA`, `Thigh_Ind`, `Thigh_Lymph`, `Thigh_ME`, `Thigh_MFR`, `Thigh_PH`, `Thigh_ST`, `Thigh_VIS`, `Thigh_Other`, `Thigh_Specify`, `Thigh_Response`, `Knee_ART`, `Knee_BLT`, `Knee_CR`, `Knee_CS`, `Knee_HVLA`, `Knee_IND`, `Knee_Lymph`, `Knee_ME`, `Knee_MFR`, `Knee_PH`, `Knee_ST`, `Knee_VIS`, `Knee_Other`, `Knee_Specify`, `Knee_Response`, `Ankle_ART`, `Ankle_BLT`, `Ankle_CR`, `Ankle_CS`, `Ankle_HVLA`, `Ankle_IND`, `Ankle_Lymph`, `Ankle_ME`, `Ankle_MFR`, `Ankle_PH`, `Ankle_ST`, `Ankle_VIS`, `Ankle_Other`, `Ankle_Specify`, `Ankle_Response`, `C739`, `C739_1`, `C739_2`, `C739_8`, `C739_3`, `C739_4`, `C739_5`, `C739_9`, `C739_7`, `C739_6`, `Written_Diagnosis_1`, `Diagnosis_Code_1`, `Chief_Related_1`, `SD_Related_1`, `Written_Diagnosis_2`, `Diagnosis_Code_2`, `Chief_Related_2`, `SD_Related_2`, `Written_Diagnosis_3`, `Diagnosis_Code_3`, `Chief_Related_3`, `SD_Related_3`, `Written_Diagnosis_4`, `Diagnosis_Code_4`, `Chief_Related_4`, `SD_Related_4`, `Written_Diagnosis_5`, `Diagnosis_Code_5`, `Chief_Related_5`, `SD_Related_5`, `Written_Diagnosis_6`, `Diagnosis_Code_6`, `Chief_Related_6`, `SD_Related_6`, `Written_Diagnosis_7`, `Diagnosis_Code_7`, `Chief_Related_7`, `SD_Related_7`, `Procuedures_1`, `Procedures_2`, `Procedures_3`, `Procedures_4`, `Procedures_5` FROM `pet` WHERE (`code` = ?);"))) { logger(__LINE__, "SQLi Prepare: $pet_QUERY->error"); }
 			if (!($pet_QUERY->bind_param('s', $code)))  { logger(__LINE__, "SQLi Prepare: $pet_QUERY->error"); }
 			if (!($pet_QUERY->execute())) { logger(__LINE__, "SQLi execute: $pet_QUERY->error"); }
@@ -613,7 +613,7 @@ if ($failed == "ALL_IS_PERFECT")
 							<TH width=\"10%\"> Response </TH>
 						</TR></thead2><tbody2>
 						";
-						
+
 					if (isset($HF_ART) || isset($HF_BLT) || isset($HF_CR) || isset($HF_CS) || isset($HF_HVLA) || isset($HF_IND) || isset($HF_Lymph) || isset($HF_ME) || isset($HF_MFR) || isset($HF_PH) || isset($HF_ST) || isset($HF_VIS) || isset($HF_Other) || (strlen($HF_Specify) > 0) || ($HF_Response !== "Off"))
 						{
 							echo "
@@ -638,7 +638,7 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "</TD>
 							</TR>";
 						}
-					
+
 					if(isset($Neck_ART) || isset($Neck_BLT) || isset($Neck_CR) || isset($Neck_CS) || isset($Neck_HVLA) || isset($Neck_IND) || isset($Neck_Lymph) || isset($Neck_ME) || isset($Neck_MFR) || isset($Neck_PH) || isset($Neck_ST) || isset($Neck_VIS) || isset($Neck_Other) || (strlen($Neck_Specify) > 0) || ($Neck_Response !== "Off"))
 						{
 							echo "
@@ -688,7 +688,7 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "</TD>
 							</TR>";
 						}
-						
+
 					if (isset($Ribs_ART) || isset($Ribs_BLT) || isset($Ribs_CR) || isset($Ribs_CS) || isset($Ribs_HVLA) || isset($Ribs_IND) || isset($Ribs_Lymph) || isset($Ribs_ME) || isset($Ribs_MFR) || isset($Ribs_PH) || isset($Ribs_ST) || isset($Ribs_VIS) || isset($Ribs_Other) || (strlen($Ribs_Specify) > 0) || ($Ribs_Response !== "Off"))
 						{
 							echo "
@@ -738,7 +738,7 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "</TD>
 							</TR>";
 						}
-					
+
 					if (isset($Sac_ART) || isset($Sac_BLT) || isset($Sac_CR) || isset($Sac_CS) || isset($Sac_HVLA) || isset($Sac_Ind) || isset($Sac_Lymph) || isset($Sac_ME) || isset($Sac_MFR) || isset($Sac_PH) || isset($Sac_ST) || isset($Sac_VIS) || isset($Sac_Other) || (strlen($Sac_Specify) > 0) || ($Sac_Response !== "Off"))
 						{
 							echo "
@@ -763,7 +763,7 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "</TD>
 							</TR>";
 						}
-					
+
 					if (isset($Pelvis_ART) || isset($Pelvis_BLT) || isset($Pelvis_CR) || isset($Pelvis_CS) || isset($Pelvis_HVLA) || isset($Pelvis_IND) || isset($Pelvis_Lymph) || isset($Pelvis_ME) || isset($Pelvis_MFR) || isset($Pelvis_PH) || isset($Pelvis_ST) || isset($Pelvis_VIS) || isset($Pelvis_Other) || (strlen($Pelvis_Specify) > 0) || ($Pelvis_Response !== "Off"))
 						{
 							echo "
@@ -788,7 +788,7 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "</TD>
 							</TR>";
 						}
-					
+
 					if (isset($Abd_ART) || isset($Abd_BLT) || isset($Abd_CR) || isset($Abd_CS) || isset($Abd_HVLA) || isset($Abd_IND) || isset($Abd_Lymph) || isset($Abd_ME) || isset($Abd_MFR) || isset($Abd_PH) || isset($Abd_ST) || isset($Abd_VIS) || isset($Abd_Other) || (strlen($Abd_Specify) > 0) || ($Abd_Response !== "Off"))
 						{
 							echo "
@@ -813,7 +813,7 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "</TD>
 							</TR>";
 						}
-					
+
 					if (isset($Up_Ex_ART) || isset($Up_Ex_BLT) || isset($Up_Ex_CR) || isset($Up_Ex_CS) || isset($Up_Ex_HVLA) || isset($Up_Ex_IND) || isset($Up_Ex_IND) || isset($Up_Ex_ME) || isset($Up_Ex_MFR) || isset($Up_Ex_PH) || isset($Up_Ex_ST) || isset($Up_Ex_VIS) || isset($Up_Ex_Other) || (strlen($Up_Ex_Specify) > 0) || ($Up_Ex_Response !== "Off"))
 						{
 							echo "
@@ -838,7 +838,7 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "</TD>
 							</TR>";
 						}
-					
+
 					if (isset($Should_ART) || isset($Should_BLT) || isset($Should_CR) || isset($Should_CS) || isset($Should_HVLA) || isset($Should_IND) || isset($Should_Lymph) || isset($Should_ME) || isset($Should_MFR) || isset($Should_PH) || isset($Should_ST) || isset($Should_VIS) || isset($Should_Other) || (strlen($Should_Specify) > 0) || ($Should_Response !== "Off"))
 						{
 							echo "
@@ -863,7 +863,7 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "</TD>
 							</TR>";
 						}
-					
+
 					if (isset($Elbow_ART) || isset($Elbow_BLT) || isset($Elbow_CR) || isset($Elbow_CS) || isset($Elbow_HVLA) || isset($Elbow_IND) || isset($Elbow_Lymph) || isset($Elbow_ME) || isset($Elbow_MFR) || isset($Elbow_PH) || isset($Elbow_ST) || isset($Elbow_VIS) || isset($Elbow_Other) || (strlen($Elbow_Specify) > 0) || ($Elbow_Response !== "Off"))
 						{
 							echo "
@@ -888,7 +888,7 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "</TD>
 							</TR>";
 						}
-					
+
 					if (isset($Wrist_ART) || isset($Wrist_BLT) || isset($Wrist_CR) || isset($Wrist_CS) || isset($Wrist_HVLA) || isset($Wrist_IND) || isset($Wrist_Lymph) || isset($Wrist_ME) || isset($Wrist_MFR) || isset($Wrist_PH) || isset($Wrist_ST) || isset($Wrist_VIS) || isset($Wrist_Other) || (strlen($Wrist_Specify) > 0) || ($Wrist_Response !== "Off"))
 						{
 							echo "
@@ -913,7 +913,7 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "</TD>
 							</TR>";
 						}
-					
+
 					if (isset($Low_Ex_ART) || isset($Low_Ex_BLT) || isset($Low_Ex_CR) || isset($Low_Ex_CS) || isset($Low_Ex_HVLA) || isset($Low_Ex_IND) || isset($Low_Ex_Lymph) || isset($Low_Ex_ME) || isset($Low_Ex_MFR) || isset($Low_Ex_PH) || isset($Low_Ex_ST) || isset($Low_Ex_VIS) || isset($Low_Ex_Other) || (strlen($Low_Ex_Specify) > 0) || ($Low_Ex_Response !== "Off"))
 						{
 							echo "
@@ -938,7 +938,7 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "</TD>
 							</TR>";
 						}
-					
+
 					if (isset($Thigh_ART) || isset($Thigh_BLT) || isset($Thigh_CR) || isset($Thigh_CS) || isset($Thigh_HVLA) || isset($Thigh_Ind) || isset($Thigh_Lymph) || isset($Thigh_ME) || isset($Thigh_MFR) || isset($Thigh_PH) || isset($Thigh_ST) || isset($Thigh_VIS) || isset($Thigh_Other) || (strlen($Thigh_Specify) > 0) || ($Thigh_Response !== "Off"))
 						{
 							echo "
@@ -963,7 +963,7 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "</TD>
 							</TR>";
 						}
-					
+
 					if (isset($Knee_ART) || isset($Knee_BLT) || isset($Knee_CR) || isset($Knee_CS) || isset($Knee_HVLA) || isset($Knee_IND) || isset($Knee_Lymph) || isset($Knee_ME) || isset($Knee_MFR) || isset($Knee_PH) || isset($Knee_PH) || isset($Knee_VIS) || isset($Knee_Other) || (strlen($Knee_Specify) > 0) || ($Knee_Response !== "Off"))
 						{
 							echo "
@@ -988,7 +988,7 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "</TD>
 							</TR>";
 						}
-					
+
 					if (isset($Ankle_ART) || isset($Ankle_BLT) || isset($Ankle_CR) || isset($Ankle_CS) || isset($Ankle_HVLA) || isset($Ankle_IND) || isset($Ankle_Lymph) || isset($Ankle_ME) || isset($Ankle_MFR) || isset($Ankle_PH) || isset($Ankle_ST) || isset($Ankle_VIS) || isset($Ankle_Other) || (strlen($Ankle_Specify) > 0) || ($Ankle_Response !== "Off"))
 						{
 							echo "
@@ -1013,18 +1013,18 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "</TD>
 							</TR>";
 						}
-						
+
 					echo "<TR>
 							<TH width=\"100%\"><center> Diagnoses Documentation </center></TH></TR>";
-							
-					if (isset($C739)) 
+
+					if (isset($C739))
 						{
 							echo "
 							<TR>
 								<TD width=\"100%\" colspan=\"16\"> Somatic Dysfunction of Head/Face (739.0)</TD>
 							</TR>";
 						}
-					
+
 					if (isset($C739_1))
 						{
 							echo "
@@ -1032,7 +1032,7 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"100%\" colspan=\"16\"> Somatic Dysfunction of Neck (739.1)</TD>
 							</TR>";
 						}
-					
+
 					if (isset($C739_2))
 						{
 							echo "
@@ -1040,7 +1040,7 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"100%\" colspan=\"16\"> Somatic Dysfunction of Thoracic (739.2)</TD>
 							</TR>";
 						}
-					
+
 					if (isset($C739_8))
 						{
 							echo "
@@ -1048,7 +1048,7 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"100%\" colspan=\"16\"> Somatic Dysfunction of Ribs (739.8)</TD>
 							</TR>";
 						}
-					
+
 					if (isset($C739_3))
 						{
 							echo "
@@ -1056,7 +1056,7 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"100%\" colspan=\"16\"> Somatic Dysfunction of Lumbar (739.3)</TD>
 							</TR>";
 						}
-					
+
 					if (isset($C739_4))
 						{
 							echo "
@@ -1064,7 +1064,7 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"100%\" colspan=\"16\"> Somatic Dysfunction of Sacrum (739.4)</TD>
 							</TR>";
 						}
-					
+
 					if (isset($C739_5))
 						{
 							echo "
@@ -1072,7 +1072,7 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"100%\" colspan=\"16\"> Somatic Dysfunction of Pelvis (739.5)</TD>
 							</TR>";
 						}
-					
+
 					if (isset($C739_9))
 						{
 							echo "
@@ -1080,7 +1080,7 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"100%\" colspan=\"16\"> Somatic Dysfunction of Abdomen/Other (739.9)</TD>
 							</TR>";
 						}
-					
+
 					if (isset($C739_7))
 						{
 							echo "
@@ -1088,7 +1088,7 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"100%\" colspan=\"16\"> Somatic Dysfunction of Upper Extremity (739.7)</TD>
 							</TR>";
 						}
-					
+
 					if (isset($C739_6))
 						{
 							echo "
@@ -1096,11 +1096,11 @@ if ($failed == "ALL_IS_PERFECT")
 								<TD width=\"100%\" colspan=\"16\"> Somatic Dysfunction of Lower Extremity (739.6)</TD>
 							</TR>";
 						}
-					
+
 					if ((strlen($Written_Diagnosis_1) > 0) || (strlen($Diagnosis_Code_1) > 0) || (isset($Chief_Related_1) && ($Chief_Related_1 !== "Off")) || (isset($SD_Related_1) && ($SD_Related_1 !== "Off")))
 						{
 							echo "
-							<TR> 
+							<TR>
 								<TD width=\"40%\" colspan=\"6\">$Written_Diagnosis_1</TD>
 								<TD width=\"20%\"colspan=\"3\">$Diagnosis_Code_1</TD>
 								<TD width=\"20%\"colspan=\"3\">Related to Chief Complaint?  ";
@@ -1111,11 +1111,11 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "</TD>
 							</TR>";
 						}
-					
+
 					if ((strlen($Written_Diagnosis_2) > 0) || (strlen($Diagnosis_Code_2) > 0) || (isset($Chief_Related_2) && ($Chief_Related_2 !== "Off")) || (isset($SD_Related_2) && ($SD_Related_2 !== "Off")))
 						{
 							echo "
-							<TR> 
+							<TR>
 								<TD width=\"40%\" colspan=\"6\">$Written_Diagnosis_2</TD>
 								<TD width=\"20%\" colspan=\"3\">$Diagnosis_Code_2</TD>
 								<TD width=\"20%\" colspan=\"3\">Related to Chief Complaint?  ";
@@ -1126,11 +1126,11 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "</TD>
 							</TR>";
 						}
-					
+
 					if ((strlen($Written_Diagnosis_3) > 0) || (strlen($Diagnosis_Code_3) > 0) || (isset($Chief_Related_3) && ($Chief_Related_3 !== "Off")) || (isset($SD_Related_3) && ($SD_Related_3 !== "Off")))
 						{
 							echo "
-							<TR> 
+							<TR>
 								<TD width=\"40%\" colspan=\"6\">$Written_Diagnosis_3</TD>
 								<TD width=\"20%\" colspan=\"3\">$Diagnosis_Code_3</TD>
 								<TD width=\"20%\" colspan=\"3\">Related to Chief Complaint?  ";
@@ -1141,11 +1141,11 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "</TD>
 							</TR>";
 						}
-					
+
 					if ((strlen($Written_Diagnosis_4) > 0) || (strlen($Diagnosis_Code_4) > 0) || (isset($Chief_Related_4) && ($Chief_Related_4 !== "Off")) || (isset($SD_Related_4) && ($SD_Related_4 !== "Off")))
 						{
 							echo "
-							<TR> 
+							<TR>
 								<TD width=\"40%\" colspan=\"6\">$Written_Diagnosis_4</TD>
 								<TD width=\"20%\" colspan=\"3\">$Diagnosis_Code_4</TD>
 								<TD width=\"20%\" colspan=\"3\">Related to Chief Complaint?  ";
@@ -1156,11 +1156,11 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "</TD>
 							</TR>";
 						}
-					
-					if ((strlen($Written_Diagnosis_5) > 0) || (strlen($Diagnosis_Code_5) > 0) || (isset($Chief_Related_5) && ($Chief_Related_5 !== "Off")) || (isset($SD_Related_5) && ($SD_Related_5 !== "Off"))) 
+
+					if ((strlen($Written_Diagnosis_5) > 0) || (strlen($Diagnosis_Code_5) > 0) || (isset($Chief_Related_5) && ($Chief_Related_5 !== "Off")) || (isset($SD_Related_5) && ($SD_Related_5 !== "Off")))
 						{
 							echo "
-							<TR> 
+							<TR>
 								<TD width=\"40%\" colspan=\"6\">$Written_Diagnosis_5</TD>
 								<TD width=\"20%\" colspan=\"3\">$Diagnosis_Code_5</TD>
 								<TD width=\"20%\" colspan=\"3\">Related to Chief Complaint?  ";
@@ -1171,11 +1171,11 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "</TD>
 							</TR>";
 						}
-					
-					if ((strlen($Written_Diagnosis_6) > 0) || (strlen($Diagnosis_Code_6) > 0) || (isset($Chief_Related_6) && ($Chief_Related_6 !== "Off")) || (isset($SD_Related_6) && ($SD_Related_6 !== "Off"))) 
+
+					if ((strlen($Written_Diagnosis_6) > 0) || (strlen($Diagnosis_Code_6) > 0) || (isset($Chief_Related_6) && ($Chief_Related_6 !== "Off")) || (isset($SD_Related_6) && ($SD_Related_6 !== "Off")))
 						{
 							echo "
-							<TR> 
+							<TR>
 								<TD width=\"40%\" colspan=\"6\">$Written_Diagnosis_6</TD>
 								<TD width=\"20%\" colspan=\"3\">$Diagnosis_Code_6</TD>
 								<TD width=\"20%\" colspan=\"3\">Related to Chief Complaint?  ";
@@ -1186,11 +1186,11 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "</TD>
 							</TR>";
 						}
-					
+
 					if ((strlen($Written_Diagnosis_7) > 0) || (strlen($Diagnosis_Code_7) > 0) || (isset($Chief_Related_7) && ($Chief_Related_7 !== "Off")) || (isset($SD_Related_7) && ($SD_Related_7 !== "Off")))
 						{
 							echo "
-							<TR> 
+							<TR>
 								<TD width=\"40%\" colspan=\"6\">$Written_Diagnosis_7</TD>
 								<TD width=\"20%\" colspan=\"3\">$Diagnosis_Code_7</TD>
 								<TD width=\"20%\" colspan=\"3\">Related to Chief Complaint?  ";
@@ -1201,13 +1201,13 @@ if ($failed == "ALL_IS_PERFECT")
 							echo "</TD>
 							</TR>";
 						}
-						
+
 					if ((strlen($Procuedures_1) > 0) || (strlen($Procedures_2) > 0) || (strlen($Procedures_3) > 0) || (strlen($Procedures_4) > 0) || (strlen($Procedures_5) > 0))
 						{
 							echo "<TR>
 							<TH width=\"100%\"><center> Additional Procedures/Interventions </center></TH></TR>";
 						}
-							
+
 					if (strlen($Procuedures_1) > 0)
 						{
 							echo "
@@ -1248,21 +1248,21 @@ if ($failed == "ALL_IS_PERFECT")
 							</TR>";
 						}
 				echo "
-					</tbody2>	
+					</tbody2>
 					</TABLE>";
 				}
-			
-			
+
+
 		echo "
 		</span>
 	</center>";
-	
+
 	if (isset($_POST['submit']))
 		{
 			if (count($event_id_array) > 0)
 				{
 					foreach($event_id_array as $e_id)
-						{	
+						{
 							if (isset($comment)) { unset($comment); }
 							if (isset($p24hr_adverse_event)) { unset($p24hr_adverse_event); }
 							if (isset($p72hr_adverse_event)) { unset($p72hr_adverse_event); }
@@ -1270,7 +1270,7 @@ if ($failed == "ALL_IS_PERFECT")
 							if (isset($followup_adverse_event)) { unset($followup_adverse_event); }
 							if (isset($ae_severity)) { unset($ae_severity); }
 							if (isset($omt_related)) { unset($omt_related); }
-							
+
 							if (isset($_POST["$e_id-comment"])) { $comment = $_POST["$e_id-comment"]; } else { $comment = NULL; }
 							if (isset($_POST["$e_id-pt_24hr_isae"])) { $p24hr_adverse_event = $_POST["$e_id-pt_24hr_isae"]; } else { $p24hr_adverse_event = NULL; }
 							if (isset($_POST["$e_id-pt_72hr_isae"])) { $p72hr_adverse_event = $_POST["$e_id-pt_72hr_isae"]; } else { $p72hr_adverse_event = NULL; }
@@ -1278,25 +1278,24 @@ if ($failed == "ALL_IS_PERFECT")
 							if (isset($_POST["$e_id-followup_isae"])) { $followup_adverse_event = $_POST["$e_id-followup_isae"]; } else { $followup_adverse_event = NULL; }
 							if (isset($_POST["$e_id-ae_severity"])) { $ae_severity = $_POST["$e_id-ae_severity"]; } else { $ae_severity = NULL; }
 							if (isset($_POST["$e_id-omt_related"])) { $omt_related = $_POST["$e_id-omt_related"]; } else { $omt_related = NULL; }
-						
-							if (!($vote_QUERY = $dblink->prepare("
-								INSERT INTO 
-									jury_room.review 
-										(	user_id,
-											phase,
-											event_id, 
-											comment,
-											24hr_adverse_event,
-											72hr_adverse_event,
-											1wk_adverse_event,
-											followup_adverse_event,
-											ae_severity,
-											omt_related) 
-										VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"))) {logger(__LINE__, "SQLi Prepare: $vote_QUERY->error");}
+
+							if (isset($votecheck_COUNT)) { unset($votecheck_COUNT); }
+							if (!($votecheck_QUERY = $dblink->prepare("SELECT user_id, phase, event_id FROM jury_room.review WHERE (user_id = ? ) AND (phase = ?) AND (event_id = ?);"))) { logger(__LINE__, "SQLi Prepare: $votecheck_QUERY->error"); }
+							if (!($votecheck_QUERY->bind_param('sss', $_SESSION['id'], $phase, $e_id)))  { logger(__LINE__, "SQLi Bind Error: $vote_QUERY->error"); }
+							if (!($votecheck_QUERY->execute())) { logger(__LINE__, "SQLi execute: $vote_QUERY->error"); }
+							$votecheck_QUERY->store_result();
+							$votecheck_COUNT = $votecheck_QUERY->num_rows();
+							$votecheck_QUERY->free_result();
+							$votecheck_QUERY->close();
+
+							if (!($vote_QUERY = $dblink->prepare("INSERT INTO jury_room.review (	user_id, phase, event_id, comment, 24hr_adverse_event, 72hr_adverse_event, 1wk_adverse_event, followup_adverse_event, ae_severity, omt_related) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"))) { logger(__LINE__, "SQLi Prepare: $vote_QUERY->error"); }
 							if (!($vote_QUERY->bind_param('ssssssssss', $_SESSION['id'], $phase, $e_id, $comment, $p24hr_adverse_event, $p72hr_adverse_event, $p1wk_adverse_event, $followup_adverse_event, $ae_severity, $omt_related))) { logger(__LINE__, "SQLi Bind Error: $vote_QUERY->error"); }
-							if (!($vote_QUERY->execute())) { logger(__LINE__, "SQLi execute: $vote_QUERY->error"); }
+							if ($votecheck_COUNT < 1)
+									{ if (!($vote_QUERY->execute())) { logger(__LINE__, "SQLi execute: $vote_QUERY->error"); } }
+									else
+									{ logger(__LINE__, "WARNING: User: $_SESSION[id] attempting to overwrite Event: $e_id Phase: $phase"); }
 							$vote_QUERY->close();
-							
+
 							if (isset($comment)) { unset($comment); }
 							if (isset($p24hr_adverse_event)) { unset($p24hr_adverse_event); }
 							if (isset($p72hr_adverse_event)) { unset($p72hr_adverse_event); }
@@ -1311,17 +1310,17 @@ if ($failed == "ALL_IS_PERFECT")
 					header('Location: pause.php');
 				}
 		}
-		
+
 	if (strlen($pt_comment_text) > 0)
 		{
 			echo "	<span id=\"pt-comments\" class=\"comment-text\"><center><b> .: Patient Comments :.</b></center> <br /><br />$pt_comment_text<br /><br /><a href=\"javascript:void(0)\" onclick=\"document.getElementById('pt-comments').style.display='none';document.getElementById('pt-comments-overlay').style.display='none'\">[ close ] </a></span>
 					<span id=\"pt-comments-overlay\" class=\"comment-overlay\"></span>
-				
+
 					<script type=\"text/javascript\">
 						window.onload=\"document.getElementById('pt-comments').style.display='block';document.getElementById('pt-comments-overlay').style.display='block'\";
 					</script>";
 		}
-		
+
 	include("footer.php");
 }
 ob_end_flush();
