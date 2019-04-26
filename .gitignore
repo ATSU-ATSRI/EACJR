@@ -3,5 +3,6 @@ README.txt
 *.txt
 *.txt
 .ftpconfig
+.profile
 code/logfile.txt
 server_only
